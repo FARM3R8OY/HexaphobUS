@@ -1,4 +1,4 @@
 # HexaphobUS
-This is a project from students in robotic engineering from University of Sherbrooke.
-The project is a Hexapod walking robot.
+This is an academic project from robotic engineering undergraduates at Université de Sherbrooke.
+The project is an hexapod robot, capable of walking and turning.
 
