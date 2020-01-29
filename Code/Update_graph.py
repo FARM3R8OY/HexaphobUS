@@ -1,8 +1,8 @@
 import sys
 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer,Qt
 from PyQt5.QtWidgets import (QApplication, QLabel, QWidget, QPushButton)
-from PyQt5.QtWidgets import (QVBoxLayout,QHBoxLayout,QGridLayout,QLineEdit)
+from PyQt5.QtWidgets import (QVBoxLayout,QHBoxLayout,QGridLayout,QLineEdit,QFormLayout)
 from PyQt5.QtGui import QPainter
 
 class HexaGraph(QWidget):
@@ -22,7 +22,7 @@ class HexaGraph(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setFixedSize(1000,500)
+        self.setMinimumSize(1000,500)
         self.label = QLabel(self)
         self.label.resize(500, 40)
         self.show()
@@ -51,6 +51,8 @@ class HexaGraph(QWidget):
         q.drawLine(self.mouse_x_pos, self.mouse_y_pos, self.target_x_pos, self.target_y_pos)
 
 class HexaInterface(QWidget):
+    ServoListEdit = list()
+    ServoListLabel = list()
 
     def __init__(self, parent=None):
         super().__init__()
@@ -62,7 +64,15 @@ class HexaInterface(QWidget):
 
         self.Graph = HexaGraph(self)
 
-
+        for x in range(12):
+            Edit = QLineEdit(self)
+            Edit.setFixedSize(100,30)
+            self.ServoListEdit.append(Edit)
+            Lab = QLabel(self)
+            self.ServoListLabel.append(Lab)
+            self.ServoListLabel[x].setAlignment(Qt.AlignCenter)
+            self.ServoListLabel[x].setText("Servo "+ str(x+1))
+      
         self.ButtonUp = QPushButton("UP",self)
         self.ButtonUp.setFixedSize(60, 20)
         self.ButtonDown = QPushButton("DOWN",self)
@@ -95,12 +105,31 @@ class HexaInterface(QWidget):
         self.BigLayout.addLayout(self.BotLineLayout)
 
         self.Servo1Layout = QVBoxLayout(self)
-        self.GraphLayout = QVBoxLayout(self)
+        self.Servo1Layout.addStretch(1)
         self.Servo2Layout = QVBoxLayout(self)
+        self.GraphLayout = QVBoxLayout(self)
+        self.Servo3Layout = QVBoxLayout(self)
+        self.Servo4Layout = QVBoxLayout(self)
 
         self.TopLineLayout.addLayout(self.Servo1Layout)
-        self.TopLineLayout.addLayout(self.GraphLayout)
         self.TopLineLayout.addLayout(self.Servo2Layout)
+        self.TopLineLayout.addLayout(self.GraphLayout)
+        self.TopLineLayout.addLayout(self.Servo3Layout)
+        self.TopLineLayout.addLayout(self.Servo4Layout)
+
+        for counter, (edit, label) in enumerate(zip(self.ServoListEdit, self.ServoListLabel)):
+            if counter < 3:
+                self.Servo1Layout.addWidget(label)
+                self.Servo1Layout.addWidget(edit)
+            elif counter < 6:
+                self.Servo2Layout.addWidget(label)
+                self.Servo2Layout.addWidget(edit)
+            elif counter < 9:
+                self.Servo3Layout.addWidget(label)
+                self.Servo3Layout.addWidget(edit)
+            elif counter < 12:
+                self.Servo4Layout.addWidget(label)
+                self.Servo4Layout.addWidget(edit)
 
         self.GraphLayout.addWidget(self.Graph)
 
@@ -125,6 +154,7 @@ class HexaInterface(QWidget):
         self.MoveLayout.addWidget(self.ButtonDown,1,1)
         self.MoveLayout.addWidget(self.ButtonRight,1,0)
         self.MoveLayout.addWidget(self.ButtonLeft,1,2)
+
         self.show()
 
 
