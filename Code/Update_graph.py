@@ -125,10 +125,6 @@ class HexaInterface(QWidget):
         self.MoveLayout.addWidget(self.ButtonDown,1,1)
         self.MoveLayout.addWidget(self.ButtonRight,1,0)
         self.MoveLayout.addWidget(self.ButtonLeft,1,2)
-        # self.ButtonUp.move(830, 350)
-        # self.ButtonDown.move(830, 380)
-        # self.ButtonRight.move(900, 380)
-        # self.ButtonLeft.move(760, 380)
         self.show()
 
 
