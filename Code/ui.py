@@ -22,7 +22,7 @@ import os
 import sys
 
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QPainter, QIcon
+from PyQt5.QtGui import QColor, QIcon, QPainter, QPalette
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget)
 
@@ -179,7 +179,7 @@ class MainWindow(QWidget):
 
         self.setGeometry(UI_X, UI_Y, UI_W, UI_H)
         self.setWindowTitle(WINDOW_NAME)
-        
+
         self.tracking = RobotTracking()
 
         self.addServos()
@@ -249,7 +249,7 @@ class MainWindow(QWidget):
         self.servo_layout_4.addStretch(1)
 
     def addWidgets(self):
-        # Add widgets to various layouts. 
+        # Add widgets to various layouts.
 
         self.strechServoLayouts()
 
@@ -294,5 +294,25 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'udes_logo.png'))
-    w = MainWindow()
+    window = MainWindow()
+
+    # Set style
+    palette = window.palette()
+    palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    palette.setColor(QPalette.WindowText, Qt.white)
+    palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    palette.setColor(QPalette.ToolTipBase, Qt.white)
+    palette.setColor(QPalette.ToolTipText, Qt.white)
+    palette.setColor(QPalette.Text, Qt.white)
+    palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    palette.setColor(QPalette.ButtonText, Qt.black)
+    palette.setColor(QPalette.BrightText, Qt.red)
+    palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    palette.setColor(QPalette.HighlightedText, Qt.black)
+    window.setPalette(palette)
+
+    # Display
+    window.show()
     sys.exit(app.exec_())
