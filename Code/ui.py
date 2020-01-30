@@ -1,163 +1,283 @@
+"""
+File: ui.py
+
+Contributor(s):
+    Cabana,  Gabriel  | cabg2101
+    Lalonde, Philippe | lalp2803
+
+Date(s):
+    2020-01-29 (Creation)
+
+Description:
+    User interface designed for intuitive control and monitoring of the
+    HexaphobUS robot.
+
+S4-H20 | GRO400
+"""
+
+# --------------------------------------------
+
+import math
+import os
 import sys
 
-from PyQt5.QtCore import QTimer,Qt
-from PyQt5.QtWidgets import (QApplication, QLabel, QWidget, QPushButton)
-from PyQt5.QtWidgets import (QVBoxLayout,QHBoxLayout,QGridLayout,QLineEdit,QFormLayout)
-from PyQt5.QtGui import QPainter
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QPainter, QIcon
+from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
+                             QLineEdit, QPushButton, QVBoxLayout, QWidget)
 
-class HexaGraph(QWidget):
-    distance_from_target = 0
-    mouse_x_pos = 0
-    mouse_y_pos = 0
-    target_x_pos = 500
-    target_y_pos = 250
-    vel = 60  # pixels per second
+# --------------------------------------------
 
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
+ARROW_W = 60
+ARROW_H = 30
+BUTTON_W = 120
+BUTTON_H = 60
+INFO_W = 190
+INFO_H = 30
+SV_NBR = 12
+SV_W = 100
+SV_H = 30
+TRACK_W = 250
+TRACK_H = 50
+UI_X = 80
+UI_Y = 80
+UI_W = 800
+UI_H = 600
+UI_MIN_W = 480
+UI_MIN_H = 360
+
+WINDOW_NAME = "HexaphobUS UI"
+BUTTON_STOP = "STOP"
+BUTTON_INIT = "POS INIT"
+BUTTON_PRG1 = "PRG1"
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+# --------------------------------------------
+
+
+class RobotTracking(QWidget):
+    """
+    The 'RobotTracking' class is a QWidget subclass that allows the user
+    to follow the robot position from an initialized origin point.
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self._distance_origin = 0
+        self._mouse_x_pos = 0
+        self._mouse_y_pos = 0
+        self._target_x_pos = 250
+        self._target_y_pos = 250
+        self._vel = 60  # pixels per second
+
         self.setMouseTracking(True)
         self.timer = QTimer(self)
-        # self.timer.timeout.connect(self.changePosition)
-        self.timer.start(1000 / self.vel)
-        self.initUI()
+        #self.timer.timeout.connect(self.changePosition)
+        self.timer.start(round(1000 / self._vel))
+        self.initTracking()
 
-    def initUI(self):
-        self.setMinimumSize(1000,500)
+    def initTracking(self):
+        # Initialize the Qt user interface.
+
+        self.setMinimumSize(UI_MIN_W, UI_MIN_H)
         self.label = QLabel(self)
-        self.label.resize(500, 40)
+        self.label.resize(TRACK_W, TRACK_H)
         self.show()
 
     def changePosition(self):
-        self.target_x_pos += 1
+        # Update the target positions.
+
+        self._target_x_pos += 1
+        self._target_y_pos += 1
         self.update()
 
     def mouseMoveEvent(self, event):
-        distance_from_target = round(
-            ((event.y() - self.target_y_pos) ** 2 + (event.x() - self.target_x_pos) ** 2) ** 0.5)
-        self.label.setText(
-            'Coordinates: (%d : %d)' % (event.x(), event.y()) + "   Distance from target: " + str(distance_from_target))
-        self.mouse_x_pos = event.x() #Suit la target de la souris
-        self.mouse_y_pos = event.y()
+        # Event that updates the mouse position relative to the origin
+        # according to mouse motion.
+
+        _distance_origin = round(
+            ((event.y() - self._target_y_pos)**2
+             + (event.x() - self._target_x_pos)**2)**0.5
+        )
+
+        self.label.setText("Coordinates (x; y): ({}; {})\
+                           \nDistance from origin: {}"
+                           .format(event.x(), event.y(), _distance_origin))
+
+        self._mouse_x_pos = event.x()
+        self._mouse_y_pos = event.y()
         self.update()
 
     def mousePressEvent(self, event):
-        self.target_x_pos = event.x()
-        self.target_y_pos = event.y()
+        # Event that updates the origin point according to mouse press.
+
+        self._target_x_pos = event.x()
+        self._target_y_pos = event.y()
         self.update()
 
     def paintEvent(self, event):
+        # Event that draws a line between the object position and its
+        # origin.
+
         q = QPainter()
         q.begin(self)
-        q.drawLine(self.mouse_x_pos, self.mouse_y_pos, self.target_x_pos, self.target_y_pos)
+        q.drawLine(self._mouse_x_pos, self._mouse_y_pos,
+                   self._target_x_pos, self._target_y_pos)
 
-class HexaInterface(QWidget):
-    ServoListEdit = list()
-    ServoListLabel = list()
 
-    def __init__(self, parent=None):
+class MainWindow(QWidget):
+    """
+    The 'MainWindow' class is a QWidget subclass that allows the user
+    to monitor various robot items, control the robot and track its
+    position with another QWidget subclass ('RobotTracking' class).
+    """
+
+    def __init__(self):
         super().__init__()
+
+        # Servos
+        self._servo_edits = list()
+        self._servo_labels = list()
+
+        # Layouts
+        self.global_layout = QVBoxLayout()
+
+        self.top_layout = QHBoxLayout()
+        self.bottom_layout = QHBoxLayout()
+
+        self.servo_layout_1 = QVBoxLayout()
+        self.servo_layout_2 = QVBoxLayout()
+        self.servo_layout_3 = QVBoxLayout()
+        self.servo_layout_4 = QVBoxLayout()
+        self.tracking_layout = QVBoxLayout()
+
+        self.info_layout = QVBoxLayout()
+        self.prog_layout = QVBoxLayout()
+        self.move_layout = QGridLayout()
+
+        # Buttons
+        self.button_up = QPushButton("\u2191")
+        self.button_down = QPushButton("\u2193")
+        self.button_left = QPushButton("\u2190")
+        self.button_right = QPushButton("\u2192")
+
+        self.button_stop = QPushButton(BUTTON_STOP)
+        self.button_init = QPushButton(BUTTON_INIT)
+        self.button_prog = QPushButton(BUTTON_PRG1)
+
+        # Edits and labels
+        self.speed_edit = QLineEdit()
+        self.energy_edit = QLineEdit()
+        self.speed_label = QLabel()
+        self.energy_label = QLabel()
+
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(200, 200, 1000, 500)
-        self.setWindowTitle('Mouse Tracker')
+        self.setGeometry(UI_X, UI_Y, UI_W, UI_H)
+        self.setWindowTitle(WINDOW_NAME)
+        self.tracking = RobotTracking()
 
-        self.Graph = HexaGraph(self)
+        self.addServos()
+        self.setSizeButtons()
+        self.setInfo()
 
-        for x in range(12):
-            Edit = QLineEdit(self)
-            Edit.setFixedSize(100,30)
-            self.ServoListEdit.append(Edit)
-            Lab = QLabel(self)
-            self.ServoListLabel.append(Lab)
-            self.ServoListLabel[x].setAlignment(Qt.AlignCenter)
-            self.ServoListLabel[x].setText("Servo "+ str(x+1))
-      
-        self.ButtonUp = QPushButton("UP",self)
-        self.ButtonUp.setFixedSize(60, 20)
-        self.ButtonDown = QPushButton("DOWN",self)
-        self.ButtonDown.setFixedSize(60, 20)
-        self.ButtonRight = QPushButton("RIGHT",self)
-        self.ButtonRight.setFixedSize(60, 20)
-        self.ButtonLeft = QPushButton("LEFT",self)
-        self.ButtonLeft.setFixedSize(60, 20)
-        self.ButtonStop = QPushButton("STOP",self)
-        self.ButtonStop.setFixedSize(60,60)
-        self.ButtonInit = QPushButton("POS INIT",self)
-        self.ButtonInit.setFixedSize(60,60)
-        self.ButtonProg = QPushButton("PROG 1",self)
-        self.ButtonProg.setFixedSize(60,60)
+        self.setLayoutDependencies()
+        self.addWidgets()
 
-        self.VitLabel = QLabel(self)
-        self.VitLabel.setText("Vitesse :")
-        self.EnerLabel = QLabel(self)
-        self.EnerLabel.setText("Énergie :")
-        self.VitEdit = QLineEdit(self)
-        self.VitEdit.setFixedSize(190,30)
-        self.EnerEdit = QLineEdit(self)
-        self.EnerEdit.setFixedSize(190,30)
-
-        self.BigLayout = QVBoxLayout(self)
-        self.TopLineLayout = QHBoxLayout(self)
-        self.BotLineLayout = QHBoxLayout(self)
-
-        self.BigLayout.addLayout(self.TopLineLayout)
-        self.BigLayout.addLayout(self.BotLineLayout)
-
-        self.Servo1Layout = QVBoxLayout(self)
-        self.Servo1Layout.addStretch(1)
-        self.Servo2Layout = QVBoxLayout(self)
-        self.GraphLayout = QVBoxLayout(self)
-        self.Servo3Layout = QVBoxLayout(self)
-        self.Servo4Layout = QVBoxLayout(self)
-
-        self.TopLineLayout.addLayout(self.Servo1Layout)
-        self.TopLineLayout.addLayout(self.Servo2Layout)
-        self.TopLineLayout.addLayout(self.GraphLayout)
-        self.TopLineLayout.addLayout(self.Servo3Layout)
-        self.TopLineLayout.addLayout(self.Servo4Layout)
-
-        for counter, (edit, label) in enumerate(zip(self.ServoListEdit, self.ServoListLabel)):
-            if counter < 3:
-                self.Servo1Layout.addWidget(label)
-                self.Servo1Layout.addWidget(edit)
-            elif counter < 6:
-                self.Servo2Layout.addWidget(label)
-                self.Servo2Layout.addWidget(edit)
-            elif counter < 9:
-                self.Servo3Layout.addWidget(label)
-                self.Servo3Layout.addWidget(edit)
-            elif counter < 12:
-                self.Servo4Layout.addWidget(label)
-                self.Servo4Layout.addWidget(edit)
-
-        self.GraphLayout.addWidget(self.Graph)
-
-        self.InfoLayout = QVBoxLayout(self)
-        self.ProgLayout = QVBoxLayout(self)
-        self.MoveLayout = QGridLayout(self)
-
-        self.BotLineLayout.addLayout(self.InfoLayout)
-        self.BotLineLayout.addLayout(self.ProgLayout)
-        self.BotLineLayout.addLayout(self.MoveLayout)
-        self.BotLineLayout.addWidget(self.ButtonStop)
-
-        self.InfoLayout.addWidget(self.VitLabel)
-        self.InfoLayout.addWidget(self.VitEdit)
-        self.InfoLayout.addWidget(self.EnerLabel)
-        self.InfoLayout.addWidget(self.EnerEdit)
-
-        self.ProgLayout.addWidget(self.ButtonInit)
-        self.ProgLayout.addWidget(self.ButtonProg)
-
-        self.MoveLayout.addWidget(self.ButtonUp,0,1,1,1)
-        self.MoveLayout.addWidget(self.ButtonDown,1,1)
-        self.MoveLayout.addWidget(self.ButtonRight,1,0)
-        self.MoveLayout.addWidget(self.ButtonLeft,1,2)
+        self.setLayout(self.global_layout)
 
         self.show()
 
+    def addServos(self):
+        for index in range(SV_NBR):
+            self._servo_edits.append(QLineEdit())
+            self._servo_edits[index].setFixedSize(SV_W, SV_H)
 
-app = QApplication(sys.argv)
-w = HexaInterface()
-sys.exit(app.exec_())
+            self._servo_labels.append(QLabel())
+            self._servo_labels[index].setAlignment(Qt.AlignCenter)
+            self._servo_labels[index].setText("Servo{:02d}".format(index + 1))
+
+    def setSizeButtons(self):
+        self.button_up.setFixedSize(ARROW_W, ARROW_H)
+        self.button_down.setFixedSize(ARROW_W, ARROW_H)
+        self.button_left.setFixedSize(ARROW_W, ARROW_H)
+        self.button_right.setFixedSize(ARROW_W, ARROW_H)
+
+        self.button_stop.setFixedSize(BUTTON_W, BUTTON_H)
+        self.button_init.setFixedSize(BUTTON_W, BUTTON_H)
+        self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
+
+    def setInfo(self):
+        self.speed_edit.setFixedSize(INFO_W, INFO_H)
+        self.energy_edit.setFixedSize(INFO_W, INFO_H)
+        self.speed_label.setText("Vitesse :")
+        self.energy_label.setText("Énergie :")
+
+    def setLayoutDependencies(self):
+        self.global_layout.addLayout(self.top_layout)
+        self.global_layout.addLayout(self.bottom_layout)
+
+        self.top_layout.addLayout(self.servo_layout_1)
+        self.top_layout.addLayout(self.servo_layout_2)
+        self.top_layout.addLayout(self.tracking_layout)
+        self.top_layout.addLayout(self.servo_layout_3)
+        self.top_layout.addLayout(self.servo_layout_4)
+
+        self.bottom_layout.addLayout(self.info_layout)
+        self.bottom_layout.addLayout(self.prog_layout)
+        self.bottom_layout.addLayout(self.move_layout)
+        self.bottom_layout.addWidget(self.button_stop)
+
+    def strechServoLayouts(self):
+        self.servo_layout_1.addStretch(1)
+        self.servo_layout_2.addStretch(1)
+        self.servo_layout_3.addStretch(1)
+        self.servo_layout_4.addStretch(1)
+
+    def addWidgets(self):
+        self.strechServoLayouts()
+
+        for counter, (edit, label) in \
+            enumerate(zip(self._servo_edits, self._servo_labels)):
+
+            if counter < math.ceil(SV_NBR/4):
+                self.servo_layout_1.addWidget(label)
+                self.servo_layout_1.addWidget(edit)
+                self.servo_layout_1.addStretch(1)
+            elif counter < math.ceil(SV_NBR/2):
+                self.servo_layout_2.addWidget(label)
+                self.servo_layout_2.addWidget(edit)
+                self.servo_layout_2.addStretch(1)
+            elif counter < math.ceil(SV_NBR*3/4):
+                self.servo_layout_3.addWidget(label)
+                self.servo_layout_3.addWidget(edit)
+                self.servo_layout_3.addStretch(1)
+            elif counter < SV_NBR:
+                self.servo_layout_4.addWidget(label)
+                self.servo_layout_4.addWidget(edit)
+                self.servo_layout_4.addStretch(1)
+
+        self.tracking_layout.addWidget(self.tracking)
+
+        self.info_layout.addWidget(self.speed_label)
+        self.info_layout.addWidget(self.speed_edit)
+        self.info_layout.addWidget(self.energy_label)
+        self.info_layout.addWidget(self.energy_edit)
+
+        self.prog_layout.addWidget(self.button_init)
+        self.prog_layout.addWidget(self.button_prog)
+
+        self.move_layout.addWidget(self.button_up, 0, 1, 1, 1)
+        self.move_layout.addWidget(self.button_down, 1, 1)
+        self.move_layout.addWidget(self.button_left, 1, 0)
+        self.move_layout.addWidget(self.button_right, 1, 2)
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'udes_logo.png'))
+
+    w = MainWindow()
+    sys.exit(app.exec_())
