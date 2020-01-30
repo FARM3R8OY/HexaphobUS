@@ -78,7 +78,7 @@ class RobotTracking(QWidget):
         self.initTracking()
 
     def initTracking(self):
-        # Initialize the Qt user interface.
+        # Initialize the Qt robot tracking widget.
 
         self.setMinimumSize(UI_MIN_W, UI_MIN_H)
         self.label = QLabel(self)
@@ -175,22 +175,24 @@ class MainWindow(QWidget):
         self.initUI()
 
     def initUI(self):
+        # Initialize the Qt user interface.
+
         self.setGeometry(UI_X, UI_Y, UI_W, UI_H)
         self.setWindowTitle(WINDOW_NAME)
+        
         self.tracking = RobotTracking()
 
         self.addServos()
         self.setSizeButtons()
         self.setInfo()
-
         self.setLayoutDependencies()
         self.addWidgets()
-
         self.setLayout(self.global_layout)
-
         self.show()
 
     def addServos(self):
+        # Add servomotor edits and labels used to monitor their state.
+
         for index in range(SV_NBR):
             self._servo_edits.append(QLineEdit())
             self._servo_edits[index].setFixedSize(SV_W, SV_H)
@@ -200,6 +202,8 @@ class MainWindow(QWidget):
             self._servo_labels[index].setText("Servo{:02d}".format(index + 1))
 
     def setSizeButtons(self):
+        # Fix button size according to type.
+
         self.button_up.setFixedSize(ARROW_W, ARROW_H)
         self.button_down.setFixedSize(ARROW_W, ARROW_H)
         self.button_left.setFixedSize(ARROW_W, ARROW_H)
@@ -210,12 +214,17 @@ class MainWindow(QWidget):
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
     def setInfo(self):
+        #Set information size and text display.
+
         self.speed_edit.setFixedSize(INFO_W, INFO_H)
         self.energy_edit.setFixedSize(INFO_W, INFO_H)
         self.speed_label.setText("Vitesse :")
         self.energy_label.setText("Énergie :")
 
     def setLayoutDependencies(self):
+        # Add inner layouts to outer layouts (creates a parent-child
+        # structure).
+
         self.global_layout.addLayout(self.top_layout)
         self.global_layout.addLayout(self.bottom_layout)
 
@@ -231,12 +240,17 @@ class MainWindow(QWidget):
         self.bottom_layout.addWidget(self.button_stop)
 
     def strechServoLayouts(self):
+        # Add padding between widgets and/or layout walls in the
+        # servomotor layouts.
+
         self.servo_layout_1.addStretch(1)
         self.servo_layout_2.addStretch(1)
         self.servo_layout_3.addStretch(1)
         self.servo_layout_4.addStretch(1)
 
     def addWidgets(self):
+        # Add widgets to various layouts. 
+
         self.strechServoLayouts()
 
         for counter, (edit, label) in \
@@ -276,8 +290,9 @@ class MainWindow(QWidget):
 
 
 if __name__ == '__main__':
+    # Create a Qt application and window to display.
+
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'udes_logo.png'))
-
     w = MainWindow()
     sys.exit(app.exec_())
