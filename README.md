@@ -6,7 +6,7 @@
 </div>
 
 <div id="badges" align="center">
-    [![license](https://img.shields.io/github/license/FARM3R8OY/HexaphobUS.svg)](https://github.com/FARM3R8OY/HexaphobUS/blob/master/LICENSE)
+    [![license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/FARM3R8OY/HexaphobUS/blob/master/LICENSE)
 </div>
 
 **This is an academic project from robotic engineering undergraduates at Université de Sherbrooke. We are building a 6-axis robot from scratch with motion control, sequencing, and an intuitive user interface.**
