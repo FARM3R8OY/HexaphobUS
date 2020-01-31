@@ -316,7 +316,4 @@ if __name__ == '__main__':
     window.setPalette(palette)
 
     # Display
-    print(SCRIPT_DIR)
-    window.show()
     sys.exit(app.exec_())
-    
