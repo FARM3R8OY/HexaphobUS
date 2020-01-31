@@ -6,7 +6,9 @@
 </div>
 
 <div id="badges" align="center">
-    [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+    
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 </div>
 
 **This is an academic project from robotic engineering undergraduates at Université de Sherbrooke. We are building a 6-axis robot from scratch with motion control, sequencing, and an intuitive user interface.**
@@ -26,3 +28,4 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ```
 this is bash code
 ```
+
