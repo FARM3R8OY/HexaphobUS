@@ -50,7 +50,9 @@ WINDOW_NAME = "HexaphobUS UI"
 BUTTON_STOP = "STOP"
 BUTTON_INIT = "POS INIT"
 BUTTON_PRG1 = "PRG1"
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+SEP = os.path.sep
+LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
 # --------------------------------------------
 
@@ -293,7 +295,7 @@ if __name__ == '__main__':
     # Create a Qt application and window to display.
 
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'udes_logo.png'))
+    app.setWindowIcon(QIcon(SCRIPT_DIR + SEP + LOGO))
     window = MainWindow()
 
     # Set style
@@ -314,5 +316,7 @@ if __name__ == '__main__':
     window.setPalette(palette)
 
     # Display
+    print(SCRIPT_DIR)
     window.show()
     sys.exit(app.exec_())
+    
