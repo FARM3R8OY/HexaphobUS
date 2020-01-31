@@ -1,6 +1,6 @@
 <div id="hexaphobus-logo" align="center">
     <br />
-    <img src="./img/hexaphobus-logo.png" alt="HexaphobUS Logo" width="200"/>
+    <img src="./img/hexaphobus_logo.png" alt="HexaphobUS Logo" width="200"/>
     <h1>HexaphobUS</h1>
     <h3>Hexapod robot | Université de Sherbrooke</h3>
 </div>
