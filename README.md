@@ -18,19 +18,31 @@
 **This is an academic project from robotic engineering undergraduates at Université de Sherbrooke. We are building a 6-axis robot from scratch with motion control, sequencing, and an intuitive user interface.**
 
 ## Table of Contents
-- [TBD](#TBD)
-    - [Sub-TBD](#Sub-TBD)
+- [External Resources](#Resources)
+    - [Servomotor](#Servo)
+    - [PWM Servo Driver](#PWM)
+    - [Crimping Tool Kit](#Crimp)
     
 [//]: # (------------------------------------------------)
 
-## <a id="TBD"></a>TBD
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+## <a id="Resources"></a>External Resources
 
-#### <a id="Sub-TBD"></a>Sub-TBD
-> This write a quote.
->
-> Awesome.
+Under this section, you will find external links and descriptions of the project's external resources.
 
-```
-this is bash code
-```
+#### <a id="Servo"></a>Servomotor
+- Brand Name: Hitec RCD
+- Model: HS-422
+- ASIN: B0006O3WWI
+- Information / Resources: [Hitec Webpage](https://hitecrcd.com/products/servos/sport-servos/analog-sport-servos/hs-422/product)
+
+#### <a id="PWM"></a>PWM Servo Driver
+- Brand Name: SunFounder
+- Model: PCA9685
+- ASIN: B014KTSMLA
+- Information / Resources: [Sunfounder Wiki](http://wiki.sunfounder.cc/index.php?title=PCA9685_16_Channel_12_Bit_PWM_Servo_Driver)
+
+#### <a id="Crimp"></a>Crimping Tool Kit
+- Brand Name: Preciva Dupont
+- Model: PR-3245 (SN-28B) + JST-XH
+- ASIN: B07R1H3Z8X
+- Information / Resources: [Amazon Link](https://www.amazon.com/gp/product/B07R1H3Z8X/)
