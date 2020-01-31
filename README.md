@@ -19,15 +19,29 @@
 
 ## Table of Contents
 - [External Resources](#Resources)
-    - [Servomotor](#Servo)
-    - [PWM Servo Driver](#PWM)
+    - [On-Board Computer](#Computer)
     - [Crimping Tool Kit](#Crimp)
+    - [Microcontroller Board](#Controller)
+    - [PWM Servo Driver](#PWM)
+    - [Servomotor](#Servo)
     
 [//]: # (------------------------------------------------)
 
 ## <a id="Resources"></a>External Resources
 
 Under this section, you will find external links and descriptions of the project's external resources.
+
+#### <a id="Computer"></a>On-Board Computer
+- Brand Name: Raspberry Pi
+- Model: 3B
+- ASIN: B01LPLPBS8
+- Information / Resources: [Raspberry Pi Webpage](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
+
+#### <a id="Controller"></a>Microcontroller Board
+- Brand Name: Arduino
+- Model: Mega 2560 R3 (A000067)
+- ASIN: B0046AMGW0
+- Information / Resources: [Arduino Webpage](https://store.arduino.cc/mega-2560-r3)
 
 #### <a id="Servo"></a>Servomotor
 - Brand Name: Hitec RCD
