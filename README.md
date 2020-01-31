@@ -2,7 +2,7 @@
     <br />
     <img src="./img/hexaphobus_logo.png" alt="HexaphobUS Logo" width="200"/>
     <h1>HexaphobUS</h1>
-    <h3>Hexapod robot | Université de Sherbrooke</h3>
+    <h3>Hexapod robot | UdeS-GRO</h3>
 </div>
 
 <div id="badges" align="center">
