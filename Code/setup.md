@@ -45,7 +45,7 @@ Notes:
 
 #### <a id="kmGen"></a>Generate keys
 
-Open Git Bash, and generate a set of public and private keys.
+Open Git Bash or Command Prompt, and generate a set of public and private keys.
 ```bash
 gpg --full-generate-key
 
@@ -65,7 +65,7 @@ Following [Github](https://help.github.com/en/github/authenticating-to-github/ge
 
 #### <a id="kmExp"></a>Export keys
 
-Still in Git Bash, display your newly-created keys.
+Still in Git Bash or Command Prompt, display your newly-created keys.
 ```bash
 gpg --list-secret-keys --keyid-format LONG
 ```
@@ -97,26 +97,39 @@ Now we only need to register the public key to the GnuPG server, in order for th
 - Confirm the revocation certificate.
 - Run ```gpg --send-keys <sec-key-ID>``` (**this only sends the public key**).
 
-The key management procedure is now complete. You can exit Git Bash.
+The key management procedure is now complete. You can close the window.
 
 [//]: # (------------------------------------------------)
 
 ## <a id="GitConfig"></a>Git Configuration
 
+The Git configuration can be managed at a local or a global level, depending on your needs. For our purposes, we will use a global config.
+
+Open the Windows Command Prompt and run the following commands. If any issue is encountered later on, try again with an elevated Command Prompt:
+- User-related:
+	- ```git config --global user.name <username>``` (same username as your GitHub profile);
+	- ```git config --global user.email <email>``` (same email as your GitHub verified email address);
+	- ```git config --global user.signingkey <sec-key-ID>```.
+- GPG-related:
+	- If key management was done on Git Bash: ```git config --global gpg.program "<drive>:\<programs>\Git\usr\bin\gpg.exe"```;
+	- On Command Prompt: ```git config --global gpg.program "<drive>:\<programs>\GnuPG\bin\gpg.exe"```.
+- Version control-related:
+	- ```git config --global commit.gpgsign true``` (automatically signs commits).
+	
+The Git configuration procedure is now complete. You can close the window.
+
 [//]: # (------------------------------------------------)
 
 ## <a id="IDEConfig"></a>IDE Configuration
 
-5. Open Command Prompt 
-	5.0. If any issue is encountered, open an elevated Command Prompt.
-	5.1. git config --global user.name <username> (same username as GitHub)
-	5.2. git config --global user.name <email> (same email as GitHub and GPG)
-	5.3. git config --global user.signingkey <sec-key-ID>
-	5.4. git config --global gpg.program "<drive>:\<programs>\Git\usr\bin\gpg.exe"
-		5.4.0. If signing failed later, try: git config --global gpg.program "<drive>:\<programs>\GnuPG\bin\gpg.exe"
-	5.5. git config --global commit.gpgsign true (automatically signs commits)
-	5.6. exit
-6. Open VSCodium
-	6.0. Make sure that "Git Extension Pack" is installed
-	6.1. Show All Commands -> Preferences: Open settings (JSON) -> Add: "git.enableCommitSigning": true
-	6.2. Alternatively: Settings -> Extensions -> Git -> Enable Commit Signing
+Open VSCode or VSCodium, and follow these steps:
+- Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>): Make sure that the "Git Extension Pack" extension is installed (and any other Git extension you find useful);
+- File &#8594; Preferences &#8594; Settings (<kbd>Ctrl</kbd>+<kbd>,</kbd>) &#8594; Extensions &#8594; Git &#8594; Enable Commit Signing;
+	- Alternatively, Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add: ```"git.enableCommitSigning": true```
+	
+The IDE configuration procedure is now complete. You can close the window.
+
+[//]: # (------------------------------------------------)
+
+##
+That's it! You should have integrated Git into your favorite IDE now, and allowed a KMS to sign your commits. If any issue persists, you can find help online on Stack Overflow, the GitHub forums, and more.
