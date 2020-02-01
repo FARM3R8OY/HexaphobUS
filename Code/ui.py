@@ -67,13 +67,13 @@ class RobotTracking(QWidget):
         super().__init__()
 
         self._distance_origin = 0
-        self._mouse_x_pos = 0
-        self._mouse_y_pos = 0
+        self._robot_x_pos = 200
+        self._robot_y_pos = 200
         self._target_x_pos = 250
         self._target_y_pos = 250
         self._vel = 60  # pixels per second
 
-        self.setMouseTracking(True)
+        #self.setMouseTracking(True)
         self.timer = QTimer(self)
         #self.timer.timeout.connect(self.changePosition)
         self.timer.start(round(1000 / self._vel))
@@ -87,35 +87,40 @@ class RobotTracking(QWidget):
         self.label.resize(TRACK_W, TRACK_H)
         self.show()
 
-    def changePosition(self):
+    def changePosition(self,direction):
         # Update the target positions.
+        if direction == "UP":
+            self._robot_y_pos -= 10
+        elif direction == "DOWN":
+            self._robot_y_pos += 10
+        elif direction == "RIGHT":
+            self._robot_x_pos += 10
+        elif direction == "LEFT":
+            self._robot_x_pos -= 10
+        self.moveRobot(self._robot_x_pos, self._robot_y_pos)
+        self.update()       
 
-        self._target_x_pos += 1
-        self._target_y_pos += 1
-        self.update()
 
-    def mouseMoveEvent(self, event):
+    def moveRobot(self, robotX, robotY):
         # Event that updates the mouse position relative to the origin
         # according to mouse motion.
 
         _distance_origin = round(
-            ((event.y() - self._target_y_pos)**2
-             + (event.x() - self._target_x_pos)**2)**0.5
+            ((robotY - self._target_y_pos)**2
+             + (robotX - self._target_x_pos)**2)**0.5
         )
 
         self.label.setText("Coordinates (x; y): ({}; {})\
                            \nDistance from origin: {}"
-                           .format(event.x(), event.y(), _distance_origin))
+                           .format(robotX, robotY, _distance_origin))
 
-        self._mouse_x_pos = event.x()
-        self._mouse_y_pos = event.y()
         self.update()
 
-    def mousePressEvent(self, event):
+    def initPosition(self):
         # Event that updates the origin point according to mouse press.
 
-        self._target_x_pos = event.x()
-        self._target_y_pos = event.y()
+        self._target_x_pos = self._robot_x_pos
+        self._target_y_pos = self._robot_y_pos
         self.update()
 
     def paintEvent(self, event):
@@ -124,7 +129,7 @@ class RobotTracking(QWidget):
 
         q = QPainter()
         q.begin(self)
-        q.drawLine(self._mouse_x_pos, self._mouse_y_pos,
+        q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
 
@@ -153,6 +158,7 @@ class MainWindow(QWidget):
         self.servo_layout_3 = QVBoxLayout()
         self.servo_layout_4 = QVBoxLayout()
         self.tracking_layout = QVBoxLayout()
+        
 
         self.info_layout = QVBoxLayout()
         self.prog_layout = QVBoxLayout()
@@ -186,6 +192,7 @@ class MainWindow(QWidget):
 
         self.addServos()
         self.setSizeButtons()
+        self.setConnexions()
         self.setInfo()
         self.setLayoutDependencies()
         self.addWidgets()
@@ -214,6 +221,13 @@ class MainWindow(QWidget):
         self.button_stop.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_init.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
+
+    def setConnexions(self):
+        self.button_init.clicked.connect(self.tracking.initPosition)
+        self.button_up.clicked.connect(lambda:self.tracking.changePosition("UP"))
+        self.button_down.clicked.connect(lambda:self.tracking.changePosition("DOWN"))
+        self.button_right.clicked.connect(lambda:self.tracking.changePosition("RIGHT"))
+        self.button_left.clicked.connect(lambda:self.tracking.changePosition("LEFT"))
 
     def setInfo(self):
         #Set information size and text display.
