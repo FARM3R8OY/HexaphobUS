@@ -1,5 +1,5 @@
 """
-File: ui.py
+File: hexaphobus_ui.py
 
 Contributor(s):
     Cabana,  Gabriel  | cabg2101
@@ -7,6 +7,7 @@ Contributor(s):
 
 Date(s):
     2020-01-29 (Creation)
+    2020-02-05 (Last modification)
 
 Description:
     User interface designed for intuitive control and monitoring of the
