@@ -209,4 +209,4 @@ The IDE configuration procedure is now complete. You can close the window.
 [//]: # (------------------------------------------------)
 
 ##
-That's it! You should have integrated Git into your favorite IDE now, and allowed a KMS to sign your commits. If any issue persists, you can find help online on Stack Overflow, the GitHub forums, and more.
+That's it! You should have integrated Git and Arduino into your favorite IDE now, and allowed a KMS to sign your commits. If any issue persists, you can find help online on Stack Overflow, the GitHub forums, and more.
