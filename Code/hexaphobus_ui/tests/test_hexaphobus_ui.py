@@ -44,12 +44,12 @@ class TestHexaphobusUI(unittest.TestCase):
                         "Does not start with a vowel: 'Aim'")
         self.assertFalse(wordstats.starts_w_vowel("False"),
                          "Starts with a vowel: 'False'")
-    
+
     def test_ends_w_cons(self):
         self.assertTrue(wordstats.ends_w_cons("Class"),
                         "Doesn't end with a consonna: 'Class'")
         self.assertFalse(wordstats.ends_w_cons("True"),
-                        "Ends with a consonna: 'True'")
+                         "Ends with a consonna: 'True'")
 
     def test_vowel_filter(self):
         words = sentence.split()

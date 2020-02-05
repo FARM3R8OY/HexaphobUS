@@ -48,6 +48,10 @@ UI_MIN_W = 480
 UI_MIN_H = 360
 
 WINDOW_NAME = "HexaphobUS UI"
+BUTTON_UP = "\u2191"
+BUTTON_DOWN = "\u2193"
+BUTTON_LEFT = "\u2190"
+BUTTON_RIGHT = "\u2192"
 BUTTON_STOP = "STOP"
 BUTTON_INIT = "POS INIT"
 BUTTON_PRG1 = "PRG1"
@@ -166,10 +170,10 @@ class MainWindow(QWidget):
         self.move_layout = QGridLayout()
 
         # Buttons
-        self.button_up = QPushButton("\u2191")
-        self.button_down = QPushButton("\u2193")
-        self.button_left = QPushButton("\u2190")
-        self.button_right = QPushButton("\u2192")
+        self.button_up = QPushButton(BUTTON_UP)
+        self.button_down = QPushButton(BUTTON_DOWN)
+        self.button_left = QPushButton(BUTTON_LEFT)
+        self.button_right = QPushButton(BUTTON_RIGHT)
 
         self.button_stop = QPushButton(BUTTON_STOP)
         self.button_init = QPushButton(BUTTON_INIT)
@@ -322,7 +326,6 @@ class MainWindow(QWidget):
 
 if __name__ == '__main__':
     # Create a Qt application and window to display.
-
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + SEP + LOGO))
     window = MainWindow()
