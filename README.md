@@ -10,6 +10,7 @@
 <div id="badges" align="center">
     
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/FARM3R8OY/HexaphobUS/blob/master/LICENSE)
+[![build status](https://travis-ci.com/FARM3R8OY/HexaphobUS.svg?branch=master)](https://travis-ci.com/FARM3R8OY/HexaphobUS) 
 
 </div>
 
