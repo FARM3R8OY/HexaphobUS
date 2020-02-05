@@ -104,7 +104,7 @@ class RobotTracking(QWidget):
 
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
-        
+
         if direction == "UP" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
         elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
@@ -209,6 +209,12 @@ class MainWindow(QWidget):
         self.onlyFloat = QDoubleValidator()
 
         self.initUI()
+
+    def getServoEdits(self):
+        return self._servo_edits
+
+    def getServoLabels(self):
+        return self._servo_labels
 
     def initUI(self):
         # Initialize the Qt user interface.
