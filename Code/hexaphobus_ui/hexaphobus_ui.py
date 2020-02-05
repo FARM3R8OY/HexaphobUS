@@ -22,10 +22,10 @@ import os
 import sys
 
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor, QIcon, QPainter, QPalette, QKeySequence
+from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence)
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget, 
-                             QShortcut, QFrame)
+                             QShortcut, QFrame, QSizePolicy)
 
 # --------------------------------------------
 
@@ -66,13 +66,14 @@ class RobotTracking(QWidget):
 
     def __init__(self):
         super().__init__()
-        # self.setStyleSheet("margin:5px; border:1px solid rgb(0, 0, 0); ")
+        self.setStyleSheet("border:1px solid rgb(255, 255, 255)")
         self._distance_origin = 0
         self._robot_x_pos = 200
         self._robot_y_pos = 200
         self._target_x_pos = 250
         self._target_y_pos = 250
         self._vel = 60  # pixels per second
+        self._speed = 10
 
         #self.setMouseTracking(True)
         self.timer = QTimer(self)
@@ -86,18 +87,21 @@ class RobotTracking(QWidget):
         self.setMinimumSize(UI_MIN_W, UI_MIN_H)
         self.label = QLabel(self)
         self.label.resize(TRACK_W, TRACK_H)
+        self.label.setStyleSheet("color : rgb(255,255,255)")
         self.show()
 
     def changePosition(self,direction):
+        UI_Graph_W = self.geometry().width()
+        UI_Graph_H = self.geometry().height()
         # Update the target positions.
         if direction == "UP" and self._robot_y_pos > 0:
-            self._robot_y_pos -= 10
-        elif direction == "DOWN" and self._robot_y_pos < UI_MIN_H:
-            self._robot_y_pos += 10
-        elif direction == "RIGHT" and self._robot_x_pos < UI_MIN_W:
-            self._robot_x_pos += 10
+            self._robot_y_pos -= self._speed
+        elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
+            self._robot_y_pos += self._speed
+        elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
+            self._robot_x_pos += self._speed
         elif direction == "LEFT" and self._robot_x_pos > 0:
-            self._robot_x_pos -= 10
+            self._robot_x_pos -= self._speed
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()       
 
@@ -130,6 +134,7 @@ class RobotTracking(QWidget):
 
         q = QPainter()
         q.begin(self)
+        q.setPen(QColor(255,255,255))
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
@@ -187,6 +192,9 @@ class MainWindow(QWidget):
         self.speed_label = QLabel()
         self.energy_label = QLabel()
 
+        self.GraphFrame = QFrame()
+        self.GraphFrame.setFrameShape(QFrame.Box)
+
         self.initUI()
 
     def initUI(self):
@@ -196,8 +204,7 @@ class MainWindow(QWidget):
         self.setWindowTitle(WINDOW_NAME)
 
         self.tracking = RobotTracking()
-        # self.GraphFrame = QFrame()
-        # self.GraphFrame.setFrameStyle(QFrame.Box)
+        self.tracking.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.addServos()
         self.setSizeButtons()
@@ -259,7 +266,7 @@ class MainWindow(QWidget):
 
         self.top_layout.addLayout(self.servo_layout_1)
         self.top_layout.addLayout(self.servo_layout_2)
-        self.top_layout.addLayout(self.tracking_layout)
+        self.top_layout.addWidget(self.GraphFrame)
         self.top_layout.addLayout(self.servo_layout_3)
         self.top_layout.addLayout(self.servo_layout_4)
 
@@ -303,6 +310,7 @@ class MainWindow(QWidget):
                 self.servo_layout_4.addStretch(1)
 
         self.tracking_layout.addWidget(self.tracking)
+        self.GraphFrame.setLayout(self.tracking_layout)
 
         self.info_layout.addWidget(self.speed_label)
         self.info_layout.addWidget(self.speed_edit)
