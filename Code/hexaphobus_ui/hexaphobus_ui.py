@@ -22,7 +22,8 @@ import os
 import sys
 
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence)
+from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence, 
+                        QDoubleValidator)
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget, 
                              QShortcut, QFrame, QSizePolicy)
@@ -195,6 +196,8 @@ class MainWindow(QWidget):
         self.GraphFrame = QFrame()
         self.GraphFrame.setFrameShape(QFrame.Box)
 
+        self.onlyFloat = QDoubleValidator()
+
         self.initUI()
 
     def initUI(self):
@@ -213,7 +216,10 @@ class MainWindow(QWidget):
         self.setLayoutDependencies()
         self.addWidgets()
         self.setLayout(self.global_layout)
+        self.setServo()
         self.show()
+
+        
 
     def addServos(self):
         # Add servomotor edits and labels used to monitor their state.
@@ -221,7 +227,10 @@ class MainWindow(QWidget):
         for index in range(SV_NBR):
             self._servo_edits.append(QLineEdit())
             self._servo_edits[index].setFixedSize(SV_W, SV_H)
-
+            self._servo_edits[index].setReadOnly(True)
+            self._servo_edits[index].setStyleSheet("color : rgb(0,0,0)")
+            self._servo_edits[index].setValidator(self.onlyFloat)
+            
             self._servo_labels.append(QLabel())
             self._servo_labels[index].setAlignment(Qt.AlignCenter)
             self._servo_labels[index].setText("Servo{:02d}".format(index + 1))
@@ -253,9 +262,14 @@ class MainWindow(QWidget):
         #Set information size and text display.
 
         self.speed_edit.setFixedSize(INFO_W, INFO_H)
+        self.speed_edit.setReadOnly(True)
         self.energy_edit.setFixedSize(INFO_W, INFO_H)
+        self.energy_edit.setReadOnly(True)
         self.speed_label.setText("Vitesse :")
         self.energy_label.setText("Énergie :")
+
+    def setServo(self):
+        self._servo_edits[0].setText("1.11")
 
     def setLayoutDependencies(self):
         # Add inner layouts to outer layouts (creates a parent-child
