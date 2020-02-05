@@ -304,6 +304,8 @@ class MainWindow(QWidget):
         self.move_layout.addWidget(self.button_left, 1, 0)
         self.move_layout.addWidget(self.button_right, 1, 2)
 
+# --------------------------------------------
+
 
 if __name__ == '__main__':
     # Create a Qt application and window to display.
