@@ -22,9 +22,10 @@ import os
 import sys
 
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor, QIcon, QPainter, QPalette
+from PyQt5.QtGui import QColor, QIcon, QPainter, QPalette, QKeySequence
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
-                             QLineEdit, QPushButton, QVBoxLayout, QWidget)
+                             QLineEdit, QPushButton, QVBoxLayout, QWidget, 
+                             QShortcut, QFrame)
 
 # --------------------------------------------
 
@@ -65,7 +66,7 @@ class RobotTracking(QWidget):
 
     def __init__(self):
         super().__init__()
-
+        # self.setStyleSheet("margin:5px; border:1px solid rgb(0, 0, 0); ")
         self._distance_origin = 0
         self._robot_x_pos = 200
         self._robot_y_pos = 200
@@ -89,13 +90,13 @@ class RobotTracking(QWidget):
 
     def changePosition(self,direction):
         # Update the target positions.
-        if direction == "UP":
+        if direction == "UP" and self._robot_y_pos > 0:
             self._robot_y_pos -= 10
-        elif direction == "DOWN":
+        elif direction == "DOWN" and self._robot_y_pos < UI_MIN_H:
             self._robot_y_pos += 10
-        elif direction == "RIGHT":
+        elif direction == "RIGHT" and self._robot_x_pos < UI_MIN_W:
             self._robot_x_pos += 10
-        elif direction == "LEFT":
+        elif direction == "LEFT" and self._robot_x_pos > 0:
             self._robot_x_pos -= 10
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()       
@@ -174,6 +175,12 @@ class MainWindow(QWidget):
         self.button_init = QPushButton(BUTTON_INIT)
         self.button_prog = QPushButton(BUTTON_PRG1)
 
+        #Shortcut
+        self.shortcut_up = QShortcut(QKeySequence("alt+up"), self)
+        self.shortcut_down = QShortcut(QKeySequence("alt+down"), self)
+        self.shortcut_left = QShortcut(QKeySequence("alt+left"), self)
+        self.shortcut_right = QShortcut(QKeySequence("alt+right"), self)
+
         # Edits and labels
         self.speed_edit = QLineEdit()
         self.energy_edit = QLineEdit()
@@ -189,6 +196,8 @@ class MainWindow(QWidget):
         self.setWindowTitle(WINDOW_NAME)
 
         self.tracking = RobotTracking()
+        # self.GraphFrame = QFrame()
+        # self.GraphFrame.setFrameStyle(QFrame.Box)
 
         self.addServos()
         self.setSizeButtons()
@@ -225,9 +234,13 @@ class MainWindow(QWidget):
     def setConnexions(self):
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(lambda:self.tracking.changePosition("UP"))
+        self.shortcut_up.activated.connect(lambda:self.tracking.changePosition("UP"))
         self.button_down.clicked.connect(lambda:self.tracking.changePosition("DOWN"))
+        self.shortcut_down.activated.connect(lambda:self.tracking.changePosition("DOWN"))
         self.button_right.clicked.connect(lambda:self.tracking.changePosition("RIGHT"))
+        self.shortcut_right.activated.connect(lambda:self.tracking.changePosition("RIGHT"))
         self.button_left.clicked.connect(lambda:self.tracking.changePosition("LEFT"))
+        self.shortcut_left.activated.connect(lambda:self.tracking.changePosition("LEFT"))
 
     def setInfo(self):
         #Set information size and text display.
