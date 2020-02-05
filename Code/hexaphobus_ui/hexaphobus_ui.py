@@ -22,12 +22,16 @@ import os
 import sys
 
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor, QIcon, QPainter, QPalette, QKeySequence
+from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence, 
+                        QDoubleValidator)
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget, 
-                             QShortcut, QFrame)
+                             QShortcut, QFrame, QSizePolicy)
 
 # --------------------------------------------
+
+Tests_angles = ["1.12","12.3","-113.0","133.1","24.3","24.4",
+                "234.5","467.3","353.3","244.2","2442","244.5"]
 
 ARROW_W = 60
 ARROW_H = 30
@@ -70,13 +74,14 @@ class RobotTracking(QWidget):
 
     def __init__(self):
         super().__init__()
-        # self.setStyleSheet("margin:5px; border:1px solid rgb(0, 0, 0); ")
+        self.setStyleSheet("border:1px solid rgb(255, 255, 255)")
         self._distance_origin = 0
         self._robot_x_pos = 200
         self._robot_y_pos = 200
         self._target_x_pos = 250
         self._target_y_pos = 250
         self._vel = 60  # pixels per second
+        self._speed = 10
 
         #self.setMouseTracking(True)
         self.timer = QTimer(self)
@@ -90,18 +95,21 @@ class RobotTracking(QWidget):
         self.setMinimumSize(UI_MIN_W, UI_MIN_H)
         self.label = QLabel(self)
         self.label.resize(TRACK_W, TRACK_H)
+        self.label.setStyleSheet("color : rgb(255,255,255)")
         self.show()
 
     def changePosition(self,direction):
+        UI_Graph_W = self.geometry().width()
+        UI_Graph_H = self.geometry().height()
         # Update the target positions.
         if direction == "UP" and self._robot_y_pos > 0:
-            self._robot_y_pos -= 10
-        elif direction == "DOWN" and self._robot_y_pos < UI_MIN_H:
-            self._robot_y_pos += 10
-        elif direction == "RIGHT" and self._robot_x_pos < UI_MIN_W:
-            self._robot_x_pos += 10
+            self._robot_y_pos -= self._speed
+        elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
+            self._robot_y_pos += self._speed
+        elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
+            self._robot_x_pos += self._speed
         elif direction == "LEFT" and self._robot_x_pos > 0:
-            self._robot_x_pos -= 10
+            self._robot_x_pos -= self._speed
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()       
 
@@ -134,6 +142,7 @@ class RobotTracking(QWidget):
 
         q = QPainter()
         q.begin(self)
+        q.setPen(QColor(255,255,255))
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
@@ -191,6 +200,11 @@ class MainWindow(QWidget):
         self.speed_label = QLabel()
         self.energy_label = QLabel()
 
+        self.GraphFrame = QFrame()
+        self.GraphFrame.setFrameShape(QFrame.Box)
+
+        self.onlyFloat = QDoubleValidator()
+
         self.initUI()
 
     def initUI(self):
@@ -200,8 +214,7 @@ class MainWindow(QWidget):
         self.setWindowTitle(WINDOW_NAME)
 
         self.tracking = RobotTracking()
-        # self.GraphFrame = QFrame()
-        # self.GraphFrame.setFrameStyle(QFrame.Box)
+        self.tracking.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.addServos()
         self.setSizeButtons()
@@ -210,7 +223,11 @@ class MainWindow(QWidget):
         self.setLayoutDependencies()
         self.addWidgets()
         self.setLayout(self.global_layout)
+        self.setServoValues(Tests_angles)
+        self.setInfoValues("100", "200")
         self.show()
+
+        
 
     def addServos(self):
         # Add servomotor edits and labels used to monitor their state.
@@ -218,7 +235,10 @@ class MainWindow(QWidget):
         for index in range(SV_NBR):
             self._servo_edits.append(QLineEdit())
             self._servo_edits[index].setFixedSize(SV_W, SV_H)
-
+            self._servo_edits[index].setReadOnly(True)
+            self._servo_edits[index].setStyleSheet("color : rgb(0,0,0)")
+            self._servo_edits[index].setValidator(self.onlyFloat)
+            
             self._servo_labels.append(QLabel())
             self._servo_labels[index].setAlignment(Qt.AlignCenter)
             self._servo_labels[index].setText("Servo{:02d}".format(index + 1))
@@ -236,6 +256,7 @@ class MainWindow(QWidget):
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
     def setConnexions(self):
+        #Connect the buttons and the shortcut to the function corresponding
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(lambda:self.tracking.changePosition("UP"))
         self.shortcut_up.activated.connect(lambda:self.tracking.changePosition("UP"))
@@ -250,9 +271,22 @@ class MainWindow(QWidget):
         #Set information size and text display.
 
         self.speed_edit.setFixedSize(INFO_W, INFO_H)
+        self.speed_edit.setStyleSheet("color : rgb(0,0,0)")
+        self.speed_edit.setReadOnly(True)
         self.energy_edit.setFixedSize(INFO_W, INFO_H)
+        self.energy_edit.setStyleSheet("color : rgb(0,0,0)")
+        self.energy_edit.setReadOnly(True)
         self.speed_label.setText("Vitesse :")
         self.energy_label.setText("Énergie :")
+
+    def setServoValues(self, angles_list):
+        #Set the text to the servo windows
+        for (angle, servo) in zip(angles_list,self._servo_edits):
+            servo.setText(angle)
+
+    def setInfoValues(self, Speed, Energy):
+        self.speed_edit.setText(Speed)
+        self.energy_edit.setText(Energy)
 
     def setLayoutDependencies(self):
         # Add inner layouts to outer layouts (creates a parent-child
@@ -263,7 +297,7 @@ class MainWindow(QWidget):
 
         self.top_layout.addLayout(self.servo_layout_1)
         self.top_layout.addLayout(self.servo_layout_2)
-        self.top_layout.addLayout(self.tracking_layout)
+        self.top_layout.addWidget(self.GraphFrame)
         self.top_layout.addLayout(self.servo_layout_3)
         self.top_layout.addLayout(self.servo_layout_4)
 
@@ -307,6 +341,7 @@ class MainWindow(QWidget):
                 self.servo_layout_4.addStretch(1)
 
         self.tracking_layout.addWidget(self.tracking)
+        self.GraphFrame.setLayout(self.tracking_layout)
 
         self.info_layout.addWidget(self.speed_label)
         self.info_layout.addWidget(self.speed_edit)
