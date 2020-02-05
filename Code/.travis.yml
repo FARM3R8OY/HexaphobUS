@@ -1,18 +1,3 @@
-#########################
-### TBC               ###
-#########################
-
 language: python
-python: "3.8.1"
-
-before_install:
-  - python --version
-  - pip install -U pip
-  - pip install -U pytest
-  - pip install codecov
-
 script:
-  - pytest # run tests
-
-after_success:
-  - codecov # submit coverage
+    pytest

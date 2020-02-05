@@ -1,7 +1,27 @@
+/*
+File: hexaphobus_pwm.ino
+
+Contributor(s):
+    Guay-Tanguay, Carolane | guac3201
+    Roy,          Olivier  | royo2206
+
+Date(s):
+    2020-01-29 (Creation)
+    2020-02-05 (Last modification)
+
+Description:
+    User interface designed for intuitive control and monitoring of the
+    HexaphobUS robot.
+
+S4-H20 | GRO400
+*/
+
+/********************************************/
+
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h> 
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+/********************************************/
 
 #define MIN_PULSE_WIDTH       650
 #define MAX_PULSE_WIDTH       2650
@@ -16,6 +36,10 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
   
 // our servo # counter
 uint8_t servonum = 0;
+
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+
+/********************************************/
 
 void setup() {
     Serial.begin(9600);
