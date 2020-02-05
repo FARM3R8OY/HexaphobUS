@@ -8,6 +8,8 @@
 	- [Export keys](#kmExp)
 - [Git Configuration](#GitConfig)
 - [IDE Configuration](#IDEConfig)
+	- [Git on VSCode/VSCodium](#IDEGitConfig)
+	- [Arduino on VSCode/VSCodium](#IDEArduinoConfig)
 
 [//]: # (------------------------------------------------)
 
@@ -123,14 +125,18 @@ The Git configuration procedure is now complete. You can close the window.
 
 ## <a id="IDEConfig"></a>IDE Configuration
 
+#### <a id="IDEGitConfig"></a>Git on VSCode/VSCodium
+
 To configure Git in VSCode/VSCodium, open one IDE and follow these steps:
 - Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>): Make sure that the "Git Extension Pack" extension is installed (and any other Git extension you find useful);
 - File &#8594; Preferences &#8594; Settings (<kbd>Ctrl</kbd>+<kbd>,</kbd>) &#8594; Extensions &#8594; Git &#8594; Enable Commit Signing;
 	- Alternatively, Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add: ```"git.enableCommitSigning": true```. You can also add the command to the workspace JSON settings, it will override the user defaults.
-	
+
+#### <a id="IDEArduinoConfig"></a>Arduino on VSCode/VSCodium	
+
 To configure Arduino in VSCode/VSCodium, follow these steps:
 - Make sure that you install the [Arduino IDE](#insIDE): the Arduino extension on VSCode/VSCodium will need its executables;
-- Find your Arduino path file ("<drive:\<programs>\Arduino", for instance) and add the [Sunfounder PWM Servo Driver library](../README.md#PWM) to the Arduino libraries ("<drive>:\<programs>\Arduino\libraries" with folder name "Adafruit_PWMServoDriver", for instance);
+- Find your Arduino path file ("<drive:\<programs>\Arduino", for instance) and add the [Sunfounder PWM Servo Driver library](../README.md#PWM) to the Arduino libraries ("<drive>:\<programs>\Arduino\libraries" with folder name "Adafruit_PWMServoDriver", for instance). This step is specific to our project;
 - Open VSCode or VSCodium;
 	- Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>): Make sure that the "Arduino" extension is installed (and any other Arduino/C/C++ extension you find useful);
 	- Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add the following parameters (according to the [VSCode Arduino extension's GitHub page](https://github.com/microsoft/vscode-arduino)): 
