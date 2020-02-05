@@ -13,7 +13,7 @@
 
 [//]: # (------------------------------------------------)
 
-This setup procedure is provided for people who wish to know the details about key management for signed commits and integration with Git and an IDE of their choice. Personally, we chose VSCodium for Windows 10 and Debian 9 (Raspberry Pi 3+) as our IDE, and GnuPG as our key management system.
+This setup procedure is provided for people who wish to know the details about key management for signed commits and integration with Git and an IDE of their choice. Personally, we chose VSCodium for Windows 10 and Debian 9 (Raspberry Pi 3+) as our IDE, with the Arduino IDE as a dependency, and GnuPG as our key management system.
 
 Notes:
 - Git integration might be easier with GitHub Desktop or GitKraken. To be explored.
