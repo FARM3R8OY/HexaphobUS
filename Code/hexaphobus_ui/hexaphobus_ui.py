@@ -30,6 +30,9 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
 
 # --------------------------------------------
 
+Tests_angles = ["1.12","12.3","-113.0","133.1","24.3","24.4",
+                "234.5","467.3","353.3","244.2","2442","244.5"]
+
 ARROW_W = 60
 ARROW_H = 30
 BUTTON_W = 120
@@ -216,7 +219,8 @@ class MainWindow(QWidget):
         self.setLayoutDependencies()
         self.addWidgets()
         self.setLayout(self.global_layout)
-        self.setServo()
+        self.setServoValues(Tests_angles)
+        self.setInfoValues("100", "200")
         self.show()
 
         
@@ -248,6 +252,7 @@ class MainWindow(QWidget):
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
     def setConnexions(self):
+        #Connect the buttons and the shortcut to the function corresponding
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(lambda:self.tracking.changePosition("UP"))
         self.shortcut_up.activated.connect(lambda:self.tracking.changePosition("UP"))
@@ -262,14 +267,22 @@ class MainWindow(QWidget):
         #Set information size and text display.
 
         self.speed_edit.setFixedSize(INFO_W, INFO_H)
+        self.speed_edit.setStyleSheet("color : rgb(0,0,0)")
         self.speed_edit.setReadOnly(True)
         self.energy_edit.setFixedSize(INFO_W, INFO_H)
+        self.energy_edit.setStyleSheet("color : rgb(0,0,0)")
         self.energy_edit.setReadOnly(True)
         self.speed_label.setText("Vitesse :")
         self.energy_label.setText("Énergie :")
 
-    def setServo(self):
-        self._servo_edits[0].setText("1.11")
+    def setServoValues(self, angles_list):
+        #Set the text to the servo windows
+        for (angle, servo) in zip(angles_list,self._servo_edits):
+            servo.setText(angle)
+
+    def setInfoValues(self, Speed, Energy):
+        self.speed_edit.setText(Speed)
+        self.energy_edit.setText(Energy)
 
     def setLayoutDependencies(self):
         # Add inner layouts to outer layouts (creates a parent-child
