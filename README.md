@@ -25,6 +25,7 @@
     - [On-Board Computer](#Computer)
     - [PWM Servo Driver](#PWM)
     - [Servomotor](#Servo)
+    - [Voltage Regulator](#Regulator)
     
 [//]: # (------------------------------------------------)
 
@@ -61,3 +62,9 @@ Under this section, you will find external links and descriptions of the project
 - Model: HS-422
 - ASIN: B0006O3WWI
 - Information / Resources: [Hitec Webpage](https://hitecrcd.com/products/servos/sport-servos/analog-sport-servos/hs-422/product)
+
+#### <a id="Regulator"></a>Voltage Regulator
+- Brand Name: DROK
+- Model: 090483
+- ASIN: B00C4QVTNU
+- Information / Resources: [DROK Webpage](https://www.droking.com/Adjustable-High-Power-Adapter-Buck-Voltage-Regulator-DC8-40V-to-1.25-36V-8A-100W-Converter-Laptop-Charger)
