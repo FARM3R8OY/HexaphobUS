@@ -130,7 +130,7 @@ The Git configuration procedure is now complete. You can close the window.
 To configure Git in VSCode/VSCodium, open one IDE and follow these steps:
 - Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>): Make sure that the "Git Extension Pack" extension is installed (and any other Git extension you find useful);
 - File &#8594; Preferences &#8594; Settings (<kbd>Ctrl</kbd>+<kbd>,</kbd>) &#8594; Extensions &#8594; Git &#8594; Enable Commit Signing;
-	- Alternatively, Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add: ```"git.enableCommitSigning": true```. You can also add the command to the workspace JSON settings, it will override the user defaults.
+	- Alternatively, Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add: ```"git.enableCommitSigning": true```. You can also add the command to the workspace JSON settings, it will override the user defaults. If you set it in the workspace, make sure every collaborator has setup their KMS, else the command will prevent them from committing to the repository.
 
 #### <a id="IDEArduinoConfig"></a>Arduino on VSCode/VSCodium	
 
