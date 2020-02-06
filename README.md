@@ -9,8 +9,9 @@
 
 <div id="badges" align="center">
     
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/FARM3R8OY/HexaphobUS/blob/master/LICENSE)
-[![build status](https://travis-ci.com/FARM3R8OY/HexaphobUS.svg?branch=master)](https://travis-ci.com/FARM3R8OY/HexaphobUS) 
+[![build status](https://img.shields.io/travis/FARM3R8OY/HexaphobUS/code?logo=Travis&style=flat)](https://travis-ci.com/FARM3R8OY/HexaphobUS)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat)](https://github.com/FARM3R8OY/HexaphobUS/blob/master/LICENSE) 
 
 </div>
 
@@ -19,18 +20,50 @@
 **This is an academic project from robotic engineering undergraduates at Université de Sherbrooke. We are building a 6-axis robot from scratch with motion control, sequencing, and an intuitive user interface.**
 
 ## Table of Contents
+- [Setup](#Setup)
+    - [Setup for Users](#SetupUsers)
+    - [Setup for Repository Contributors](#SetupContrib)
+- [Robot Operation](#Operation)
 - [External Resources](#Resources)
+    - [Battery, Power Source, and Charger](#Battery)
     - [Crimping Tool Kit](#Crimp)
     - [Microcontroller Board](#Controller)
     - [On-Board Computer](#Computer)
     - [PWM Servo Driver](#PWM)
     - [Servomotor](#Servo)
+    - [Voltage Regulator](#Regulator)
     
 [//]: # (------------------------------------------------)
+
+## <a id="Setup"></a>Setup
+
+#### <a id="SetupUsers"></a>Setup for Users
+
+#### <a id="SetupContrib"></a>Setup for Repository Contributors
+
+To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](https://github.com/FARM3R8OY/HexaphobUS/blob/master/Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
+
+To add new functions, refine the code, redesign the 3D model, and more, fork your own copy of the repository and make a pull request after modifications.
+
+## <a id="Operation"></a>Robot Operation
 
 ## <a id="Resources"></a>External Resources
 
 Under this section, you will find external links and descriptions of the project's external resources.
+
+#### <a id="Battery"></a>Battery, Power Source, and Charger
+- Brand Name: Makita
+- Model:
+    - Battery: BL1041B
+    - Power Source: PE00000028
+    - Charger: DC10SB
+- ASIN:
+    - Battery: B017GQJDVM
+    - Charger: B01FY4XCB0
+- Information / Resources:
+    - [Makita Battery Webpage](https://www.makitatools.com/products/details/BL1041B)
+    - [Makita Power Source Webpage](https://www.makitatools.com/products/details/PE00000028)
+    - [Makita Charger Webpage](https://www.makitatools.com/products/details/DC10SB)
 
 #### <a id="Crimp"></a>Crimping Tool Kit
 - Brand Name: Preciva Dupont
@@ -61,3 +94,9 @@ Under this section, you will find external links and descriptions of the project
 - Model: HS-422
 - ASIN: B0006O3WWI
 - Information / Resources: [Hitec Webpage](https://hitecrcd.com/products/servos/sport-servos/analog-sport-servos/hs-422/product)
+
+#### <a id="Regulator"></a>Voltage Regulator
+- Brand Name: DROK
+- Model: 090483
+- ASIN: B00C4QVTNU
+- Information / Resources: [DROK Webpage](https://www.droking.com/Adjustable-High-Power-Adapter-Buck-Voltage-Regulator-DC8-40V-to-1.25-36V-8A-100W-Converter-Laptop-Charger)
