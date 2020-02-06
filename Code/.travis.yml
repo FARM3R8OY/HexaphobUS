@@ -1,2 +1,47 @@
-language: python
-script: pytest
+matrix:
+  include:
+    - language: python
+      python: "3.8.1"
+      before_install:
+        - python --version
+        - pip install -U pip
+        - pip install -U pytest
+        - pip install -U --force-reinstall pyqt5
+        - pip install codecov
+      script:
+        - pytest
+      after_success:
+        - codecov
+    
+    - language: c
+      sudo: false
+      cache:
+        directories:
+          - ~/arduino_ide
+          - ~/.arduino15/packages/
+      env:
+        global:
+          # You can uncomment this to explicitly choose an (old) version of the Arduino IDE
+          #- ARDUINO_IDE_VERSION="1.8.10"
+      before_install:
+        - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+      install:
+        # Note that every library should be installed in a seperate command
+        - arduino --install-library "Adafruit SleepyDog Library"
+        - arduino --install-library "Adafruit FONA Library"
+      script:
+        - build_main_platforms
+
+os: linux
+  sudo: required
+  env: BUILDARCH=x64
+  dist: bionic
+
+git:
+  depth: false
+  quiet: true
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
