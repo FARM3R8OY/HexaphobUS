@@ -20,7 +20,7 @@ from .. import hexaphobus_ui
 
 # --------------------------------------------
 
-TEST_SERVO_ANGLES = [x for x in range(1, 13)]
+TEST_SERVO_ANGLES = [str(x) for x in range(1, 13)]
 
 # --------------------------------------------
 
