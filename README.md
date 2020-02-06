@@ -9,8 +9,9 @@
 
 <div id="badges" align="center">
     
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/FARM3R8OY/HexaphobUS/blob/master/LICENSE)
-[![build status](https://travis-ci.com/FARM3R8OY/HexaphobUS.svg?branch=master)](https://travis-ci.com/FARM3R8OY/HexaphobUS) 
+[![build status](https://img.shields.io/travis/FARM3R8OY/HexaphobUS/code?style=flat)](https://travis-ci.com/FARM3R8OY/HexaphobUS)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat)](https://github.com/FARM3R8OY/HexaphobUS/blob/master/LICENSE)
 
 </div>
 
