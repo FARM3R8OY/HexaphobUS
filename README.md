@@ -25,6 +25,7 @@
     - [Setup for Repository Contributors](#SetupContrib)
 - [Robot Operation](#Operation)
 - [External Resources](#Resources)
+    - [Battery, Power Source, and Charger](#Battery)
     - [Crimping Tool Kit](#Crimp)
     - [Microcontroller Board](#Controller)
     - [On-Board Computer](#Computer)
@@ -49,6 +50,20 @@ To add new functions, refine the code, redesign the 3D model, and more, fork you
 ## <a id="Resources"></a>External Resources
 
 Under this section, you will find external links and descriptions of the project's external resources.
+
+#### <a id="Battery"></a>Battery, Power Source, and Charger
+- Brand Name: Makita
+- Model:
+    - Battery: BL1041B
+    - Power Source: PE00000028
+    - Charger: DC10SB
+- ASIN:
+    - Battery: B017GQJDVM
+    - Charger: B01FY4XCB0
+- Information / Resources:
+    - [Makita Battery Webpage](https://www.makitatools.com/products/details/BL1041B)
+    - [Makita Power Source Webpage](https://www.makitatools.com/products/details/PE00000028)
+    - [Makita Charger Webpage](https://www.makitatools.com/products/details/DC10SB)
 
 #### <a id="Crimp"></a>Crimping Tool Kit
 - Brand Name: Preciva Dupont
