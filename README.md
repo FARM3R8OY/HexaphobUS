@@ -19,6 +19,10 @@
 **This is an academic project from robotic engineering undergraduates at Université de Sherbrooke. We are building a 6-axis robot from scratch with motion control, sequencing, and an intuitive user interface.**
 
 ## Table of Contents
+- [Setup](#Setup)
+    - [Setup for Users](#SetupUsers)
+    - [Setup for Repository Contributors](#SetupContrib)
+- [Robot Operation](#Operation)
 - [External Resources](#Resources)
     - [Crimping Tool Kit](#Crimp)
     - [Microcontroller Board](#Controller)
@@ -28,6 +32,18 @@
     - [Voltage Regulator](#Regulator)
     
 [//]: # (------------------------------------------------)
+
+## <a id="Setup"></a>Setup
+
+#### <a id="SetupUsers"></a>Setup for Users
+
+#### <a id="SetupContrib"></a>Setup for Repository Contributors
+
+To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](https://github.com/FARM3R8OY/HexaphobUS/blob/master/Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
+
+To add new functions, refine the code, redesign the 3D model, and more, fork your own copy of the repository and make a pull request after modifications.
+
+## <a id="Operation"></a>Robot Operation
 
 ## <a id="Resources"></a>External Resources
 
