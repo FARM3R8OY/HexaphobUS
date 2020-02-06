@@ -22,18 +22,30 @@ import math
 import os
 import sys
 
+<<<<<<< HEAD
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator)
+=======
+from PyQt5.QtCore import Qt, QTimer, QPoint
+from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence, 
+                        QDoubleValidator, QImage, QPixmap)
+>>>>>>> 119f0d498cd248d7424a7308e077c1b2ac95488d
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget,
                              QShortcut, QFrame, QSizePolicy)
 
 # --------------------------------------------
 
+<<<<<<< HEAD
 Tests_angles = ["1.12", "12.3", "-113.0", "133.1", "24.3", "24.4",
                 "234.5", "467.3", "353.3", "244.2", "2442", "244.5"]
 
+=======
+Tests_angles = ["1.12","12.3","-113.0","133.1","24.3","24.4",
+                "234.5","467.3","353.3","244.2","2442","244.5"]
+Servos_Num = [7,9,11,1,3,5,2,4,6,8,10,12]
+>>>>>>> 119f0d498cd248d7424a7308e077c1b2ac95488d
 ARROW_W = 60
 ARROW_H = 30
 BUTTON_W = 120
@@ -60,7 +72,7 @@ BUTTON_RIGHT = "\u2192"
 BUTTON_STOP = "STOP"
 BUTTON_INIT = "POS INIT"
 BUTTON_PRG1 = "PRG1"
-SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..",".."))
 SEP = os.path.sep
 LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
@@ -75,7 +87,7 @@ class RobotTracking(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.setStyleSheet("border:1px solid rgb(255, 255, 255)")
+        self.setStyleSheet("border:1px solid rgb(0, 0, 0)")
         self._distance_origin = 0
         self._robot_x_pos = 200
         self._robot_y_pos = 200
@@ -96,7 +108,7 @@ class RobotTracking(QWidget):
         self.setMinimumSize(UI_MIN_W, UI_MIN_H)
         self.label = QLabel(self)
         self.label.resize(TRACK_W, TRACK_H)
-        self.label.setStyleSheet("color : rgb(255,255,255)")
+        self.label.setStyleSheet("color : rgb(0,0,0)")
         self.show()
 
     def changePosition(self, direction):
@@ -142,10 +154,17 @@ class RobotTracking(QWidget):
     def paintEvent(self, event):
         # Event that draws a line between the object position and its
         # origin.
+        robot = QPixmap(SCRIPT_DIR + SEP + LOGO)
+        Pix_robot = robot.scaledToHeight(40)
 
         q = QPainter()
         q.begin(self)
+<<<<<<< HEAD
         q.setPen(QColor(255, 255, 255))
+=======
+        q.setPen(QColor(0,0,0))
+        q.drawPixmap(QPoint(self._robot_x_pos-20,self._robot_y_pos-20),Pix_robot)
+>>>>>>> 119f0d498cd248d7424a7308e077c1b2ac95488d
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
@@ -205,6 +224,7 @@ class MainWindow(QWidget):
 
         self.GraphFrame = QFrame()
         self.GraphFrame.setFrameShape(QFrame.Box)
+        self.GraphFrame.setStyleSheet("background: rgb(180,180,180)")
 
         self.onlyFloat = QDoubleValidator()
 
@@ -249,7 +269,7 @@ class MainWindow(QWidget):
 
             self._servo_labels.append(QLabel())
             self._servo_labels[index].setAlignment(Qt.AlignCenter)
-            self._servo_labels[index].setText("Servo{:02d}".format(index + 1))
+            self._servo_labels[index].setText("Servo{:02d}".format(Servos_Num[index]))
 
     def setSizeButtons(self):
         # Fix button size according to type.
