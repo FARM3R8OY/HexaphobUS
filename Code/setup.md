@@ -7,6 +7,7 @@
 	- [Generate keys](#kmGen)
 	- [Export keys](#kmExp)
 - [Git Configuration](#GitConfig)
+	- [Stage, commit and push using Git](#DirectGit)
 - [IDE Configuration](#IDEConfig)
 	- [Git on VSCode/VSCodium](#IDEGitConfig)
 	- [Arduino on VSCode/VSCodium](#IDEArduinoConfig)
@@ -120,6 +121,26 @@ Open the Windows Command Prompt and run the following commands. If any issue is 
 	- ```git config --global commit.gpgsign true``` (automatically signs commits).
 	
 The Git configuration procedure is now complete. You can close the window.
+
+#### <a id="DirectGit"></a>Stage, commit, and push using Git
+
+To change the repository with files that aren't compatible with your IDE (CAD files, for instance), simply follow this procedure in a Git Bash window opened in your repository clone directory:
+
+```bash
+# Stage changes
+git add .
+
+# Check new and modified files for approval
+git status
+
+# Commit with message
+git commit -a -m <msg>
+
+# Push in the right branch
+git push origin <branch>
+```
+
+For more option or a deeper understanding of Git and its commands, refer to the [Git documentation](https://git-scm.com/docs).
 
 [//]: # (------------------------------------------------)
 
