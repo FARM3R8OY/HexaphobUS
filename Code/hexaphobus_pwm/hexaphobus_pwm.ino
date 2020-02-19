@@ -62,10 +62,11 @@ void setup() {
 
 void loop() {
 
-
- init_mouv();   
+  calibrationFunction();
+  delay(500000);
+ /*init_mouv();   
  delay(50000);
- /*int B_MovingForward=1;
+ int B_MovingForward=1;
  MovingForward(B_MovingForward,3);
  delay(1000);
  B_MovingForward=0;
@@ -111,6 +112,56 @@ void init_mouv()
   UpAndDown(1,4,5,POS_DOWN,POS_DOWN, POS_DOWN);
 }
 //-------------------------------------Movement sequencing function-------------------------------------------
+
+//Initial Calibration for all the motors
+//
+void calibrationFunction()
+{
+  //Indivitual test for angles UP AND DOWN
+  /*
+  UpAndDown(1,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(2000);
+  UpAndDown(1,0,0,POS_UP,POS_UP,POS_UP);
+  delay(2000);
+  UpAndDown(1,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(2000);
+
+  //TEST Up and down for all motors
+  /*
+  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(1000);
+  UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
+  delay(1000);
+  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
+
+  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(1000);
+  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
+  delay(1000);
+  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
+
+  //TEST Foward and backwards for angle FRONT, BACK and CENTER
+  /*
+  ForwardAndBackwards(1,0,0,POS_CENTER,POS_DOWN,POS_DOWN);
+  delay(2000);
+  ForwardAndBackwards(1,0,0,POS_FRONT,POS_UP,POS_UP);
+  delay(2000);
+  ForwardAndBackwards(1,0,0,POS_BACK,POS_DOWN,POS_DOWN);
+  delay(2000);
+  
+  //TEST Foward and backwards for all motors
+  /*
+  ForwardAndBackwards(1,4,6,POS_CENTER,POS_CENTER,POS_CENTER);
+  delay(2000);
+  ForwardAndBackwards(2,3,6,POS_FRONT,POS_FRONT,POS_FRONT);
+  delay(2000);
+  ForwardAndBackwards(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER);
+  delay(2000);
+  ForwardAndBackwards(1,4,6,POS_BACK,POS_BACK,POS_BACK);
+  delay(2000);
+  */
+}
+
 //Function allowing the robot to move forward as long as the button is pressed
 //Connect the button UP of the HMI
 void MovingForward(int B_MovingForward,int nb_sequence)
@@ -233,20 +284,23 @@ void UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
 
      for (int i=0; i<3; i++)
      {
-       if (pos[i]==0)
-       { angle[i]=DOWN;}
-       else
-       { angle[i]=UP;}
+      if(Legs[i]>0 && Legs[i]<7) 
+      {
+        if (pos[i]==0)
+        { angle[i]=DOWN;}
+        else
+        { angle[i]=UP;}
 
-       if (Legs[i]%2 == 0)
-       {
-          pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
-       }
-       
-       else
-       {
-          pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
-       }
+        if (Legs[i]%2 == 0)
+        {
+            pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
+        }
+        
+        else
+        {
+            pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
+        }
+      }
      }
      delay(300);
 }
@@ -262,22 +316,25 @@ void ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3
    int angle[3]={0,0,0};
    for (int i=0; i<3; i++)
    {
-    if (pos[i]==0)
-      {angle[i]=BACK;}
-    else if (pos[i]==1)
-      {angle[i]=FRONT;}
-    else
-      {angle[i]=CENTER;}
-   
-     if (Legs[i]%2 == 0)
-     {
-        pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
-     }
-     
-     else
-     {
-        pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
-     }
+    if(Legs[i]>0 && Legs[i]<7) 
+    {
+      if (pos[i]==0)
+        {angle[i]=BACK;}
+      else if (pos[i]==1)
+        {angle[i]=FRONT;}
+      else
+        {angle[i]=CENTER;}
+    
+      if (Legs[i]%2 == 0)
+      {
+          pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
+      }
+      
+      else
+      {
+          pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
+      }
+    }
    }
    delay(300);
 } 
