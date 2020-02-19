@@ -3,11 +3,12 @@ File: hexaphobus_pwm.ino
 
 Contributor(s):
     Guay-Tanguay, Carolane | guac3201
+    Lalonde,      Philippe | lalp2803
     Roy,          Olivier  | royo2206
 
 Date(s):
     2020-01-29 (Creation)
-    2020-02-05 (Last modification)
+    2020-02-19 (Last modification)
 
 Description:
     User interface designed for intuitive control and monitoring of the
@@ -28,17 +29,17 @@ S4-H20 | GRO400
 #define DEFAULT_PULSE_WIDTH   1500
 #define FREQUENCY             50
 
-//Valeur de Pos pour fonction UpAndDown 
+//Pos value for function UpAndDown 
 #define POS_UP 1
 #define POS_DOWN 0
 
-//Valeur de Pos pour fonction ForwardAndBackwards
+//Pos value for function ForwardAndBackwards
 #define POS_BACK 0
 #define POS_FRONT 1
 #define POS_CENTER 2
 
 
-//angle pour chaque position
+//Angle for each position
 #define UP 110
 #define DOWN 92
 #define FRONT 170
@@ -54,17 +55,18 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 void setup() {
     Serial.begin(9600);
-    Serial.print("hhahha");
+    Serial.print("test");
     pwm.begin();
     pwm.setPWMFreq(FREQUENCY);  // Analog servos run at ~60 Hz updates
 }
 
 void loop() {
 
-
- init_mouv();   
+  calibrationFunction();
+  delay(500000);
+ /*init_mouv();   
  delay(50000);
- /*int B_MovingForward=1;
+ int B_MovingForward=1;
  MovingForward(B_MovingForward,3);
  delay(1000);
  B_MovingForward=0;
@@ -78,7 +80,7 @@ void loop() {
  B_MovingRight=0;*/
 }
 
-//Passer d'une valeur en angle à une valeur analogue
+//Angle to analog value 
 int pulseWidth(int angle)
 {
   int pulse_wide, analog_value;
@@ -87,7 +89,7 @@ int pulseWidth(int angle)
   return analog_value;
 }
 
-//Passer d'une valeur analogue à un angle
+//Analog value to angle
 int AnalogToAngle(int analog_value)
 {
   int angle_wide, pulse_wide;
@@ -96,8 +98,8 @@ int AnalogToAngle(int analog_value)
   return angle_wide;
 }
 
-//Permet au robot d'initialiser toutes ses moteurs 
-//Les jambes sont à leur position initiale
+//Robot Initialisation 
+//Legs are in initial position
 void init_mouv()
 {
   UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
@@ -109,9 +111,59 @@ void init_mouv()
   ForwardAndBackwards(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER);
   UpAndDown(1,4,5,POS_DOWN,POS_DOWN, POS_DOWN);
 }
-//------------------------------------- Fonction de sequencement du mouvement-------------------------------------------
-//Fonction permettant au robot d'avancer tant que le bouton est activé
-//ajouter le bouton de linterface
+//-------------------------------------Movement sequencing function-------------------------------------------
+
+//Initial Calibration for all the motors
+//
+void calibrationFunction()
+{
+  //Indivitual test for angles UP AND DOWN
+  /*
+  UpAndDown(1,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(2000);
+  UpAndDown(1,0,0,POS_UP,POS_UP,POS_UP);
+  delay(2000);
+  UpAndDown(1,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(2000);
+
+  //TEST Up and down for all motors
+  /*
+  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(1000);
+  UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
+  delay(1000);
+  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
+
+  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(1000);
+  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
+  delay(1000);
+  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
+
+  //TEST Foward and backwards for angle FRONT, BACK and CENTER
+  /*
+  ForwardAndBackwards(1,0,0,POS_CENTER,POS_DOWN,POS_DOWN);
+  delay(2000);
+  ForwardAndBackwards(1,0,0,POS_FRONT,POS_UP,POS_UP);
+  delay(2000);
+  ForwardAndBackwards(1,0,0,POS_BACK,POS_DOWN,POS_DOWN);
+  delay(2000);
+  
+  //TEST Foward and backwards for all motors
+  /*
+  ForwardAndBackwards(1,4,6,POS_CENTER,POS_CENTER,POS_CENTER);
+  delay(2000);
+  ForwardAndBackwards(2,3,6,POS_FRONT,POS_FRONT,POS_FRONT);
+  delay(2000);
+  ForwardAndBackwards(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER);
+  delay(2000);
+  ForwardAndBackwards(1,4,6,POS_BACK,POS_BACK,POS_BACK);
+  delay(2000);
+  */
+}
+
+//Function allowing the robot to move forward as long as the button is pressed
+//Connect the button UP of the HMI
 void MovingForward(int B_MovingForward,int nb_sequence)
 {
     while (B_MovingForward<nb_sequence)
@@ -141,8 +193,8 @@ void MovingForward(int B_MovingForward,int nb_sequence)
     }
 }
 
-//Fonction permettant au robot de reculer tant que le bouton est activé
-//Bouton 
+//Function allowing the robot to back up as long as the button is pressed
+//Connect the button DOWN of the HMI
 void MovingBackwards(int B_MovingBackwards,int nb_sequence)
 {
     while (B_MovingBackwards<nb_sequence)
@@ -173,7 +225,9 @@ void MovingBackwards(int B_MovingBackwards,int nb_sequence)
     }
 }
 
-//Fonction pour tourner vers la droite
+//Function allowing the robot to turn right as long as the button is pressed
+//Connect the button RIGHT of the HMI
+//Function to complete **********************************************
 void MovingRight(int B_MovingRight,int nb_sequence)
 {
     while (B_MovingRight<nb_sequence)
@@ -206,19 +260,21 @@ void MovingRight(int B_MovingRight,int nb_sequence)
   
 }
 
+//Function allowing the robot to turn left as long as the button is pressed
+//Connect the button LEFT of the HMI
+//Function to complete **********************************************
 void MovingLeft()
 {
-  
+
 }
 
-//------------------------------------ Fonction de mouvement -------------------------------------------
+//------------------------------------ Motion function -------------------------------------------
 
-//Active les moteurs pour lever ou descendre 3 jambes, 2 d'un côté, 1 de l'autre en même temps
-//Up = 1
-//Down = 0
-//Passer 3 Leg en argument de 1 à 6 
-//passer les trois positions des legs 
-//gérer cas d'erreur ----------------------------------------
+// Active motors to raise or move down 3 legs to their 3 positions
+//Up = POS_UP or 1 , Down = POS_DOWN or 0
+//Pass 3 Leg in argument (1 to 6) and their 3 positions (0 or 1)
+//Add management for errors cases
+
 void UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
 {
 
@@ -228,55 +284,57 @@ void UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
 
      for (int i=0; i<3; i++)
      {
-       if (pos[i]==0)
-       { angle[i]=DOWN;}
-       else
-       { angle[i]=UP;}
+      if(Legs[i]>0 && Legs[i]<7) 
+      {
+        if (pos[i]==0)
+        { angle[i]=DOWN;}
+        else
+        { angle[i]=UP;}
 
-       if (Legs[i]%2 == 0)
-       {
-          pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
-       }
-       
-       else
-       {
-          pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
-       }
+        if (Legs[i]%2 == 0)
+        {
+            pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
+        }
+        
+        else
+        {
+            pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
+        }
+      }
      }
      delay(300);
 }
 
-
-//Active les moteurs pour avancer, centrer ou reculer les 3 jambes, 2 d'un côté, 1 de l'autre en même temps
-//Back = 0
-//Front=1
-//Center = 2 ou autres
-//Passer 3 Leg en argument de 1 à 6 
-//gérer cas d'erreur ----------------------------------------
+//Active motors to move foward, move backwards or move to center 3 legs to their 3 positions
+//Back = POS_BACK or 0 , Front = POS_FRONT or 1 , Center= POS_CENTER or 2
+//Pass 3 Leg in argument (1 to 6) and their 3 positions
+//Add management for errors cases
 void ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
 {
-   //modifier l'angle
    int Legs [3] = {Leg1, Leg2, Leg3};
    int pos[3] = {pos1, pos2, pos3};
    int angle[3]={0,0,0};
    for (int i=0; i<3; i++)
    {
-    if (pos[i]==0)
-      {angle[i]=BACK;}
-    else if (pos[i]==1)
-      {angle[i]=FRONT;}
-    else
-      {angle[i]=CENTER;}
-   
-     if (Legs[i]%2 == 0)
-     {
-        pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
-     }
-     
-     else
-     {
-        pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
-     }
+    if(Legs[i]>0 && Legs[i]<7) 
+    {
+      if (pos[i]==0)
+        {angle[i]=BACK;}
+      else if (pos[i]==1)
+        {angle[i]=FRONT;}
+      else
+        {angle[i]=CENTER;}
+    
+      if (Legs[i]%2 == 0)
+      {
+          pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
+      }
+      
+      else
+      {
+          pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
+      }
+    }
    }
    delay(300);
 } 
