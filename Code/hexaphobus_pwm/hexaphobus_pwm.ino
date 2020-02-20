@@ -42,9 +42,10 @@ S4-H20 | GRO400
 //Angle for each position
 #define UP 110
 #define DOWN 92
-#define FRONT 170
-#define BACK 90
-#define CENTER 120
+#define FRONT 100
+#define BACK 50
+#define CENTER 75
+int DECALAGE[13]={-1,0,15,0,0,0,0,-5,-21,-7,24,11,-23};
   
 // our servo # counter
 uint8_t servonum = 0;
@@ -62,8 +63,26 @@ void setup() {
 
 void loop() {
 
-  calibrationFunction();
-  delay(500000);
+  delay(500);
+  //calibrationFunction();
+//DOWN 3 PATTES
+  /*pwm.setPWM(7, 0, pulseWidth(DOWN+DECALAGE[7]));
+  pwm.setPWM(10, 0, pulseWidth(180-(DOWN+DECALAGE[10])));
+  pwm.setPWM(11, 0, pulseWidth(DOWN+DECALAGE[11]));
+
+/*
+  pwm.setPWM(1, 0, pulseWidth(CENTER+DECALAGE[1]));
+  pwm.setPWM(2, 0, pulseWidth(180-(CENTER+DECALAGE[2])));
+  pwm.setPWM(3, 0, pulseWidth(CENTER+DECALAGE[3]));
+  pwm.setPWM(4, 0, pulseWidth(180-(CENTER+DECALAGE[4]));
+  pwm.setPWM(5, 0, pulseWidth(CENTER+DECALAGE[5]));
+  pwm.setPWM(6, 0, pulseWidth(180-(CENTER+DECALADE[6])));*/
+  /*UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
+  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
+  delay(1000);
+  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
+  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);*/
+
  /*init_mouv();   
  delay(50000);
  int B_MovingForward=1;
@@ -117,16 +136,23 @@ void init_mouv()
 //
 void calibrationFunction()
 {
+  int a=-1;
   //Indivitual test for angles UP AND DOWN
-  for (int i=1; i<7;i++)
+  /*for (int i=1; i<7;i++)
   {
     UpAndDown(i,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+    a=pwm.getPWM(i);
+    Serial.print(" down: ");
+    Serial.print(a);
     delay(2000);
     UpAndDown(i,0,0,POS_UP,POS_UP,POS_UP);
+    Serial.print(" up: ");
+    a=pwm.getPWM(i);
+    Serial.print(a);
     delay(2000);
     UpAndDown(i,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
     delay(2000);
-  }
+  }*/
   //TEST Up and down for all motors
   /*
   UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
@@ -140,10 +166,10 @@ void calibrationFunction()
   UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
   delay(1000);
   UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
-
+*/
   //TEST Foward and backwards for angle FRONT, BACK and CENTER
-  /*
-  for (int i=1; i<7;i++)
+  
+  for (int i=1; i<3;i++)
   {
   ForwardAndBackwards(i,0,0,POS_CENTER,POS_DOWN,POS_DOWN);
   delay(2000);
@@ -291,9 +317,9 @@ void UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
       if(Legs[i]>0 && Legs[i]<7) 
       {
         if (pos[i]==0)
-        { angle[i]=DOWN;}
+        { angle[i]=DOWN+DECALAGE[Legs[i]+6];}
         else
-        { angle[i]=UP;}
+        { angle[i]=UP+DECALAGE[Legs[i]+6];}
 
         if (Legs[i]%2 == 0)
         {
@@ -323,11 +349,11 @@ void ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3
     if(Legs[i]>0 && Legs[i]<7) 
     {
       if (pos[i]==0)
-        {angle[i]=BACK;}
+        {angle[i]=BACK+DECALAGE[Legs[i]];}
       else if (pos[i]==1)
-        {angle[i]=FRONT;}
+        {angle[i]=FRONT+DECALAGE[Legs[i]];}
       else
-        {angle[i]=CENTER;}
+        {angle[i]=CENTER+DECALAGE[Legs[i]];}
     
       if (Legs[i]%2 == 0)
       {
