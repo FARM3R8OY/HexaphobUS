@@ -118,14 +118,15 @@ void init_mouv()
 void calibrationFunction()
 {
   //Indivitual test for angles UP AND DOWN
-  /*
-  UpAndDown(1,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
-  delay(2000);
-  UpAndDown(1,0,0,POS_UP,POS_UP,POS_UP);
-  delay(2000);
-  UpAndDown(1,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
-  delay(2000);
-
+  for (int i=1; i<7;i++)
+  {
+    UpAndDown(i,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+    delay(2000);
+    UpAndDown(i,0,0,POS_UP,POS_UP,POS_UP);
+    delay(2000);
+    UpAndDown(i,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+    delay(2000);
+  }
   //TEST Up and down for all motors
   /*
   UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
@@ -142,12 +143,15 @@ void calibrationFunction()
 
   //TEST Foward and backwards for angle FRONT, BACK and CENTER
   /*
-  ForwardAndBackwards(1,0,0,POS_CENTER,POS_DOWN,POS_DOWN);
+  for (int i=1; i<7;i++)
+  {
+  ForwardAndBackwards(i,0,0,POS_CENTER,POS_DOWN,POS_DOWN);
   delay(2000);
-  ForwardAndBackwards(1,0,0,POS_FRONT,POS_UP,POS_UP);
+  ForwardAndBackwards(i,0,0,POS_FRONT,POS_UP,POS_UP);
   delay(2000);
-  ForwardAndBackwards(1,0,0,POS_BACK,POS_DOWN,POS_DOWN);
+  ForwardAndBackwards(i,0,0,POS_BACK,POS_DOWN,POS_DOWN);
   delay(2000);
+  }
   
   //TEST Foward and backwards for all motors
   /*
