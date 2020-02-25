@@ -10,6 +10,5 @@
         "--disable=unused-argument",
         "--max-line-length=79"
     ],
-    "git.autofetch": false,
-    "git.enableCommitSigning": false
+    "git.autofetch": false
 }
