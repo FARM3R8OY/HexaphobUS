@@ -22,6 +22,9 @@ import math
 import os
 import sys
 
+from struct import *
+import binascii
+
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
@@ -140,6 +143,15 @@ class RobotTracking(QWidget):
         self._target_x_pos = self._robot_x_pos
         self._target_y_pos = self._robot_y_pos
         self.update()
+        '''#to pack string
+        string = 'allo'
+        s = bytes(string, 'utf-8')
+        global format
+        format = "4s"
+        packed_data = pack(format, s)
+        global t
+        t = binascii.hexlify(packed_data)
+        '''
 
     def paintEvent(self, event):
         # Event that draws a line between the object position and its
@@ -272,27 +284,17 @@ class MainWindow(QWidget):
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
     def setConnexions(self):
-        # Connect the buttons and modifiers to the corresponding
-        # functions.
-
-        self.button_init.clicked.connect(
-            self.tracking.initPosition)
-        self.button_up.clicked.connect(
-            lambda: self.tracking.changePosition("UP"))
-        self.shortcut_up.activated.connect(
-            lambda: self.tracking.changePosition("UP"))
-        self.button_down.clicked.connect(
-            lambda: self.tracking.changePosition("DOWN"))
-        self.shortcut_down.activated.connect(
-            lambda: self.tracking.changePosition("DOWN"))
-        self.button_right.clicked.connect(
-            lambda: self.tracking.changePosition("RIGHT"))
-        self.shortcut_right.activated.connect(
-            lambda: self.tracking.changePosition("RIGHT"))
-        self.button_left.clicked.connect(
-            lambda: self.tracking.changePosition("LEFT"))
-        self.shortcut_left.activated.connect(
-            lambda: self.tracking.changePosition("LEFT"))
+        #Connect the buttons and the shortcut to the function corresponding
+        self.button_prog.clicked.connect(self.runProgram)
+        self.button_init.clicked.connect(self.tracking.initPosition)
+        self.button_up.clicked.connect(lambda:self.tracking.changePosition("UP"))
+        self.shortcut_up.activated.connect(lambda:self.tracking.changePosition("UP"))
+        self.button_down.clicked.connect(lambda:self.tracking.changePosition("DOWN"))
+        self.shortcut_down.activated.connect(lambda:self.tracking.changePosition("DOWN"))
+        self.button_right.clicked.connect(lambda:self.tracking.changePosition("RIGHT"))
+        self.shortcut_right.activated.connect(lambda:self.tracking.changePosition("RIGHT"))
+        self.button_left.clicked.connect(lambda:self.tracking.changePosition("LEFT"))
+        self.shortcut_left.activated.connect(lambda:self.tracking.changePosition("LEFT"))
 
     def setInfo(self):
         # Set information size and text display.
@@ -305,6 +307,13 @@ class MainWindow(QWidget):
         self.energy_edit.setReadOnly(True)
         self.speed_label.setText("Vitesse :")
         self.energy_label.setText("Énergie :")
+
+    def runProgram(self):
+        '''#to unpack string
+        packed_data = binascii.unhexlify(t)
+        unpacked_data = unpack(format, packed_data)
+        print('Unpacked Values:', unpacked_data)
+        '''
 
     def setServoValues(self, angles_list):
         # Set the servo windows text.
