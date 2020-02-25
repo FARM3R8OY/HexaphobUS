@@ -11,5 +11,5 @@
         "--max-line-length=79"
     ],
     "git.autofetch": false,
-    "git.enableCommitSigning": true
+    "git.enableCommitSigning": false
 }
