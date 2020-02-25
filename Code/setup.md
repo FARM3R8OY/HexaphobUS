@@ -7,6 +7,7 @@
 	- [Generate keys](#kmGen)
 	- [Export keys](#kmExp)
 - [Git Configuration](#GitConfig)
+	- [Stage, commit and push using Git](#DirectGit)
 - [IDE Configuration](#IDEConfig)
 	- [Git on VSCode/VSCodium](#IDEGitConfig)
 	- [Arduino on VSCode/VSCodium](#IDEArduinoConfig)
@@ -121,6 +122,26 @@ Open the Windows Command Prompt and run the following commands. If any issue is 
 	
 The Git configuration procedure is now complete. You can close the window.
 
+#### <a id="DirectGit"></a>Stage, commit, and push using Git
+
+To change the repository with files that aren't compatible with your IDE (CAD files, for instance), simply follow this procedure in a Git Bash window opened in your repository clone directory:
+
+```bash
+# Stage changes
+git add .
+
+# Check new and modified files for approval
+git status
+
+# Commit with message
+git commit -a -m <msg>
+
+# Push in the right branch
+git push origin <branch>
+```
+
+For more option or a deeper understanding of Git and its commands, refer to the [Git documentation](https://git-scm.com/docs).
+
 [//]: # (------------------------------------------------)
 
 ## <a id="IDEConfig"></a>IDE Configuration
@@ -130,7 +151,7 @@ The Git configuration procedure is now complete. You can close the window.
 To configure Git in VSCode/VSCodium, open one IDE and follow these steps:
 - Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>): Make sure that the "Git Extension Pack" extension is installed (and any other Git extension you find useful);
 - File &#8594; Preferences &#8594; Settings (<kbd>Ctrl</kbd>+<kbd>,</kbd>) &#8594; Extensions &#8594; Git &#8594; Enable Commit Signing;
-	- Alternatively, Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add: ```"git.enableCommitSigning": true```. You can also add the command to the workspace JSON settings, it will override the user defaults.
+	- Alternatively, Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add: ```"git.enableCommitSigning": true```. You can also add the command to the workspace JSON settings, it will override the user defaults. If you set it in the workspace, make sure every collaborator has setup their KMS, else the command will prevent them from committing to the repository.
 
 #### <a id="IDEArduinoConfig"></a>Arduino on VSCode/VSCodium	
 
