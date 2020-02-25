@@ -36,12 +36,12 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 
 //Angle for each position
-#define UP 110
-#define DOWN 92
-#define FRONT 100
-#define BACK 50
-#define CENTER 75
-int DECALAGE[13]={-1,0,15,0,0,0,0,-5,-21,-7,24,11,-23};
+#define UP 40
+#define DOWN 65
+#define FRONT 68-20
+#define BACK 18+20
+#define CENTER 43
+int DECALAGE[13]={-1,-10,-5,0,0,-5,5,-15,0,-8,-15,-10,-5};
 
 //Angle to analog value 
 int pulseWidth(int angle)
@@ -90,7 +90,7 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
         {return -1;}
     
      }
-     delay(300);
+     delay(500);
      return 0;
 }
 
@@ -119,15 +119,18 @@ int ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
           pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
       }
       
-      else if (Legs[i]=0)
+      else if (Legs[i]==0)
       {
-          pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
       }
-      else 
-      {return -1;}
+      else {
+        pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
+      }
     }
+    else 
+    {return -1;}
+    
    }
-   delay(300);
+   delay(500);
    return 0;
 } 
 
