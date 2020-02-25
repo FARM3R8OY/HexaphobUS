@@ -3,6 +3,7 @@ matrix:
     - language: python
       python: "3.8.1"
       before_install:
+        - pwd
         - python --version
         - pip install -U pip
         - pip install -U pytest
@@ -19,16 +20,13 @@ matrix:
         directories:
           - ~/arduino_ide
           - ~/.arduino15/packages/
-      git:
-        depth: false
-        quiet: true
       env:
         global:
           # You can uncomment this to explicitly choose an (old) version of the Arduino IDE
           #- ARDUINO_IDE_VERSION="1.8.10"
       before_install:
         - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-        - if [ ! -d "$HOME/arduino_ide/<AdafruitPWMServoDriver>"]; then git clone <https://github.com/FARM3R8OY/HexaphobUS/tree/code/Code/hexaphobus_pwm/AdafruitPWMServoDriver> $HOME/arduino_ide/libraires/<AdafruitPWMServoDriver>;
+        - if [ ! -d "$HOME/arduino_ide/AdafruitPWMServoDriver"]; then git clone https://github.com/FARM3R8OY/HexaphobUS/tree/code/Code/hexaphobus_pwm/AdafruitPWMServoDriver $HOME/arduino_ide/libraires/AdafruitPWMServoDriver;
       install:
         # Note that every library should be installed in a seperate command
         - arduino --install-library "Adafruit SleepyDog Library"
@@ -41,9 +39,33 @@ os: linux
   env: BUILDARCH=x64
   dist: bionic
 
+# Blacklist
+branches:
+  only:
+    - code
+
+# Install dependencies
+addons:
+  apt:
+    packages:
+      - x11-utils
+      - libxkbcommon-x11-0
+      - doxygen
+
 git:
   depth: false
   quiet: true
+
+script:
+  - doxygen ../docs/Doxyfile
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: ../docs/html
+  github_token: $GH_REPO_TOKEN
+  on:
+    branch: code
 
 notifications:
   email:
