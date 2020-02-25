@@ -34,7 +34,13 @@ void loop()
 
 test(RaiseLeg)
 {
-    assertEqual(UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP),0)
+    assertEqual(UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP),0);
+    assertEqual(FowardAndBackwards(1,4,5,POS_UP,POS_UP,POS_UP),0);
+    assertEqual(UpAndDown(1,4,-1,POS_UP,POS_UP,POS_UP),-1);
+    assertEqual(UpAndDown(1,-1,5,POS_UP,POS_UP,POS_UP),-1);
+    assertEqual(FowardAndBackwards(-1,1,5,POS_UP,POS_UP,POS_UP),-1);
+    assertEqual(UpAndDown(1,4,5,-2,POS_UP,POS_UP),0);
+    assertEqual(FowardAndBackwards(1,4,5,-2,POS_UP,POS_UP),0);
 }
 
 

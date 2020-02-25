@@ -28,7 +28,7 @@ matrix:
           #- ARDUINO_IDE_VERSION="1.8.10"
       before_install:
         - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-        - if [ ! -d "$HOME/arduino_ide/<AdafruitPWMServoDriver>"]; then git clone <>
+        - if [ ! -d "$HOME/arduino_ide/<AdafruitPWMServoDriver>"]; then git clone <https://github.com/FARM3R8OY/HexaphobUS/tree/code/Code/hexaphobus_pwm/AdafruitPWMServoDriver> $HOME/arduino_ide/libraires/<AdafruitPWMServoDriver>;
       install:
         # Note that every library should be installed in a seperate command
         - arduino --install-library "Adafruit SleepyDog Library"

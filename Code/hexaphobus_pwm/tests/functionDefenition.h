@@ -287,10 +287,10 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
      {
       if(Legs[i]>0 && Legs[i]<7) 
       {
-        if (pos[i]==0)
-        { angle[i]=DOWN+DECALAGE[Legs[i]+6];}
-        else
+        if (pos[i]==1)
         { angle[i]=UP+DECALAGE[Legs[i]+6];}
+        else
+        { angle[i]=DOWN+DECALAGE[Legs[i]+6];}
 
         if (Legs[i]%2 == 0)
         {
@@ -302,6 +302,11 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
             pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
         }
       }
+      else if (Legs[i]=0)
+      {};
+      else 
+      {return -1;}
+    
      }
      delay(300);
      return 0;
@@ -332,10 +337,12 @@ int ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
           pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
       }
       
-      else
+      else if (Legs[i]=0)
       {
           pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
       }
+      else 
+      {return -1;}
     }
    }
    delay(300);
