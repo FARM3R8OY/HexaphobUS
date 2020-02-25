@@ -16,8 +16,9 @@ S4-H20 | GRO400
 
 /********************************************/
 
-#include <Wire.h>
-#include <Adafruit_PWMServoDriver.h> 
+
+#include <Adafruit_PWMServoDriver.h>
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 #define MIN_PULSE_WIDTH       650
 #define MAX_PULSE_WIDTH       2650
@@ -50,6 +51,85 @@ int pulseWidth(int angle)
   analog_value = int(float(pulse_wide) / 1000000 * FREQUENCY * 4096);
   return analog_value;
 }
+
+
+//------------------------------------ Motion function -------------------------------------------
+
+// Active motors to raise or move down 3 legs to their 3 positions
+//Up = POS_UP or 1 , Down = POS_DOWN or 0
+//Pass 3 Leg in argument (1 to 6) and their 3 positions (0 or 1)
+//Add management for errors cases
+
+int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
+{
+
+     int Legs [3] = {Leg1, Leg2, Leg3};
+     int pos [3] = {pos1,pos2,pos3};
+     int angle[3]={0,0,0};
+
+     for (int i=0; i<3; i++)
+     {
+      if(Legs[i]>0 && Legs[i]<7) 
+      {
+        if (pos[i]==1)
+        { angle[i]=UP+DECALAGE[Legs[i]+6];}
+        else
+        { angle[i]=DOWN+DECALAGE[Legs[i]+6];}
+
+        if (Legs[i]%2 == 0)
+        {
+            pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
+        }
+        
+        else
+        {
+            pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
+        }
+      }
+      else 
+        {return -1;}
+    
+     }
+     delay(300);
+     return 0;
+}
+
+//Active motors to move foward, move backwards or move to center 3 legs to their 3 positions
+//Back = POS_BACK or 0 , Front = POS_FRONT or 1 , Center= POS_CENTER or 2
+//Pass 3 Leg in argument (1 to 6) and their 3 positions
+//Add management for errors cases
+int ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
+{
+   int Legs [3] = {Leg1, Leg2, Leg3};
+   int pos[3] = {pos1, pos2, pos3};
+   int angle[3]={0,0,0};
+   for (int i=0; i<3; i++)
+   {
+    if(Legs[i]>0 && Legs[i]<7) 
+    {
+      if (pos[i]==0)
+        {angle[i]=BACK+DECALAGE[Legs[i]];}
+      else if (pos[i]==1)
+        {angle[i]=FRONT+DECALAGE[Legs[i]];}
+      else
+        {angle[i]=CENTER+DECALAGE[Legs[i]];}
+    
+      if (Legs[i]%2 == 0)
+      {
+          pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
+      }
+      
+      else if (Legs[i]=0)
+      {
+          pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
+      }
+      else 
+      {return -1;}
+    }
+   }
+   delay(300);
+   return 0;
+} 
 
 //Analog value to angle
 int AnalogToAngle(int analog_value)
@@ -269,85 +349,7 @@ int MovingLeft(int B_MovingLeft,int nb_sequence)
     return 0;
 }
 
-//------------------------------------ Motion function -------------------------------------------
 
-// Active motors to raise or move down 3 legs to their 3 positions
-//Up = POS_UP or 1 , Down = POS_DOWN or 0
-//Pass 3 Leg in argument (1 to 6) and their 3 positions (0 or 1)
-//Add management for errors cases
-
-int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
-{
-
-     int Legs [3] = {Leg1, Leg2, Leg3};
-     int pos [3] = {pos1,pos2,pos3};
-     int angle[3]={0,0,0};
-
-     for (int i=0; i<3; i++)
-     {
-      if(Legs[i]>0 && Legs[i]<7) 
-      {
-        if (pos[i]==1)
-        { angle[i]=UP+DECALAGE[Legs[i]+6];}
-        else
-        { angle[i]=DOWN+DECALAGE[Legs[i]+6];}
-
-        if (Legs[i]%2 == 0)
-        {
-            pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
-        }
-        
-        else
-        {
-            pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
-        }
-      }
-      else if (Legs[i]=0)
-      {};
-      else 
-      {return -1;}
-    
-     }
-     delay(300);
-     return 0;
-}
-
-//Active motors to move foward, move backwards or move to center 3 legs to their 3 positions
-//Back = POS_BACK or 0 , Front = POS_FRONT or 1 , Center= POS_CENTER or 2
-//Pass 3 Leg in argument (1 to 6) and their 3 positions
-//Add management for errors cases
-int ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
-{
-   int Legs [3] = {Leg1, Leg2, Leg3};
-   int pos[3] = {pos1, pos2, pos3};
-   int angle[3]={0,0,0};
-   for (int i=0; i<3; i++)
-   {
-    if(Legs[i]>0 && Legs[i]<7) 
-    {
-      if (pos[i]==0)
-        {angle[i]=BACK+DECALAGE[Legs[i]];}
-      else if (pos[i]==1)
-        {angle[i]=FRONT+DECALAGE[Legs[i]];}
-      else
-        {angle[i]=CENTER+DECALAGE[Legs[i]];}
-    
-      if (Legs[i]%2 == 0)
-      {
-          pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
-      }
-      
-      else if (Legs[i]=0)
-      {
-          pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
-      }
-      else 
-      {return -1;}
-    }
-   }
-   delay(300);
-   return 0;
-} 
 
 
 

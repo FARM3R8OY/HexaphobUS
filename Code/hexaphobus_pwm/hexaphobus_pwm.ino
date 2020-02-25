@@ -1,3 +1,5 @@
+
+
 /*
 File: hexaphobus_pwm.ino
 
@@ -20,15 +22,16 @@ S4-H20 | GRO400
 /********************************************/
 
 #include <Wire.h>
-#include <Adafruit_PWMServoDriver.h> 
-#include 'functionDefinition.h'
+#include <Adafruit_PWMServoDriver.h>
+#include <Arduino.h>
+#include "functionDefinition.h"
 
 /********************************************/
   
 // our servo # counter
 uint8_t servonum = 0;
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+
 
 /********************************************/
 
@@ -46,15 +49,21 @@ void loop() {
 //DOWN 3 PATTES
   /*pwm.setPWM(7, 0, pulseWidth(DOWN+DECALAGE[7]));
   pwm.setPWM(10, 0, pulseWidth(180-(DOWN+DECALAGE[10])));
-  pwm.setPWM(11, 0, pulseWidth(DOWN+DECALAGE[11]));
+  pwm.setPWM(11, 0, pulseWidth(DOWN+DECALAGE[11]));*/
 
-/*
-  pwm.setPWM(1, 0, pulseWidth(CENTER+DECALAGE[1]));
-  pwm.setPWM(2, 0, pulseWidth(180-(CENTER+DECALAGE[2])));
-  pwm.setPWM(3, 0, pulseWidth(CENTER+DECALAGE[3]));
-  pwm.setPWM(4, 0, pulseWidth(180-(CENTER+DECALAGE[4]));
-  pwm.setPWM(5, 0, pulseWidth(CENTER+DECALAGE[5]));
-  pwm.setPWM(6, 0, pulseWidth(180-(CENTER+DECALADE[6])));*/
+
+  pwm.setPWM(1, 0, pulseWidth(0));
+  pwm.setPWM(2, 0, pulseWidth(180-0));
+  pwm.setPWM(3, 0, pulseWidth(0));
+  pwm.setPWM(4, 0, pulseWidth(180-0));
+  pwm.setPWM(5, 0, pulseWidth(0));
+  pwm.setPWM(6, 0, pulseWidth(180-0));
+  pwm.setPWM(7, 0, pulseWidth(0));
+  pwm.setPWM(8, 0, pulseWidth(180-0));
+  pwm.setPWM(9, 0, pulseWidth(0));
+  pwm.setPWM(10, 0, pulseWidth(180-0));
+  pwm.setPWM(11, 0, pulseWidth(0));
+  pwm.setPWM(12, 0, pulseWidth(180-0));
   /*UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
   UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
   delay(1000);
