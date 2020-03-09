@@ -38,10 +38,12 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 //Angle for each position
 #define UP 40
 #define DOWN 65
-#define FRONT 68-20
-#define BACK 18+20
+#define FRONT 68-10
+#define BACK 18+10
 #define CENTER 43
-int DECALAGE[13]={-1,-10,-5,0,0,-5,5,-15,0,-8,-15,-10,-5};
+int DECALAGE[13]={-1,-10,-5,0,0,-5,5,-15,-10,-8,-15,-10,-5};
+
+
 
 //Angle to analog value 
 int pulseWidth(int angle)
@@ -59,6 +61,10 @@ int pulseWidth(int angle)
 //Up = POS_UP or 1 , Down = POS_DOWN or 0
 //Pass 3 Leg in argument (1 to 6) and their 3 positions (0 or 1)
 //Add management for errors cases
+
+
+//int goTo(angle){
+
 
 int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
 {
@@ -80,17 +86,20 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3)
         {
             pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
         }
-        
+        else if (Legs[i]==0)
+        {
+        }
         else
         {
             pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
         }
       }
+      else if(Legs[i]==0){
+      }
       else 
         {return -1;}
     
      }
-     delay(500);
      return 0;
 }
 
@@ -126,11 +135,11 @@ int ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
         pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
       }
     }
+    else if(Legs[i]==0){
+    }
     else 
     {return -1;}
-    
    }
-   delay(500);
    return 0;
 } 
 
@@ -138,7 +147,7 @@ int ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
 int MoveOneLeg(int leg, int direction)
 {
   UpAndDown(leg,0,0,POS_UP,POS_UP,POS_UP);
-
+  delay(500);
   if(direction==POS_FRONT)
   {ForwardAndBackwards(leg,0,0,POS_FRONT,POS_CENTER,POS_CENTER);}
 
@@ -147,8 +156,9 @@ int MoveOneLeg(int leg, int direction)
 
   else
   {ForwardAndBackwards(leg,0,0,POS_CENTER,POS_CENTER,POS_CENTER);}
-
+  delay(500);
   UpAndDown(leg,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(500);
   return 0;
 }
 
@@ -165,78 +175,25 @@ int AnalogToAngle(int analog_value)
 //Legs are in initial position
 int init_mouv()
 {
-  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
-  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
-  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
-  ForwardAndBackwards(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER);
   UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
-  UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
-  ForwardAndBackwards(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER);
-  UpAndDown(1,4,5,POS_DOWN,POS_DOWN, POS_DOWN);
+  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
+  delay(100);
+  MoveOneLeg(2,POS_CENTER);
+  delay(50);
+  MoveOneLeg(3,POS_CENTER);
+  delay(50);
+  MoveOneLeg(6,POS_CENTER);
+  delay(50);
+  MoveOneLeg(1,POS_CENTER);
+  delay(50);
+  MoveOneLeg(4,POS_CENTER);
+  delay(50);
+  MoveOneLeg(5,POS_CENTER);
+  delay(50);
+  
   return 0;
 }
 //-------------------------------------Movement sequencing function-------------------------------------------
-
-//Initial Calibration for all the motors
-//
-int calibrationFunction()
-{
-  int a=-1;
-  //Indivitual test for angles UP AND DOWN
-  /*for (int i=1; i<7;i++)
-  {
-    UpAndDown(i,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
-    a=pwm.getPWM(i);
-    Serial.print(" down: ");
-    Serial.print(a);
-    delay(2000);
-    UpAndDown(i,0,0,POS_UP,POS_UP,POS_UP);
-    Serial.print(" up: ");
-    a=pwm.getPWM(i);
-    Serial.print(a);
-    delay(2000);
-    UpAndDown(i,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
-    delay(2000);
-  }*/
-  //TEST Up and down for all motors
-  /*
-  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
-  delay(1000);
-  UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
-  delay(1000);
-  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN);
-
-  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
-  delay(1000);
-  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
-  delay(1000);
-  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
-*/
-  //TEST Foward and backwards for angle FRONT, BACK and CENTER
-  
-  for (int i=1; i<3;i++)
-  {
-  ForwardAndBackwards(i,0,0,POS_CENTER,POS_DOWN,POS_DOWN);
-  delay(2000);
-  ForwardAndBackwards(i,0,0,POS_FRONT,POS_UP,POS_UP);
-  delay(2000);
-  ForwardAndBackwards(i,0,0,POS_BACK,POS_DOWN,POS_DOWN);
-  delay(2000);
-  }
-  
-  //TEST Foward and backwards for all motors
-  /*
-  ForwardAndBackwards(1,4,6,POS_CENTER,POS_CENTER,POS_CENTER);
-  delay(2000);
-  ForwardAndBackwards(2,3,6,POS_FRONT,POS_FRONT,POS_FRONT);
-  delay(2000);
-  ForwardAndBackwards(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER);
-  delay(2000);
-  ForwardAndBackwards(1,4,6,POS_BACK,POS_BACK,POS_BACK);
-  delay(2000);
-  */
-  return 0;
-}
 
 //Function allowing the robot to move forward as long as the button is pressed
 //Connect the button UP of the HMI
@@ -260,7 +217,7 @@ int MovingForward(int B_MovingForward,int nb_sequence)
         ForwardAndBackwards(2,3,6,POS_FRONT,POS_FRONT,POS_FRONT);
         ForwardAndBackwards(1,4,5,POS_BACK,POS_BACK,POS_BACK);
         UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
-        B_MovingForward+=B_MovingForward;
+        B_MovingForward+=1;
       }
       UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
       ForwardAndBackwards(1,4,5,POS_FRONT,POS_FRONT,POS_FRONT);
@@ -279,28 +236,72 @@ int MovingForward_test(int B_MovingForward,int nb_sequence)
     while (B_MovingForward<nb_sequence)
     {
       MoveOneLeg(2,POS_FRONT);
+      delay(200);
       MoveOneLeg(3,POS_FRONT);
+      delay(200);
       MoveOneLeg(6,POS_FRONT);
+      delay(200);
       ForwardAndBackwards(1,4,5,POS_BACK,POS_BACK,POS_BACK);
-      
+      ForwardAndBackwards(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER);
+      delay(1000);
       while (B_MovingForward<nb_sequence)
       {
         MoveOneLeg(1,POS_FRONT);
+        delay(200);
         MoveOneLeg(4,POS_FRONT);
+        delay(200);
         MoveOneLeg(5,POS_FRONT);
-        ForwardAndBackwards(2,3,6,POS_BACK,POS_BACK,POS_BACK);        
+        delay(200);
+        ForwardAndBackwards(2,3,6,POS_BACK,POS_BACK,POS_BACK);
+        ForwardAndBackwards(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER); 
+        delay(1000);
         
         MoveOneLeg(2,POS_FRONT);
+        delay(200);
         MoveOneLeg(3,POS_FRONT);
+        delay(200);
         MoveOneLeg(6,POS_FRONT);
+        delay(200);
         ForwardAndBackwards(1,4,5,POS_BACK,POS_BACK,POS_BACK);
-        B_MovingForward+=B_MovingForward;
+        ForwardAndBackwards(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER);
+        delay(1000);
+        B_MovingForward+=1;
       }
       MoveOneLeg(1,POS_FRONT);
+      delay(200);
       MoveOneLeg(4,POS_FRONT);
+      delay(200);
       MoveOneLeg(5,POS_FRONT);
-      ForwardAndBackwards(2,3,6,POS_BACK,POS_BACK,POS_BACK); 
+      delay(200);
+      ForwardAndBackwards(2,3,6,POS_BACK,POS_BACK,POS_BACK);
+      ForwardAndBackwards(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER);   
+      delay(1000);
       init_mouv();
+    }
+    return 0;
+}
+
+int MovingForward_test2(int B_MovingForward,int nb_sequence,int dir)
+{
+    
+    while (B_MovingForward<=nb_sequence)
+    {
+      MoveOneLeg(2,dir);
+      delay(10);
+      MoveOneLeg(3,dir);
+      delay(10);
+      MoveOneLeg(6,dir);
+      delay(10);
+      MoveOneLeg(1,dir);
+      delay(10);
+      MoveOneLeg(4,dir);
+      delay(10);
+      MoveOneLeg(5,dir);
+      delay(10);
+      ForwardAndBackwards(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER);
+      ForwardAndBackwards(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER);
+      delay(100);
+      B_MovingForward+=1;
     }
     return 0;
 }
@@ -327,7 +328,7 @@ int MovingBackwards(int B_MovingBackwards,int nb_sequence)
         ForwardAndBackwards(2,3,6,POS_BACK,POS_BACK,POS_BACK);
         ForwardAndBackwards(1,4,5,POS_FRONT,POS_FRONT,POS_FRONT);
         UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
-        B_MovingBackwards+=B_MovingBackwards;
+        B_MovingBackwards+=1;
       }
       
       UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
@@ -361,7 +362,7 @@ int MovingRight(int B_MovingRight,int nb_sequence)
         ForwardAndBackwards(1,4,5,POS_FRONT,POS_BACK,POS_FRONT);
         UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
         
-        B_MovingRight+=B_MovingRight;
+        B_MovingRight+=1;
       }
       
       UpAndDown(7,10,11,POS_UP,POS_UP,POS_UP);
@@ -395,7 +396,7 @@ int MovingLeft(int B_MovingLeft,int nb_sequence)
         ForwardAndBackwards(1,4,5,POS_BACK,POS_FRONT,POS_BACK);
         UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
         
-        B_MovingLeft+=B_MovingLeft;
+        B_MovingLeft+=1;
       }
       
       UpAndDown(7,10,11,POS_UP,POS_UP,POS_UP);
