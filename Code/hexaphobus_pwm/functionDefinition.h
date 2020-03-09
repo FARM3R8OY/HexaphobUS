@@ -134,6 +134,24 @@ int ForwardAndBackwards(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3)
    return 0;
 } 
 
+//Mouvement d'une jambe
+int MoveOneLeg(int leg, int direction)
+{
+  UpAndDown(leg,0,0,POS_UP,POS_UP,POS_UP);
+
+  if(direction==POS_FRONT)
+  {ForwardAndBackwards(leg,0,0,POS_FRONT,POS_CENTER,POS_CENTER);}
+
+  else if (direction==POS_BACK)
+  {ForwardAndBackwards(leg,0,0,POS_BACK,POS_CENTER,POS_CENTER);}
+
+  else
+  {ForwardAndBackwards(leg,0,0,POS_CENTER,POS_CENTER,POS_CENTER);}
+
+  UpAndDown(leg,0,0,POS_DOWN,POS_DOWN,POS_DOWN);
+  return 0;
+}
+
 //Analog value to angle
 int AnalogToAngle(int analog_value)
 {
@@ -222,6 +240,7 @@ int calibrationFunction()
 
 //Function allowing the robot to move forward as long as the button is pressed
 //Connect the button UP of the HMI
+//three legs at a time
 int MovingForward(int B_MovingForward,int nb_sequence)
 {
     while (B_MovingForward<nb_sequence)
@@ -251,6 +270,41 @@ int MovingForward(int B_MovingForward,int nb_sequence)
     }
     return 0;
 }
+
+//Test Function allowing the robot to move forward as long as the button is pressed
+//Connect the button UP of the HMI
+//1 leg at a time
+int MovingForward_test(int B_MovingForward,int nb_sequence)
+{
+    while (B_MovingForward<nb_sequence)
+    {
+      MoveOneLeg(2,POS_FRONT);
+      MoveOneLeg(3,POS_FRONT);
+      MoveOneLeg(6,POS_FRONT);
+      ForwardAndBackwards(1,4,5,POS_BACK,POS_BACK,POS_BACK);
+      
+      while (B_MovingForward<nb_sequence)
+      {
+        MoveOneLeg(1,POS_FRONT);
+        MoveOneLeg(4,POS_FRONT);
+        MoveOneLeg(5,POS_FRONT);
+        ForwardAndBackwards(2,3,6,POS_BACK,POS_BACK,POS_BACK);        
+        
+        MoveOneLeg(2,POS_FRONT);
+        MoveOneLeg(3,POS_FRONT);
+        MoveOneLeg(6,POS_FRONT);
+        ForwardAndBackwards(1,4,5,POS_BACK,POS_BACK,POS_BACK);
+        B_MovingForward+=B_MovingForward;
+      }
+      MoveOneLeg(1,POS_FRONT);
+      MoveOneLeg(4,POS_FRONT);
+      MoveOneLeg(5,POS_FRONT);
+      ForwardAndBackwards(2,3,6,POS_BACK,POS_BACK,POS_BACK); 
+      init_mouv();
+    }
+    return 0;
+}
+
 
 //Function allowing the robot to back up as long as the button is pressed
 //Connect the button DOWN of the HMI
