@@ -22,8 +22,8 @@ import math
 import os
 import sys
 
-#import struct
-#import binascii
+import struct
+import binascii
 
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
@@ -71,28 +71,28 @@ LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
 # --------------------------------------------
 
-def pack_string(my_string):
+def stringToByte(string):
     """
-    Encode a string in bytes values for communication with Arduino code
+    Encodes string and returns byte values.
     """
-    string_size = len(my_string)
-    bytes_string = bytes(my_string, 'utf-8')
-    my_format = str(string_size)+"s"
-    packed_data = pack(my_format, bytes_string)
+    string_size = len(string)
+    bytes_string = bytes(string, 'utf-8')
+    my_format = str(string_size) + "s"
+    packed_data = struct.pack(my_format, bytes_string)
     encoded_string = binascii.hexlify(packed_data)
     return encoded_string
 
-def unpack_string(encoded_string):
+def byteToString(encoded_string):
     """
-    Decode bytes values from Arduino code in a string 
+    Decodes byte values and returns a string.
     """
     packed_data = binascii.unhexlify(encoded_string)
     string_size = len(encoded_string)/2
     my_format = str(int(string_size))+"s"
-    unpacked_data = unpack(my_format, packed_data)
-    unpacked_data = unpacked_data[0].decode('utf-8')
-    print('Unpacked Values:', unpacked_data)
-    return unpacked_data
+    string = struct.unpack(my_format, packed_data)
+    string = string[0].decode('utf-8')
+    print('Unpacked Values:', string)
+    return string
 
 class RobotTracking(QWidget):
     """
@@ -140,20 +140,21 @@ class RobotTracking(QWidget):
         """
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
-        global encod
+
+        global ENCODED_VAR
 
         if direction == "UP" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
-            encod = pack_string('UP')
+            ENCODED_VAR = stringToByte('UP')
         elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
-            encod = pack_string('DOWN')
+            ENCODED_VAR = stringToByte('DOWN')
         elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
-            encod = pack_string('RIGHT')
+            ENCODED_VAR = stringToByte('RIGHT')
         elif direction == "LEFT" and self._robot_x_pos > 0:
             self._robot_x_pos -= self._speed
-            encod = pack_string('LEFT')
+            ENCODED_VAR = stringToByte('LEFT')
 
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()
@@ -181,7 +182,6 @@ class RobotTracking(QWidget):
         self._target_x_pos = self._robot_x_pos
         self._target_y_pos = self._robot_y_pos
         self.update()
-        
 
     def paintEvent(self, event):
         """
@@ -377,7 +377,7 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        my_string = unpack_string(encod)
+        byteToString(ENCODED_VAR)
 
     def setServoValues(self, angles_list):
         """
