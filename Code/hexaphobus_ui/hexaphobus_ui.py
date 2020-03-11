@@ -92,6 +92,7 @@ def unpack_string(encoded_string):
     unpacked_data = unpack(my_format, packed_data)
     unpacked_data = unpacked_data[0].decode('utf-8')
     print('Unpacked Values:', unpacked_data)
+    return unpacked_data
 
 class RobotTracking(QWidget):
     """
@@ -265,7 +266,7 @@ class MainWindow(QWidget):
 
         self.addServos()
         self.setSizeButtons()
-        self.setConnexions()
+        self.setConnections()
         self.setInfo()
         self.setLayoutDependencies()
         self.addWidgets()
@@ -301,7 +302,7 @@ class MainWindow(QWidget):
         self.button_init.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
-    def setConnexions(self):
+    def setConnections(self):
         #Connect the buttons and the shortcut to the function corresponding
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
@@ -327,7 +328,7 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        unpack_string(encod)
+        my_string = unpack_string(encod)
         
 
     def setServoValues(self, angles_list):
