@@ -45,11 +45,11 @@ void loop() {
   Serial.println(pwm.getPWM(1))
   */
   init_mouv();
-  int B_MovingForward=1;
-  MovingForward_test(B_MovingForward,5);
-  //MovingForward_test2(B_MovingForward,5,POS_BACK);
-  B_MovingForward=0;
-
+  int B_Moving=1;
+  Moving(B_Moving,5,POS_FRONT);
+  int B_Moving=1;
+  MovingForward(B_Moving,5,POS_FRONT);
+  B_Moving=0;
 
 }
 
