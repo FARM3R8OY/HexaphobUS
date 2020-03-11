@@ -50,7 +50,7 @@ class TestHexaphobusUI(unittest.TestCase):
         my_string = hexaphobus_ui.byteToString(encoded_data)
         self.assertTrue(isinstance(my_string, 'str'))
 
-    def test_encodingSize(self):
+    def test_decodingSize(self):
         my_string = hexaphobus_ui.byteToString(encoded_data)
         self.assertEqual(len(my_string), 5)
 
