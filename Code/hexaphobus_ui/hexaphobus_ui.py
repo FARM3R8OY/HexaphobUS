@@ -25,6 +25,8 @@ import sys
 import struct
 import binascii
 
+import serial
+
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
@@ -145,15 +147,19 @@ class RobotTracking(QWidget):
 
         if direction == "UP" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
+            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('UP')
         elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
+            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('DOWN')
         elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
+            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('RIGHT')
         elif direction == "LEFT" and self._robot_x_pos > 0:
             self._robot_x_pos -= self._speed
+            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('LEFT')
 
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
@@ -383,6 +389,7 @@ class MainWindow(QWidget):
         """
         Set the servomotor edit text.
         """
+        # Read values from Arduino (angle servo moteur)
         for (angle, servo) in zip(angles_list, self._servo_edits):
             servo.setText(angle)
 
@@ -390,6 +397,7 @@ class MainWindow(QWidget):
         """
         Set additional information values.
         """
+        #Read values from Arduino (Speed? et energie batterie )
         self.speed_edit.setText(Speed)
         self.energy_edit.setText(Energy)
 
@@ -489,6 +497,13 @@ if __name__ == '__main__':
     palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
     palette.setColor(QPalette.HighlightedText, Qt.black)
     window.setPalette(palette)
+
+    # port = "/dev/ttyACM0" 
+    # ser = serial.Serial(port,9600)
+    # ser.baudrate = 9600
+    # ser.flushInput()
+    # a = ser.readline().decode().strip()
+    # print(a)  
 
     # Kill display
     sys.exit(app.exec_())
