@@ -7,7 +7,7 @@ Contributor(s):
 
 Date(s):
     2020-01-29 (Creation)
-    2020-02-05 (Last modification)
+    2020-03-11 (Last modification)
 
 Description:
     User interface designed for intuitive control and monitoring of the
@@ -22,8 +22,8 @@ import math
 import os
 import sys
 
-from struct import *
-import binascii
+#import struct
+#import binascii
 
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
@@ -75,10 +75,15 @@ LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 class RobotTracking(QWidget):
     """
     The 'RobotTracking' class is a QWidget subclass that allows the user
-    to follow the robot position from an initialized origin point.
+     to follow the robot position from an initialized origin point.
     """
 
     def __init__(self):
+        """
+        The 'RobotTracking' class constructor initializes, notably, the
+        widget to follow the robot's position. It builds upon the
+        constructor of its parent class, 'QWidget'.
+        """
         super().__init__()
         self.setStyleSheet("border:1px solid rgb(0, 0, 0)")
         self._distance_origin = 0
@@ -96,8 +101,10 @@ class RobotTracking(QWidget):
         self.initTracking()
 
     def initTracking(self):
-        # Initialize the Qt robot tracking widget.
-
+        """
+        Sets the size of the widget and its label (tracking distance and
+        position).
+        """
         self.setMinimumSize(UI_MIN_W, UI_MIN_H)
         self.label = QLabel(self)
         self.label.resize(TRACK_W, TRACK_H)
@@ -105,8 +112,10 @@ class RobotTracking(QWidget):
         self.show()
 
     def changePosition(self, direction):
-        # Update the target positions according to geometry.
-
+        """
+        Updates the target's distance and position according to
+        geometry.
+        """
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
 
@@ -123,9 +132,10 @@ class RobotTracking(QWidget):
         self.update()
 
     def moveRobot(self, robotX, robotY):
-        # Event that updates the mouse position relative to the origin
-        # according to mouse motion.
-
+        """
+        Event that updates the target's distance and position label
+        relative to the origin according to the target's movements.
+        """
         _distance_origin = round(
             ((robotY - self._target_y_pos)**2
              + (robotX - self._target_x_pos)**2)**0.5
@@ -138,8 +148,9 @@ class RobotTracking(QWidget):
         self.update()
 
     def initPosition(self):
-        # Event that updates the origin point according to mouse press.
-
+        """
+        Event that updates the origin point according to reset command.
+        """
         self._target_x_pos = self._robot_x_pos
         self._target_y_pos = self._robot_y_pos
         self.update()
@@ -154,16 +165,18 @@ class RobotTracking(QWidget):
         '''
 
     def paintEvent(self, event):
-        # Event that draws a line between the object position and its
-        # origin.
+        """
+        Event that draws a line between the target's position and its
+        origin.
+        """
         robot = QPixmap(SCRIPT_DIR + SEP + LOGO)
-        Pix_robot = robot.scaledToHeight(40)
+        pix_robot = robot.scaledToHeight(40)
 
         q = QPainter()
         q.begin(self)
         q.setPen(QColor(0, 0, 0))
         q.drawPixmap(QPoint(self._robot_x_pos-20, self._robot_y_pos-20),
-                     Pix_robot)
+                     pix_robot)
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
@@ -176,6 +189,12 @@ class MainWindow(QWidget):
     """
 
     def __init__(self):
+        """
+        The 'MainWindow' class constructor initializes the GUI interface
+        and all its components (layout boxes, push buttons, shortcuts,
+        lines, edits, frames, validators). It builds upon the
+        constructor of its parent class, 'QWidget'.
+        """
         super().__init__()
 
         # Servos
@@ -230,14 +249,29 @@ class MainWindow(QWidget):
         self.initUI()
 
     def getServoEdits(self):
+        """
+        Return the servomotor commands.
+        """
         return self._servo_edits
 
     def getServoLabels(self):
+        """
+        Return the servomotor labels.
+        """
         return self._servo_labels
 
     def initUI(self):
-        # Initialize the Qt user interface.
-
+        """
+        Initializes the user interface. It sets:
+            -the geometry;
+            -the window behavior;
+            -the 'RobotTracking' widget;
+            -the buttons;
+            -the connections;
+            -the robot information;
+            -the dependencies (nested layouts);
+            -the widgets.
+        """
         self.setGeometry(UI_X, UI_Y, UI_W, UI_H)
         self.setWindowTitle(WINDOW_NAME)
 
@@ -257,7 +291,9 @@ class MainWindow(QWidget):
         self.show()
 
     def addServos(self):
-        # Add servomotor edits and labels used to monitor their state.
+        """
+        Add servomotor edits and labels used to monitor their state.
+        """
 
         for index in range(SV_NBR):
             self._servo_edits.append(QLineEdit())
@@ -272,8 +308,9 @@ class MainWindow(QWidget):
                                               .format(Servos_Num[index]))
 
     def setSizeButtons(self):
-        # Fix button size according to type.
-
+        """
+        Fix button size according to type.
+        """
         self.button_up.setFixedSize(ARROW_W, ARROW_H)
         self.button_down.setFixedSize(ARROW_W, ARROW_H)
         self.button_left.setFixedSize(ARROW_W, ARROW_H)
@@ -284,21 +321,33 @@ class MainWindow(QWidget):
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
     def setConnexions(self):
-        #Connect the buttons and the shortcut to the function corresponding
+        """
+        Connect the buttons and shortcuts to the corresponding
+        functions.
+        """
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
-        self.button_up.clicked.connect(lambda:self.tracking.changePosition("UP"))
-        self.shortcut_up.activated.connect(lambda:self.tracking.changePosition("UP"))
-        self.button_down.clicked.connect(lambda:self.tracking.changePosition("DOWN"))
-        self.shortcut_down.activated.connect(lambda:self.tracking.changePosition("DOWN"))
-        self.button_right.clicked.connect(lambda:self.tracking.changePosition("RIGHT"))
-        self.shortcut_right.activated.connect(lambda:self.tracking.changePosition("RIGHT"))
-        self.button_left.clicked.connect(lambda:self.tracking.changePosition("LEFT"))
-        self.shortcut_left.activated.connect(lambda:self.tracking.changePosition("LEFT"))
+        self.button_up.clicked.connect(lambda: self.tracking.
+                                       changePosition("UP"))
+        self.shortcut_up.activated.connect(lambda: self.tracking.
+                                           changePosition("UP"))
+        self.button_down.clicked.connect(lambda: self.tracking.
+                                         changePosition("DOWN"))
+        self.shortcut_down.activated.connect(lambda: self.tracking.
+                                             changePosition("DOWN"))
+        self.button_right.clicked.connect(lambda: self.tracking.
+                                          changePosition("RIGHT"))
+        self.shortcut_right.activated.connect(lambda: self.tracking.
+                                              changePosition("RIGHT"))
+        self.button_left.clicked.connect(lambda: self.tracking.
+                                         changePosition("LEFT"))
+        self.shortcut_left.activated.connect(lambda: self.tracking.
+                                             changePosition("LEFT"))
 
     def setInfo(self):
-        # Set information size and text display.
-
+        """
+        Set information size and text display.
+        """
         self.speed_edit.setFixedSize(INFO_W, INFO_H)
         self.speed_edit.setStyleSheet("color : rgb(0,0,0)")
         self.speed_edit.setReadOnly(True)
@@ -316,21 +365,24 @@ class MainWindow(QWidget):
         '''
 
     def setServoValues(self, angles_list):
-        # Set the servo windows text.
-
+        """
+        Set the servomotor edit text.
+        """
         for (angle, servo) in zip(angles_list, self._servo_edits):
             servo.setText(angle)
 
     def setInfoValues(self, Speed, Energy):
-        # Set additional information values.
-
+        """
+        Set additional information values.
+        """
         self.speed_edit.setText(Speed)
         self.energy_edit.setText(Energy)
 
     def setLayoutDependencies(self):
-        # Add inner layouts to outer layouts (creates a parent-child
-        # structure).
-
+        """
+        Add inner layouts to outer layouts (creates a parent-child
+        structure with nested layouts).
+        """
         self.global_layout.addLayout(self.top_layout)
         self.global_layout.addLayout(self.bottom_layout)
 
@@ -346,17 +398,19 @@ class MainWindow(QWidget):
         self.bottom_layout.addWidget(self.button_stop)
 
     def strechServoLayouts(self):
-        # Add padding between widgets and/or layout walls in the
-        # servomotor layouts.
-
+        """
+        Add padding between widgets and/or layout walls in the
+        servomotor layouts.
+        """
         self.servo_layout_1.addStretch(1)
         self.servo_layout_2.addStretch(1)
         self.servo_layout_3.addStretch(1)
         self.servo_layout_4.addStretch(1)
 
     def addWidgets(self):
-        # Add widgets to various layouts.
-
+        """
+        Add widgets to various layouts.
+        """
         self.strechServoLayouts()
 
         for counter, (edit, label) in \
