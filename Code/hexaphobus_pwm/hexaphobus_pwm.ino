@@ -1,5 +1,3 @@
-
-
 /*
 File: hexaphobus_pwm.ino
 
@@ -10,7 +8,7 @@ Contributor(s):
 
 Date(s):
     2020-01-29 (Creation)
-    2020-02-19 (Last modification)
+    2020-03-11 (Last modification)
 
 Description:
     Arduino code designed for intuitive control and monitoring of the

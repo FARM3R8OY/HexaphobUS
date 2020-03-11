@@ -1,15 +1,18 @@
 /*
-File: test_UpAndDown.h
+File: functionDefinition.h
 
 Contributor(s):
     Guay-Tanguay, Carolane | guac3201
     Lalonde,      Philippe | lalp2803
+    Roy,          Olivier  | royo2206
+
 
 Date(s):
     2020-02-25 (Creation)
+    2020-03-11 (Last modification)
 
 Description:
-    Function definition for arduino
+    Function definition for Arduino.
 
 S4-H20 | GRO400
 */
