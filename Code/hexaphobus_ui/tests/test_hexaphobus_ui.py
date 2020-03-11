@@ -41,18 +41,18 @@ class TestHexaphobusUI(unittest.TestCase):
         for count, edit in enumerate(self._window.getServoEdits()):
             self.assertEqual(values[count], edit.text())
 
-    def test_encoding_type(self):
+    def test_encodingType(self):
         global encoded_data
-        encoded_data = pack_string('ABCDE')
+        encoded_data = hexaphobus_ui.stringToByte('ABCDE')
         self.assertTrue(isinstance(encoded_data), 'byte')
 
-    def test_decoding_type(self):
-        my_string = unpack(encoded_data)
+    def test_decodingType(self):
+        my_string = hexaphobus_ui.byteToString(encoded_data)
         self.assertTrue(isinstance(my_string, 'str'))
 
-    def test_encoding_size(self):
-        my_string = unpack(encoded_data)
-        self.assertEqual(len(my_string),5)
+    def test_encodingSize(self):
+        my_string = hexaphobus_ui.byteToString(encoded_data)
+        self.assertEqual(len(my_string), 5)
 
 if __name__ == '__main__':
     unittest.main()
