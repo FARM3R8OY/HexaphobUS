@@ -44,10 +44,10 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define FRONT 68-10
 #define BACK 18+10
 #define CENTER 43
-int DECALAGE[13]={-1,-10,-5,0,0,-5,5,-15,-10,-8,-15,-10,-5};
+int DECALAGE[13]={-1,-10,-5,0,0,-5,5,56,68,58,56,56,68};
 
 
-
+//------------------------------------ Conversion function---------------------------------------- 
 //Angle to analog value 
 int pulseWidth(int angle)
 {
@@ -57,6 +57,36 @@ int pulseWidth(int angle)
   return analog_value;
 }
 
+//Analog value to angle
+int AnalogToAngle(int analog_value)
+{
+  int angle_wide, pulse_wide;
+  pulse_wide = int(float(analog_value) * 1000000 / FREQUENCY / 4096);
+  angle_wide = map(pulse_wide, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH, 0 ,180);
+  return angle_wide;
+}
+
+int* Accel(int delta, float weight)
+{
+	int max_size = 9;
+	int total_angle = 0;
+	
+	int move_sequence[max_size];
+	
+	int angle = 1;
+	move_sequence[0] = angle;
+	total_angle += angle
+	
+	for ( int i = 1; total_angle < delta; i++){
+		angle += int(ceil(angle*weight));
+		total_angle += angle;
+		if(total_angle > delta){
+			angle -= (total_angle-delta);
+		}
+		move_sequence[i] = angle;
+	}
+	return move_sequence[];
+}
 
 //------------------------------------ Motion function -------------------------------------------
 
@@ -64,11 +94,6 @@ int pulseWidth(int angle)
 //Up = POS_UP or 1 , Down = POS_DOWN or 0
 //Pass 3 Leg in argument (1 to 6) and their 3 positions (0 or 1)
 //Add management for errors cases
-
-
-//int goTo(angle){
-
-
 int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
 {
 
@@ -90,18 +115,14 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
             pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
         }
         else if (Legs[i]==0)
-        {
-        }
+        {}
         else
-        {
-            pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
-        }
+        {pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));}
       }
       else if(Legs[i]==0){
       }
       else 
-        {return -1;}
-    
+       {return -1;}
      }
      delay(time);
      return 0;
@@ -128,16 +149,12 @@ int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, 
         {angle[i]=CENTER+DECALAGE[Legs[i]];}
     
       if (Legs[i]%2 == 0)
-      {
-          pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
-      }
+      {pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));}
       
       else if (Legs[i]==0)
-      {
-      }
-      else {
-        pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
-      }
+      {}
+      else
+      {pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));}
     }
     else if(Legs[i]==0){
     }
@@ -165,15 +182,7 @@ int MoveOneLeg(int leg, int direction, int time)
   return 0;
 }
 
-//Analog value to angle
-int AnalogToAngle(int analog_value)
-{
-  int angle_wide, pulse_wide;
-  pulse_wide = int(float(analog_value) * 1000000 / FREQUENCY / 4096);
-  angle_wide = map(pulse_wide, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH, 0 ,180);
-  return angle_wide;
-}
-
+//-------------------------------------Movement sequencing function-------------------------------------------
 //Robot Initialisation 
 //Legs are in initial position
 int init_mouv()
@@ -190,11 +199,9 @@ int init_mouv()
   
   return 0;
 }
-//-------------------------------------Movement sequencing function-------------------------------------------
-
 //Function allowing the robot to move forward or backward as long as the button is pressed
 //Connect the button UP of the HMI
-//1 leg at a time
+//Move 1 leg at a time 
 int Moving(int B_Moving,int nb_sequence,int dir)
 {
     int inv_dir=0;
@@ -221,8 +228,9 @@ int Moving(int B_Moving,int nb_sequence,int dir)
     }
     return 0;
 }
-//Another function to move foward
-int MovingForward_2(int B_MovingForward,int nb_sequence,int dir)
+//Another function to move forward or backward
+//All legs in position before moving
+int Moving_2(int B_MovingForward,int nb_sequence,int dir)
 {
     
     while (B_MovingForward<=nb_sequence)
@@ -302,11 +310,6 @@ int MovingLeft(int B_MovingLeft,int nb_sequence)
     } 
     return 0;
 }
-
-
-
-
-
 
 
 
