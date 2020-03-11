@@ -72,6 +72,9 @@ LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 # --------------------------------------------
 
 def pack_string(my_string):
+    """
+    Encode a string in bytes values for communication with Arduino code
+    """
     string_size = len(my_string)
     bytes_string = bytes(my_string, 'utf-8')
     my_format = str(string_size)+"s"
@@ -80,7 +83,9 @@ def pack_string(my_string):
     return encoded_string
 
 def unpack_string(encoded_string):
-    print(encoded_string)
+    """
+    Decode bytes values from Arduino code in a string 
+    """
     packed_data = binascii.unhexlify(encoded_string)
     string_size = len(encoded_string)/2
     my_format = str(int(string_size))+"s"
