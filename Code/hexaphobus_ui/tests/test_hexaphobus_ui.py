@@ -44,6 +44,7 @@ class TestHexaphobusUI(unittest.TestCase):
     def test_encoding_type(self):
         global encoded_data
         encoded_data = pack_string('ABCDE')
+        self.assertTrue(encoded_data.isBytes())
 
     def test_decoding_type(self):
         my_string = unpack(encoded_data)
