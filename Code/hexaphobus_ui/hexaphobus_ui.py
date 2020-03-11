@@ -71,6 +71,28 @@ LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
 # --------------------------------------------
 
+def pack_string(my_string):
+    """
+    Encode a string in bytes values for communication with Arduino code
+    """
+    string_size = len(my_string)
+    bytes_string = bytes(my_string, 'utf-8')
+    my_format = str(string_size)+"s"
+    packed_data = pack(my_format, bytes_string)
+    encoded_string = binascii.hexlify(packed_data)
+    return encoded_string
+
+def unpack_string(encoded_string):
+    """
+    Decode bytes values from Arduino code in a string 
+    """
+    packed_data = binascii.unhexlify(encoded_string)
+    string_size = len(encoded_string)/2
+    my_format = str(int(string_size))+"s"
+    unpacked_data = unpack(my_format, packed_data)
+    unpacked_data = unpacked_data[0].decode('utf-8')
+    print('Unpacked Values:', unpacked_data)
+    return unpacked_data
 
 class RobotTracking(QWidget):
     """
@@ -118,15 +140,20 @@ class RobotTracking(QWidget):
         """
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
+        global encod
 
         if direction == "UP" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
+            encod = pack_string('UP')
         elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
+            encod = pack_string('DOWN')
         elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
+            encod = pack_string('RIGHT')
         elif direction == "LEFT" and self._robot_x_pos > 0:
             self._robot_x_pos -= self._speed
+            encod = pack_string('LEFT')
 
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()
@@ -154,15 +181,7 @@ class RobotTracking(QWidget):
         self._target_x_pos = self._robot_x_pos
         self._target_y_pos = self._robot_y_pos
         self.update()
-        '''#to pack string
-        string = 'allo'
-        s = bytes(string, 'utf-8')
-        global format
-        format = "4s"
-        packed_data = pack(format, s)
-        global t
-        t = binascii.hexlify(packed_data)
-        '''
+        
 
     def paintEvent(self, event):
         """
@@ -281,7 +300,7 @@ class MainWindow(QWidget):
 
         self.addServos()
         self.setSizeButtons()
-        self.setConnexions()
+        self.setConnections()
         self.setInfo()
         self.setLayoutDependencies()
         self.addWidgets()
@@ -320,7 +339,7 @@ class MainWindow(QWidget):
         self.button_init.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
-    def setConnexions(self):
+    def setConnections(self):
         """
         Connect the buttons and shortcuts to the corresponding
         functions.
@@ -358,11 +377,7 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        '''#to unpack string
-        packed_data = binascii.unhexlify(t)
-        unpacked_data = unpack(format, packed_data)
-        print('Unpacked Values:', unpacked_data)
-        '''
+        my_string = unpack_string(encod)
 
     def setServoValues(self, angles_list):
         """
