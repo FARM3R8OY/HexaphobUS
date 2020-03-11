@@ -8,6 +8,7 @@ matrix:
         - pip install -U pip
         - pip install -U pytest
         - pip install -U --force-reinstall pyqt5
+        - pip install pyserial
         - pip install codecov
       script:
         - pytest

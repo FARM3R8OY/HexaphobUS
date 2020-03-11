@@ -16,7 +16,9 @@ S4-H20 | GRO400
 # --------------------------------------------
 
 import unittest
-from .. import hexaphobus_ui
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import hexaphobus_ui
 
 # --------------------------------------------
 
@@ -31,8 +33,8 @@ class TestHexaphobusUI(unittest.TestCase):
     user to automate the protocol verification of the user interface
     module, 'hexaphobus_ui.py'.
     """
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._window = hexaphobus_ui.MainWindow()
 
     def test_servoValues(self, values):
