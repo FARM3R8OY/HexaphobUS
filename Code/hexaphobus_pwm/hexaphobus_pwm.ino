@@ -47,10 +47,16 @@ void loop() {
   init_mouv();
   int B_Moving=1;
   Moving(B_Moving,5,POS_FRONT);
-  int B_Moving=1;
-  MovingForward(B_Moving,5,POS_FRONT);
-  B_Moving=0;
-
+  delay(2000);
+  B_Moving=1;
+  Moving(B_Moving,5,POS_BACK);
+  B_Moving=1;
+  delay(2000);
+  MovingRight(B_moving,3);
+  B_Moving=1;
+  delay(2000);
+  MovingLeft(B_moving,3);
+  delay(2000;)
 }
 
 
