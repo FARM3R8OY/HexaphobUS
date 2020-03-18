@@ -58,6 +58,9 @@ UI_H = 600
 UI_MIN_W = 480
 UI_MIN_H = 360
 
+global nb_command
+nb_command = -1
+
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
 BUTTON_DOWN = "\u2193"
@@ -202,8 +205,40 @@ class RobotTracking(QWidget):
         q.setPen(QColor(0, 0, 0))
         q.drawPixmap(QPoint(self._robot_x_pos-20, self._robot_y_pos-20),
                      pix_robot)
+        #From center to robot             
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
+
+        global nb_command
+        
+        #Suggest to use feedback from the angles of servomotor
+        if nb_command%2 == 0 and nb_command >= 0:
+            move_leg = -6
+        elif nb_command%2 == 1 and nb_command >= 0:
+            move_leg = 6
+        else:
+            move_leg = 0
+        
+        nb_command += 1
+        
+        #Leg 1
+        q.drawLine(self._robot_x_pos+20, self._robot_y_pos,
+                    self._robot_x_pos+40, self._robot_y_pos+move_leg)
+        #Leg 2
+        q.drawLine(self._robot_x_pos+12, self._robot_y_pos+13,
+                    self._robot_x_pos+32, self._robot_y_pos+13-move_leg)
+        #Leg 3
+        q.drawLine(self._robot_x_pos+12, self._robot_y_pos-13,
+                    self._robot_x_pos+32, self._robot_y_pos-13-move_leg)
+        #Leg 4
+        q.drawLine(self._robot_x_pos-20, self._robot_y_pos,
+                    self._robot_x_pos-40, self._robot_y_pos-move_leg)
+        #Leg 5
+        q.drawLine(self._robot_x_pos-12, self._robot_y_pos+13,
+                    self._robot_x_pos-32, self._robot_y_pos+13+move_leg)
+        #Leg 6
+        q.drawLine(self._robot_x_pos-12, self._robot_y_pos-13,
+                    self._robot_x_pos-32, self._robot_y_pos-13+move_leg)
 
 
 class MainWindow(QWidget):
