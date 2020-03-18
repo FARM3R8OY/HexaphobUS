@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['setup_8',['Setup',['../d4/dd8/md__c_1__users_g53bo__desktop__p_r_o_j_e_c_t_s__university_2020-01-06_8__g_r_o-_s4__projet__hexaphob_u_s__code_setup.html',1,'']]]
+  ['getservoedits_6',['getServoEdits',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a496742550cfd65739dab309bb1c18b4b',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
+  ['getservolabels_7',['getServoLabels',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a215d53c8e9d0f38bd9dc814039e2aea9',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]]
 ];
