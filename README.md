@@ -41,9 +41,9 @@
 
 #### <a id="SetupContrib"></a>Setup for Repository Contributors
 
-To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](https://github.com/FARM3R8OY/HexaphobUS/blob/master/Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
+To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](https://github.com/gabrielcabana21/HexaphobUS/blob/code/Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
 
-To add new functions, refine the code, redesign the 3D model, and more, fork your own copy of the repository and make a pull request after modifications.
+To add new functions, refine the code, redesign the 3D model, and more, fork your own copy of the repository and [make a pull request after modifications](http://makeapullrequest.com).
 
 ## <a id="Operation"></a>Robot Operation
 
