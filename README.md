@@ -23,6 +23,7 @@
 - [Setup](#Setup)
     - [Setup for Users](#SetupUsers)
     - [Setup for Repository Contributors](#SetupContrib)
+- [Documentation](#Documentation)
 - [Robot Operation](#Operation)
 - [External Resources](#Resources)
     - [Battery, Power Source, and Charger](#Battery)
@@ -44,6 +45,10 @@
 To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](https://github.com/gabrielcabana21/HexaphobUS/blob/code/Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
 
 To add new functions, refine the code, redesign the 3D model, and more, fork your own copy of the repository and [make a pull request after modifications](http://makeapullrequest.com).
+
+## <a id="Documentation"></a>Documentation
+
+All the code documentation can be found [here](https://raw.githack.com/gabrielcabana21/HexaphobUS/code/docs/html/index.html).
 
 ## <a id="Operation"></a>Robot Operation
 

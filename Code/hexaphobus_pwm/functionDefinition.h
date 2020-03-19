@@ -44,8 +44,24 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define FRONT 75
 #define BACK 10
 #define CENTER 43
+
 int DECALAGE[13]={-1,-10,-5,0,0,-5,5,56,68,58,56,56,68};
-int ANGLE[13]={0,0,0,0,0,0,0,0,0,0,0,0,0};
+int ANGLE[13]={-1,0,0,0,0,0,0,0,0,0,0,0,0};
+
+
+//------------------------------------- Communication function------------------------------------
+
+/*marque quelque chose de différent*/
+int AngleToHMI()
+{
+  /*marque quelque chose*/
+  String strToSend =String(ANGLE[1]);
+  for(int i=2; i < 13; i++){
+    strToSend += ";" + String(ANGLE[i]);
+  }
+  Serial.println(strToSend);
+  return 0  ;
+}
 
 
 //------------------------------------ Conversion function---------------------------------------- 
@@ -66,28 +82,6 @@ int AnalogToAngle(int analog_value)
   angle_wide = map(pulse_wide, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH, 0 ,180);
   return angle_wide;
 }
-/*
-int* Accel(int delta, float weight)
-{
-	int max_size = 9;
-	int total_angle = 0;
-	
-	int move_sequence[max_size];
-	
-	int angle = 1;
-	move_sequence[0] = angle;
-	total_angle += angle;
-	
-	for ( int i = 1; total_angle < delta; i++){
-		angle += int(ceil(angle*weight));
-		total_angle += angle;
-		if(total_angle > delta){
-			angle -= (total_angle-delta);
-		}
-		move_sequence[i] = angle;
-	}
-	return move_sequence;
-}*/
 
 //------------------------------------ Motion function -------------------------------------------
 
@@ -114,11 +108,17 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
         if (Legs[i]%2 == 0)
         {
             pwm.setPWM(Legs[i]+6, 0, pulseWidth(180-angle[i]));
+            ANGLE[Legs[i]+6]=180-angle[i];
+            AngleToHMI();
         }
         else if (Legs[i]==0)
         {}
         else
-        {pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));}
+        {
+          pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
+          ANGLE[Legs[i]+6]=180-angle[i];
+          AngleToHMI();
+        }
       }
       else if(Legs[i]==0){
       }
@@ -150,12 +150,20 @@ int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, 
         {angle[i]=CENTER+DECALAGE[Legs[i]];}
     
       if (Legs[i]%2 == 0)
-      {pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));}
+      {
+        pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
+        ANGLE[Legs[i]]=angle[i];
+        AngleToHMI();
+      }
       
       else if (Legs[i]==0)
       {}
       else
-      {pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));}
+      {
+        pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
+        ANGLE[Legs[i]]=angle[i];
+        AngleToHMI();
+      }
     }
     else if(Legs[i]==0){
     }
