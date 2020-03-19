@@ -28,7 +28,7 @@ import binascii
 import serial
 from PyQt5 import QtSerialPort
 
-from PyQt5.QtCore import Qt, QTimer, QPoint
+from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
@@ -73,7 +73,7 @@ BUTTON_UP = "\u2191"
 BUTTON_DOWN = "\u2193"
 BUTTON_LEFT = "\u2190"
 BUTTON_RIGHT = "\u2192"
-BUTTON_STOP = "STOP"
+BUTTON_SERIAL = "Start Serial"
 BUTTON_INIT = "POS INIT"
 BUTTON_PRG1 = "PRG1"
 SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -110,6 +110,38 @@ def byteToString(encoded_string):
     string = struct.unpack(my_format, packed_data)
     string = string[0].decode('utf-8')
     return string
+
+class SerialChecker(QThread):
+    def __init__(self):
+        QThread.__init__(self)
+        self.ser = None
+
+    def SerialRun(self):
+        port = "/dev/ttyACM0"
+        self.ser = serial.Serial(port,9600)
+        self.ser.baudrate = 9600
+        self.ser.flushInput()
+        
+
+    def serialReceive(self):
+        """
+        Get the bytes from the serial port
+        """
+        while self.ser.is_open():
+            servoTable = []
+            stringData = self.ser.readLine().data()
+            tableData = stringData.split(";")
+            for angle in tableData:
+                servoAngle = byteToString(angle)
+                servoTable.append(angle)
+            return servoTable
+
+    def serialSend(self, command):
+        """
+        Send the bytes to the serial port
+        """
+        bytesData = stringToByte(command)
+        self.ser.write(bytesData) 
 
 class RobotTracking(QWidget):
     """
@@ -297,7 +329,7 @@ class MainWindow(QWidget):
         self.button_left = QPushButton(BUTTON_LEFT)
         self.button_right = QPushButton(BUTTON_RIGHT)
 
-        self.button_stop = QPushButton(BUTTON_STOP)
+        self.button_serial_start = QPushButton(BUTTON_SERIAL)
         self.button_init = QPushButton(BUTTON_INIT)
         self.button_prog = QPushButton(BUTTON_PRG1)
 
@@ -319,11 +351,7 @@ class MainWindow(QWidget):
 
         self.onlyFloat = QDoubleValidator()
 
-
-        self.serial = QtSerialPort.QSerialPort(
-            "/dev/ttyACM0",
-            baudRate=QtSerialPort.QSerialPort.Baud9600,
-            readyRead=self.serialReceive)
+        self.serialCheck = SerialChecker()
 
         self.initUI()
 
@@ -366,28 +394,9 @@ class MainWindow(QWidget):
         self.addWidgets()
         self.setLayout(self.global_layout)
         self.setInfoValues("100", "200")
-        self.setServoValues(Tests_angles)
+        
         self.show()
 
-    def serialReceive(self):
-        """
-        Get the bytes from the serial port
-        """
-        while self.serial.canReadLine():
-            servoTable = []
-            bytesData = self.serial.readLine().data()
-            tableData = bytesData.split(;)
-            for angle in tableData:
-                servoAngle = byteToString(angle)
-                servoTable.append(angle)
-            return servoTable
-
-    def serialSend(self, command):
-        """
-        Send the bytes to the serial port
-        """
-        bytesData = stringToByte(command)
-        self.serial.write(bytesData) 
 
     def addServos(self):
         """
@@ -415,7 +424,7 @@ class MainWindow(QWidget):
         self.button_left.setFixedSize(ARROW_W, ARROW_H)
         self.button_right.setFixedSize(ARROW_W, ARROW_H)
 
-        self.button_stop.setFixedSize(BUTTON_W, BUTTON_H)
+        self.button_serial_start.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_init.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
@@ -424,32 +433,35 @@ class MainWindow(QWidget):
         Connect the buttons and shortcuts to the corresponding
         functions.
         """
+        self.button_serial_start.clicked.connect(self.serialCheck.SerialRun)
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(lambda: self.tracking.
                                        changePosition("FORWARD"))
         self.shortcut_up.activated.connect(lambda: self.tracking.
                                            changePosition("FORWARD"))
-        self.button_up.clicked.connect(lambda: self.serialSend("FORWARD"))
-        self.shortcut_up.activated.connect(lambda: self.serialSend("FORWARD"))
+        self.button_up.clicked.connect(lambda: self.serialCheck.serialSend("FORWARD"))
+        self.shortcut_up.activated.connect(lambda: self.serialCheck.serialSend("FORWARD"))
         self.button_down.clicked.connect(lambda: self.tracking.
                                          changePosition("BACKWARD"))
         self.shortcut_down.activated.connect(lambda: self.tracking.
                                              changePosition("BACKWARD"))
-        self.button_down.clicked.connect(lambda: self.serialSend("BACKWARD"))
-        self.shortcut_down.activated.connect(lambda: self.serialSend("BACKWARD"))
+        self.button_down.clicked.connect(lambda: self.serialCheck.serialSend("BACKWARD"))
+        self.shortcut_down.activated.connect(lambda: self.serialCheck.serialSend("BACKWARD"))
         self.button_right.clicked.connect(lambda: self.tracking.
                                           changePosition("RIGHT"))
         self.shortcut_right.activated.connect(lambda: self.tracking.
                                               changePosition("RIGHT"))
-        self.button_right.clicked.connect(lambda: self.serialSend("RIGHT"))
-        self.shortcut_right.activated.connect(lambda: self.serialSend("RIGHT"))
+        self.button_right.clicked.connect(lambda: self.serialCheck.serialSend("RIGHT"))
+        self.shortcut_right.activated.connect(lambda: self.serialCheck.serialSend("RIGHT"))
         self.button_left.clicked.connect(lambda: self.tracking.
                                          changePosition("LEFT"))
         self.shortcut_left.activated.connect(lambda: self.tracking.
                                              changePosition("LEFT"))
-        self.button_left.clicked.connect(lambda: self.serialSend("LEFT"))
-        self.shortcut_left.activated.connect(lambda: self.serialSend("LEFT"))
+        self.button_left.clicked.connect(lambda: self.serialCheck.serialSend("LEFT"))
+        self.shortcut_left.activated.connect(lambda: self.serialCheck.serialSend("LEFT"))
+
+        (self.setServoValues)
 
     def setInfo(self):
         """
@@ -469,17 +481,17 @@ class MainWindow(QWidget):
         string = byteToString(ENCODED_VAR)
         print('Unpacked Values:', string)
 
-    def setServoValues(self, angles_list):
+    def setServoValues(self):
         """
         Set the servomotor edit text.
         """
         # Read values from Arduino (angle servo moteur)
         a = self.serialReceive()
         print(a) #None if not working
-        for (angle, servo) in zip(angles_list, self._servo_edits):
-            servo.setText(angle)
+        # for (angle, servo) in zip(angles_list, self._servo_edits):
+        #     servo.setText(angle)
         """
-        Remove next lines to test full serial communication
+        Remove comment next lines to test full serial communication
         """
         # global edit_place
         # self._servo_edits[edit_place].setText(a)
@@ -513,7 +525,7 @@ class MainWindow(QWidget):
         self.bottom_layout.addLayout(self.info_layout)
         self.bottom_layout.addLayout(self.prog_layout)
         self.bottom_layout.addLayout(self.move_layout)
-        self.bottom_layout.addWidget(self.button_stop)
+        self.bottom_layout.addWidget(self.button_serial_start)
 
     def strechServoLayouts(self):
         """
