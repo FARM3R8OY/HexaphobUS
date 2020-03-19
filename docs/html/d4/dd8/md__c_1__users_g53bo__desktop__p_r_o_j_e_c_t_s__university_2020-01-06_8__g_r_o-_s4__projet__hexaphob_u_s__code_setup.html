@@ -72,6 +72,7 @@ $(function() {
 <li><a href="../../#insKMS">Install KMS</a></li>
 <li><a href="../../#insGit">Install Git</a></li>
 <li><a href="../../#insIDE">Install IDE</a></li>
+<li><a href="../../#PyUpgrade">Upgrade Python on Debian (Raspberry Pi)</a></li>
 </ul>
 </li>
 <li><a href="../../#KeyManage">Key Management</a><ul>
@@ -84,8 +85,8 @@ $(function() {
 </ul>
 </li>
 <li><a href="../../#IDEConfig">IDE Configuration</a><ul>
-<li><a href="../../#IDEGitConfig">Git on VSCode/VSCodium</a></li>
-<li><a href="../../#IDEArduinoConfig">Arduino on VSCode/VSCodium</a></li>
+<li><a href="../../#IDEGitConfig">Git on VSCode / VSCodium</a></li>
+<li><a href="../../#IDEArduinoConfig">Arduino on VSCode / VSCodium</a></li>
 </ul>
 </li>
 </ul>
@@ -118,9 +119,19 @@ $(function() {
 <li><a href="https://code.visualstudio.com/">VSCode</a></li>
 <li><a href="https://github.com/VSCodium/vscodium/releases">VSCodium</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h3><a class="anchor" id="autotoc_md5"></a>
+&lt;a id="PyUpgrade"&gt;&lt;/a&gt;Upgrade Python on Debian (Raspberry Pi)</h3>
+<p>If you wish to run Python on the latest and greatest on your Raspberry Pi, you must install from the source code. The sequence of command lines is as follows:</p><ul>
+<li>Install prerequisites: ```bash sudo apt-get update sudo apt-get install -y build-essential tk-dev libncurses5-dev libncursesw5-dev | libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev | libexpat1-dev liblzma-dev zlib1g-dev libffi-dev openssl tar wget vim ```</li>
+<li>Download Python: ```bash cd /opt wget <a href="https://www.python.org/ftp/python/3.8.0/Python-3.8.2.tgz">https://www.python.org/ftp/python/3.8.0/Python-3.8.2.tgz</a> ```</li>
+<li>Extract: ```bash sudo tar zxf Python-3.8.2.tgz cd Python-3.8.2 sudo ./configure &ndash;enable-optimizations sudo make -j 4 # Number of cores on Pi (can be found with command 'nproc') sudo make altinstall ```</li>
+<li>Make it your default version: ```bash python3.8 -V echo "alias python=/usr/local/bin/python3.8" &gt;&gt; ~/.bashrc source ~/.bashrc python -V ```</li>
+<li>Install modules: ```bash sudo apt-get install python3-pyqt5 ```</li>
+</ul>
+<p>Don't forget to delete the archive and the extracted folder after successful installation.</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
 &lt;a id="KeyManage"&gt;&lt;/a&gt;Key Management</h1>
-<h3><a class="anchor" id="autotoc_md6"></a>
+<h3><a class="anchor" id="autotoc_md7"></a>
 &lt;a id="kmGen"&gt;&lt;/a&gt;Generate keys</h3>
 <p>Open Git Bash or Command Prompt, and generate a set of public and private keys. </p><div class="fragment"><div class="line">gpg --full-generate-key</div>
 <div class="line"> </div>
@@ -136,7 +147,7 @@ $(function() {
 <li>Enter a comment (optional);</li>
 <li>Enter a passphrase (this will allow you to access restricted GPG operations and sign your commits).</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md7"></a>
+<h3><a class="anchor" id="autotoc_md8"></a>
 &lt;a id="kmExp"&gt;&lt;/a&gt;Export keys</h3>
 <p>Still in Git Bash or Command Prompt, display your newly-created keys. </p><div class="fragment"><div class="line">gpg --list-secret-keys --keyid-format LONG</div>
 </div><!-- fragment --><p>The resulting text will look something like this: </p><div class="fragment"><div class="line">sec   rsa4096/&lt;sec-key-ID&gt; &lt;creation-date&gt; [SC]</div>
@@ -154,7 +165,7 @@ $(function() {
 <li>Run <code>gpg --send-keys &lt;sec-key-ID&gt;</code> (<b>this only sends the public key</b>).</li>
 </ul>
 <p>The key management procedure is now complete. You can close the window.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 &lt;a id="GitConfig"&gt;&lt;/a&gt;Git Configuration</h1>
 <p>The Git configuration can be managed at a local or a global level, depending on your needs. For our purposes, we will use a global config.</p>
 <p>Open the Windows Command Prompt and run the following commands. If any issue is encountered later on, try again with an elevated Command Prompt:</p><ul>
@@ -175,7 +186,7 @@ $(function() {
 </li>
 </ul>
 <p>The Git configuration procedure is now complete. You can close the window.</p>
-<h3><a class="anchor" id="autotoc_md9"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 &lt;a id="DirectGit"&gt;&lt;/a&gt;Stage, commit, and push using Git</h3>
 <p>To change the repository with files that aren't compatible with your IDE (CAD files, for instance), simply follow this procedure in a Git Bash window opened in your repository clone directory:</p>
 <div class="fragment"><div class="line"># Stage changes</div>
@@ -185,26 +196,26 @@ $(function() {
 <div class="line">git status</div>
 <div class="line"> </div>
 <div class="line"># Commit with message</div>
-<div class="line">git commit -a -m &lt;msg&gt;</div>
+<div class="line">git commit -a -m &lt;msg&gt; # or simply &#39;git commit -a&#39;, to open a multiline commit message in your default text editor</div>
 <div class="line"> </div>
 <div class="line"># Push in the right branch</div>
 <div class="line">git push origin &lt;branch&gt;</div>
 </div><!-- fragment --><p>For more option or a deeper understanding of Git and its commands, refer to the <a href="https://git-scm.com/docs">Git documentation</a>.</p>
-<h1><a class="anchor" id="autotoc_md10"></a>
+<h1><a class="anchor" id="autotoc_md11"></a>
 &lt;a id="IDEConfig"&gt;&lt;/a&gt;IDE Configuration</h1>
-<h3><a class="anchor" id="autotoc_md11"></a>
-&lt;a id="IDEGitConfig"&gt;&lt;/a&gt;Git on VSCode/VSCodium</h3>
-<p>To configure Git in VSCode/VSCodium, open one IDE and follow these steps:</p><ul>
+<h3><a class="anchor" id="autotoc_md12"></a>
+&lt;a id="IDEGitConfig"&gt;&lt;/a&gt;Git on VSCode / VSCodium</h3>
+<p>To configure Git in VSCode / VSCodium, open one IDE and follow these steps:</p><ul>
 <li>Extensions (<code>Ctrl</code>+<code>Shift</code>+<code>X</code>): Make sure that the "Git Extension Pack" extension is installed (and any other Git extension you find useful);</li>
 <li>File &amp;#8594; Preferences &amp;#8594; Settings (<code>Ctrl</code>+<code>,</code>) &amp;#8594; Extensions &amp;#8594; Git &amp;#8594; Enable Commit Signing;<ul>
 <li>Alternatively, Show All Commands (<code>Ctrl</code>+<code>Shift</code>+<code>P</code>) &amp;#8594; Preferences: Open settings (JSON) &amp;#8594; Add: <code>"git.enableCommitSigning": true</code>. You can also add the command to the workspace JSON settings, it will override the user defaults. If you set it in the workspace, make sure every collaborator has setup their KMS, else the command will prevent them from committing to the repository.</li>
 </ul>
 </li>
 </ul>
-<h3><a class="anchor" id="autotoc_md12"></a>
-&lt;a id="IDEArduinoConfig"&gt;&lt;/a&gt;Arduino on VSCode/VSCodium</h3>
-<p>To configure Arduino in VSCode/VSCodium, follow these steps:</p><ul>
-<li>Make sure that you install the <a href="../../#insIDE">Arduino IDE</a>: the Arduino extension on VSCode/VSCodium will need its executables;</li>
+<h3><a class="anchor" id="autotoc_md13"></a>
+&lt;a id="IDEArduinoConfig"&gt;&lt;/a&gt;Arduino on VSCode / VSCodium</h3>
+<p>To configure Arduino in VSCode / VSCodium, follow these steps:</p><ul>
+<li>Make sure that you install the <a href="../../#insIDE">Arduino IDE</a>: the Arduino extension on VSCode / VSCodium will need its executables;</li>
 <li>Find your Arduino path file ("&lt;drive:\&lt;programs&gt;\Arduino", for instance) and add the <a href="../../../README.md#PWM">Sunfounder PWM Servo Driver library</a> to the Arduino libraries ("&lt;drive&gt;:\&lt;programs&gt;\Arduino\libraries" with folder name "Adafruit_PWMServoDriver", for instance). This step is specific to our project;</li>
 <li>On VSCode or VSCodium;<ul>
 <li>Extensions (<code>Ctrl</code>+<code>Shift</code>+<code>X</code>): Make sure that the "Arduino" extension is installed (and any other Arduino/C/C++ extension you find useful);</li>
@@ -215,9 +226,9 @@ $(function() {
 </li>
 </ul>
 <p>The IDE configuration procedure is now complete. You can close the window.</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
-autotoc_md13</h1>
-<p>That's it! You should have integrated Git and Arduino into your favorite IDE now, and allowed a KMS to sign your commits. If any issue persists, you can find help online on Stack Overflow, the GitHub forums, and more. </p>
+<h1><a class="anchor" id="autotoc_md14"></a>
+autotoc_md14</h1>
+<p>That's it! You should have integrated Git and Arduino into your favorite IDE now, and allowed a KMS to sign your commits. You have also upgraded the Python version on your Raspberry Pi. If any issue persists, you can find help online on Stack Overflow, the GitHub forums, and more. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

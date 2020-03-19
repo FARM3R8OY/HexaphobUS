@@ -92,6 +92,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a215d53c8e9d0f38bd9dc814039e2aea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d6e3f8a0026e7ad635de5d761096104"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a6d6e3f8a0026e7ad635de5d761096104">initUI</a> (self)</td></tr>
 <tr class="separator:a6d6e3f8a0026e7ad635de5d761096104"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d242210dfe3a7e0bb118be5b92209fa"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a3d242210dfe3a7e0bb118be5b92209fa">serialReceive</a> (self)</td></tr>
+<tr class="separator:a3d242210dfe3a7e0bb118be5b92209fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a266811c90512d905356c6fe1b7290736"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a266811c90512d905356c6fe1b7290736">serialSend</a> (self, command)</td></tr>
+<tr class="separator:a266811c90512d905356c6fe1b7290736"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f0f2eafc34b6f0bdf1c901d25ca4a40"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a4f0f2eafc34b6f0bdf1c901d25ca4a40">addServos</a> (self)</td></tr>
 <tr class="separator:a4f0f2eafc34b6f0bdf1c901d25ca4a40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab75f155d7aeaaddc9209b918f42aedb6"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#ab75f155d7aeaaddc9209b918f42aedb6">setSizeButtons</a> (self)</td></tr>
@@ -200,6 +204,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a35a82a99a25d8972a12d841feaf24f2d"><td class="memItemLeft" align="right" valign="top"><a id="a35a82a99a25d8972a12d841feaf24f2d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>onlyFloat</b></td></tr>
 <tr class="separator:a35a82a99a25d8972a12d841feaf24f2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad139cc1a25a2ce2e85793e1be50bfdd6"><td class="memItemLeft" align="right" valign="top"><a id="ad139cc1a25a2ce2e85793e1be50bfdd6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>serial</b></td></tr>
+<tr class="separator:ad139cc1a25a2ce2e85793e1be50bfdd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1e60030ed56c753c5a387c95fef9bb1"><td class="memItemLeft" align="right" valign="top"><a id="af1e60030ed56c753c5a387c95fef9bb1"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>tracking</b></td></tr>
 <tr class="separator:af1e60030ed56c753c5a387c95fef9bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -332,6 +339,54 @@ constructor of its parent class, 'QWidget'.
     -the robot information;
     -the dependencies (nested layouts);
     -the widgets.
+</pre> 
+</div>
+</div>
+<a id="a3d242210dfe3a7e0bb118be5b92209fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d242210dfe3a7e0bb118be5b92209fa">&#9670;&nbsp;</a></span>serialReceive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def hexaphobus_ui.hexaphobus_ui.MainWindow.serialReceive </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Get the bytes from the serial port
+</pre> 
+</div>
+</div>
+<a id="a266811c90512d905356c6fe1b7290736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a266811c90512d905356c6fe1b7290736">&#9670;&nbsp;</a></span>serialSend()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def hexaphobus_ui.hexaphobus_ui.MainWindow.serialSend </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>command</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Send the bytes to the serial port
 </pre> 
 </div>
 </div>
