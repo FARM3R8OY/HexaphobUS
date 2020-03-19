@@ -24,15 +24,18 @@ matrix:
         global:
           # You can uncomment this to explicitly choose an (old) version of the Arduino IDE
           - ARDUINO_IDE_VERSION=1.8.11
+          - PRETTYNAME="HexaphobUS (Arduino)"
       before_install:
         - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
-        - if [ ! -d $HOME/arduino_ide/AdafruitPWMServoDriver]; then git clone https://github.com/FARM3R8OY/HexaphobUS/tree/code/Code/hexaphobus_pwm/AdafruitPWMServoDriver $HOME/arduino_ide/libraires/AdafruitPWMServoDriver; fi
       install:
-        # Note that every library should be installed in a seperate command
-        - arduino --install-library Adafruit SleepyDog Library
-        - arduino --install-library Adafruit FONA Library
+        # Note that every library should be installed in a separate command
+        - arduino --install-library "Adafruit SleepyDog Library"
+        - arduino --install-library "Adafruit FONA Library"
+        - arduino --install-library "Adafruit PWM Servo Driver Library"
       script:
         - build_main_platforms
+      after_success:
+        - source < (curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
 
 os: linux
   sudo: required
@@ -126,6 +129,7 @@ notifications:
 #           - pip install -U pip,
 #           - pip install -U pytest,
 #           - pip install -U --force-reinstall pyqt5,
+#           - pip install pyserial
 #           - pip install codecov
 #         ],
 #         script: [
@@ -146,19 +150,25 @@ notifications:
 #         },
 #         env: [
 #           {
-#             global: null
+#             global: [
+#               - ARDUINO_IDE_VERSION=1.8.11
+#               - PRETTYNAME="HexaphobUS (Arduino)"
+#             ]
 #           }
 #         ],
 #         before_install: [
-#           - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh),
-#           - if [ ! -d \$HOME/arduino_ide/AdafruitPWMServoDriver\]; then git clone https://github.com/FARM3R8OY/HexaphobUS/tree/code/Code/hexaphobus_pwm/AdafruitPWMServoDriver $HOME/arduino_ide/libraires/AdafruitPWMServoDriver;
+#           - source < (curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 #         ],
 #         install: [
-#           - arduino --install-library \Adafruit SleepyDog Library\,
-#           - arduino --install-library \Adafruit FONA Library\
+#           - arduino --install-library "Adafruit SleepyDog Library",
+#           - arduino --install-library "Adafruit FONA Library",
+#           - arduino --install-library "Adafruit PWM Servo Driver Library"
 #         ],
 #         script: [
 #           - build_main_platforms
+#         ],
+#         after_success: [
+#           - source < (curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
 #         ]
 #       }
 #     ]

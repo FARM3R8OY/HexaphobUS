@@ -36,7 +36,7 @@ uint8_t servonum = 0;
 void setup() {
     Serial.begin(9600);
     pwm.begin();
-    pwm.setPWMFreq(FREQUENCY);  // Analog servos run at ~60 Hz updates
+    pwm.setPWMFreq(FREQUENCY);// Analog servos run at ~60 Hz updates
 }
 
 void loop() {  
@@ -44,20 +44,22 @@ void loop() {
   pwm.setPWM(1, 0, pulseWidth(90));
   Serial.println(pwm.getPWM(1))
   */
-  init_mouv();
+  UpAndDown(2,3,6,POS_UP,POS_UP,POS_DOWN,0);
+  delay(100000);
+ /* init_mouv();
   delay(1000);
   int B_Moving=1;
   Moving(B_Moving,5,POS_FRONT);
-  delay(2000);
+  //delay(2000);
   B_Moving=1;
   Moving(B_Moving,5,POS_BACK);
   B_Moving=1;
-  delay(2000);
+  //delay(2000);
   MovingRight(B_Moving,10);
   B_Moving=1;
   delay(2000);
   MovingLeft(B_Moving,10);
-  delay(2000);
+  delay(2000);*/
 }
 
 
