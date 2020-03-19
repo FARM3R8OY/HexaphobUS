@@ -3,14 +3,15 @@
 	- [Install KMS](#insKMS)
 	- [Install Git](#insGit)
 	- [Install IDE](#insIDE)
+	- [Upgrade Python on Debian (Raspberry Pi)](#PyUpgrade)
 - [Key Management](#KeyManage)
 	- [Generate keys](#kmGen)
 	- [Export keys](#kmExp)
 - [Git Configuration](#GitConfig)
 	- [Stage, commit and push using Git](#DirectGit)
 - [IDE Configuration](#IDEConfig)
-	- [Git on VSCode/VSCodium](#IDEGitConfig)
-	- [Arduino on VSCode/VSCodium](#IDEArduinoConfig)
+	- [Git on VSCode / VSCodium](#IDEGitConfig)
+	- [Arduino on VSCode / VSCodium](#IDEArduinoConfig)
 
 [//]: # (------------------------------------------------)
 
@@ -42,6 +43,43 @@ Notes:
 - [Arduino](https://www.arduino.cc/en/main/software)
 - [VSCode](https://code.visualstudio.com/)
 - [VSCodium](https://github.com/VSCodium/vscodium/releases)
+
+#### <a id="PyUpgrade"></a>Upgrade Python on Debian (Raspberry Pi)
+
+If you wish to run Python on the latest and greatest on your Raspberry Pi, you must install from the source code. The sequence of command lines is as follows:
+- Install prerequisites:
+	```bash
+	sudo apt-get update
+	sudo apt-get install -y build-essential tk-dev libncurses5-dev libncursesw5-dev |
+	libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev |
+	libexpat1-dev liblzma-dev zlib1g-dev libffi-dev openssl tar wget vim
+	```
+- Download Python:
+	```bash
+	cd /opt
+	wget https://www.python.org/ftp/python/3.8.0/Python-3.8.2.tgz
+	```
+- Extract: 
+	```bash
+	sudo tar zxf Python-3.8.2.tgz
+	cd Python-3.8.2
+	sudo ./configure --enable-optimizations
+	sudo make -j 4 # Number of cores on Pi (can be found with command 'nproc')
+	sudo make altinstall
+	```
+- Make it your default version:
+	```bash
+	python3.8 -V
+	echo "alias python=/usr/local/bin/python3.8" >> ~/.bashrc
+	source ~/.bashrc
+	python -V
+	```
+- Install modules:
+	```bash
+	sudo apt-get install python3-pyqt5
+	```
+
+Don't forget to delete the archive and the extracted folder after successful installation.
 
 [//]: # (------------------------------------------------)
 
@@ -134,7 +172,7 @@ git add .
 git status
 
 # Commit with message
-git commit -a -m <msg>
+git commit -a -m <msg> # or simply 'git commit -a', to open a multiline commit message in your default text editor
 
 # Push in the right branch
 git push origin <branch>
@@ -146,17 +184,17 @@ For more option or a deeper understanding of Git and its commands, refer to the 
 
 ## <a id="IDEConfig"></a>IDE Configuration
 
-#### <a id="IDEGitConfig"></a>Git on VSCode/VSCodium
+#### <a id="IDEGitConfig"></a>Git on VSCode / VSCodium
 
-To configure Git in VSCode/VSCodium, open one IDE and follow these steps:
+To configure Git in VSCode / VSCodium, open one IDE and follow these steps:
 - Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>): Make sure that the "Git Extension Pack" extension is installed (and any other Git extension you find useful);
 - File &#8594; Preferences &#8594; Settings (<kbd>Ctrl</kbd>+<kbd>,</kbd>) &#8594; Extensions &#8594; Git &#8594; Enable Commit Signing;
 	- Alternatively, Show All Commands (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) &#8594; Preferences: Open settings (JSON) &#8594; Add: ```"git.enableCommitSigning": true```. You can also add the command to the workspace JSON settings, it will override the user defaults. If you set it in the workspace, make sure every collaborator has setup their KMS, else the command will prevent them from committing to the repository.
 
-#### <a id="IDEArduinoConfig"></a>Arduino on VSCode/VSCodium	
+#### <a id="IDEArduinoConfig"></a>Arduino on VSCode / VSCodium	
 
-To configure Arduino in VSCode/VSCodium, follow these steps:
-- Make sure that you install the [Arduino IDE](#insIDE): the Arduino extension on VSCode/VSCodium will need its executables;
+To configure Arduino in VSCode / VSCodium, follow these steps:
+- Make sure that you install the [Arduino IDE](#insIDE): the Arduino extension on VSCode / VSCodium will need its executables;
 - Find your Arduino path file ("<drive:\<programs>\Arduino", for instance) and add the [Sunfounder PWM Servo Driver library](../README.md#PWM) to the Arduino libraries ("<drive>:\<programs>\Arduino\libraries" with folder name "Adafruit_PWMServoDriver", for instance). This step is specific to our project;
 - On VSCode or VSCodium;
 	- Extensions (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>): Make sure that the "Arduino" extension is installed (and any other Arduino/C/C++ extension you find useful);
@@ -230,4 +268,4 @@ The IDE configuration procedure is now complete. You can close the window.
 [//]: # (------------------------------------------------)
 
 ##
-That's it! You should have integrated Git and Arduino into your favorite IDE now, and allowed a KMS to sign your commits. If any issue persists, you can find help online on Stack Overflow, the GitHub forums, and more.
+That's it! You should have integrated Git and Arduino into your favorite IDE now, and allowed a KMS to sign your commits. You have also upgraded the Python version on your Raspberry Pi. If any issue persists, you can find help online on Stack Overflow, the GitHub forums, and more.

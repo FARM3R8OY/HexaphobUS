@@ -39,12 +39,13 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 
 //Angle for each position
-#define UP 40
+#define UP 35
 #define DOWN 65
-#define FRONT 68-10
-#define BACK 18+10
+#define FRONT 75
+#define BACK 10
 #define CENTER 43
 int DECALAGE[13]={-1,-10,-5,0,0,-5,5,56,68,58,56,56,68};
+int ANGLE[13]={0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
 //------------------------------------ Conversion function---------------------------------------- 
@@ -65,7 +66,7 @@ int AnalogToAngle(int analog_value)
   angle_wide = map(pulse_wide, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH, 0 ,180);
   return angle_wide;
 }
-
+/*
 int* Accel(int delta, float weight)
 {
 	int max_size = 9;
@@ -75,7 +76,7 @@ int* Accel(int delta, float weight)
 	
 	int angle = 1;
 	move_sequence[0] = angle;
-	total_angle += angle
+	total_angle += angle;
 	
 	for ( int i = 1; total_angle < delta; i++){
 		angle += int(ceil(angle*weight));
@@ -85,8 +86,8 @@ int* Accel(int delta, float weight)
 		}
 		move_sequence[i] = angle;
 	}
-	return move_sequence[];
-}
+	return move_sequence;
+}*/
 
 //------------------------------------ Motion function -------------------------------------------
 
@@ -189,14 +190,13 @@ int init_mouv()
 {
   UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
   UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN,0);
-  delay(100);
-  MoveOneLeg(2,POS_CENTER,50);
-  MoveOneLeg(3,POS_CENTER,50);
-  MoveOneLeg(6,POS_CENTER,50);
-  MoveOneLeg(1,POS_CENTER,50);
-  MoveOneLeg(4,POS_CENTER,50);
-  MoveOneLeg(5,POS_CENTER,50);
-  
+  delay(200);
+  MoveOneLeg(2,POS_CENTER,75);
+  MoveOneLeg(3,POS_CENTER,75);
+  MoveOneLeg(6,POS_CENTER,75);
+  MoveOneLeg(1,POS_CENTER,75);
+  MoveOneLeg(4,POS_CENTER,75);
+  MoveOneLeg(5,POS_CENTER,75);
   return 0;
 }
 //Function allowing the robot to move forward or backward as long as the button is pressed
@@ -217,13 +217,14 @@ int Moving(int B_Moving,int nb_sequence,int dir)
       MoveOneLeg(6,dir,100);
       ForwardAndBackward(1,4,5,inv_dir,inv_dir,inv_dir,0);
       ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
-
+      delay(200);
+      
       MoveOneLeg(1,dir,100);
       MoveOneLeg(4,dir,100);
       MoveOneLeg(5,dir,100);
       ForwardAndBackward(2,3,6,inv_dir,inv_dir,inv_dir,0);
       ForwardAndBackward(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER,0);   
-      delay(100);
+      delay(200);
       B_Moving+=1;
     }
     return 0;
@@ -253,19 +254,19 @@ int Moving_2(int B_MovingForward,int nb_sequence,int dir)
 //Function allowing the robot to back up as long as the button is pressed
 //Connect the button DOWN of the HMI
 //To be remove if Moving works---------------------------------------------------********************
-int MovingBackward(int B_MovingBackwards,int nb_sequence)
+int MovingBackward(int B_MovingBackward,int nb_sequence)
 {
     while (B_MovingBackward<nb_sequence)
     {
-      UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP);
-      ForwardAndBackward(2,3,6,POS_BACK,POS_BACK,POS_BACK);
-      ForwardAndBackward(1,4,5,POS_FRONT,POS_FRONT,POS_FRONT);
-      UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN);
+      UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,0);
+      ForwardAndBackward(2,3,6,POS_BACK,POS_BACK,POS_BACK,0);
+      ForwardAndBackward(1,4,5,POS_FRONT,POS_FRONT,POS_FRONT,0);
+      UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
 
-      UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP);
-      ForwardAndBackward(1,4,5,POS_BACK,POS_BACK,POS_BACK);
-      ForwardAndBackward(2,3,6,POS_FRONT,POS_FRONT,POS_FRONT);
-      UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN); 
+      UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP,0);
+      ForwardAndBackward(1,4,5,POS_BACK,POS_BACK,POS_BACK,0);
+      ForwardAndBackward(2,3,6,POS_FRONT,POS_FRONT,POS_FRONT,0);
+      UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN,0); 
       B_MovingBackward+=1;
     }
     return 0;
@@ -275,17 +276,22 @@ int MovingBackward(int B_MovingBackwards,int nb_sequence)
 //Connect the button RIGHT of the HMI
 int MovingRight(int B_MovingRight,int nb_sequence)
 {
+    init_mouv();
     while (B_MovingRight<nb_sequence)
     {
-      MoveOneLeg(2,POS_FRONT,50);
-      MoveOneLeg(3,POS_BACK,50);
-      MoveOneLeg(6,POS_FRONT,50);
-      ForwardAndBackward(1,4,5,POS_FRONT,POS_BACK,POS_FRONT,500);
- 
-      MoveOneLeg(1,POS_BACK,50);
-      MoveOneLeg(4,POS_FRONT,50);
-      MoveOneLeg(5,POS_BACK,50);
-      ForwardAndBackward(2,3,6,POS_BACK,POS_FRONT,POS_BACK,500);
+      MoveOneLeg(2,POS_FRONT,100);
+      MoveOneLeg(3,POS_BACK,100);
+      MoveOneLeg(6,POS_FRONT,100);
+      ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
+      ForwardAndBackward(1,4,5,POS_FRONT,POS_BACK,POS_FRONT,0);
+      delay(250);
+      
+      MoveOneLeg(1,POS_BACK,100);
+      MoveOneLeg(4,POS_FRONT,100);
+      MoveOneLeg(5,POS_BACK,100);
+      ForwardAndBackward(2,3,6,POS_BACK,POS_FRONT,POS_BACK,0);
+      ForwardAndBackward(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER,0);
+      delay(250);
       B_MovingRight+=1;
     } 
   return 0;
@@ -297,15 +303,19 @@ int MovingLeft(int B_MovingLeft,int nb_sequence)
 {
     while (B_MovingLeft<nb_sequence)
     {
-      MoveOneLeg(2,POS_BACK,50);
-      MoveOneLeg(3,POS_FRONT,50);
-      MoveOneLeg(6,POS_BACK,50);
-      ForwardAndBackward(1,4,5,POS_BACK,POS_FRONT,POS_BACK,500);
-   
-      MoveOneLeg(1,POS_BACK,50);
-      MoveOneLeg(4,POS_FRONT,50);
-      MoveOneLeg(5,POS_BACK,50);
-      ForwardAndBackward(2,3,6,POS_FRONT,POS_BACK,POS_FRONT,500);
+      MoveOneLeg(1,POS_FRONT,100);
+      MoveOneLeg(4,POS_BACK,100);
+      MoveOneLeg(5,POS_FRONT,100);
+      ForwardAndBackward(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER,0);
+      ForwardAndBackward(2,3,6,POS_FRONT,POS_BACK,POS_FRONT,0);
+      delay(250);
+      
+      MoveOneLeg(2,POS_BACK,100);
+      MoveOneLeg(3,POS_FRONT,100);
+      MoveOneLeg(6,POS_BACK,100);
+      ForwardAndBackward(1,4,5,POS_BACK,POS_FRONT,POS_BACK,0);
+      ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
+      delay(250);
       B_MovingLeft+=1;
     } 
     return 0;

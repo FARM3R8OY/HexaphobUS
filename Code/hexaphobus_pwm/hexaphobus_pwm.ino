@@ -45,6 +45,7 @@ void loop() {
   Serial.println(pwm.getPWM(1))
   */
   init_mouv();
+  delay(1000);
   int B_Moving=1;
   Moving(B_Moving,5,POS_FRONT);
   delay(2000);
@@ -52,11 +53,11 @@ void loop() {
   Moving(B_Moving,5,POS_BACK);
   B_Moving=1;
   delay(2000);
-  MovingRight(B_moving,3);
+  MovingRight(B_Moving,10);
   B_Moving=1;
   delay(2000);
-  MovingLeft(B_moving,3);
-  delay(2000;)
+  MovingLeft(B_Moving,10);
+  delay(2000);
 }
 
 
