@@ -60,6 +60,7 @@ int AngleToHMI()
     strToSend += ";" + String(ANGLE[i]);
   }
   Serial.println(strToSend);
+ 
   return 0  ;
 }
 
@@ -237,26 +238,6 @@ int Moving(int B_Moving,int nb_sequence,int dir)
     }
     return 0;
 }
-//Another function to move forward or backward
-//All legs in position before moving
-int Moving_2(int B_MovingForward,int nb_sequence,int dir)
-{
-    
-    while (B_MovingForward<=nb_sequence)
-    {
-      MoveOneLeg(2,dir,10);
-      MoveOneLeg(3,dir,10);
-      MoveOneLeg(6,dir,10);
-      MoveOneLeg(1,dir,10);
-      MoveOneLeg(4,dir,10);
-      MoveOneLeg(5,dir,10);
-      ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
-      ForwardAndBackward(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER,0);
-      delay(100);
-      B_MovingForward+=1;
-    }
-    return 0;
-}
 
 
 //Function allowing the robot to back up as long as the button is pressed
@@ -292,14 +273,14 @@ int MovingRight(int B_MovingRight,int nb_sequence)
       MoveOneLeg(6,POS_FRONT,100);
       ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
       ForwardAndBackward(1,4,5,POS_FRONT,POS_BACK,POS_FRONT,0);
-      delay(250);
+      delay(500);
       
-      MoveOneLeg(1,POS_BACK,100);
+      MoveOneLeg(1,POS_BACK,150);
       MoveOneLeg(4,POS_FRONT,100);
       MoveOneLeg(5,POS_BACK,100);
       ForwardAndBackward(2,3,6,POS_BACK,POS_FRONT,POS_BACK,0);
       ForwardAndBackward(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER,0);
-      delay(250);
+      delay(500);
       B_MovingRight+=1;
     } 
   return 0;

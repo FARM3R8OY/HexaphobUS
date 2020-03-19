@@ -39,14 +39,13 @@ void setup() {
     pwm.setPWMFreq(FREQUENCY);// Analog servos run at ~60 Hz updates
 }
 
-void loop() {  
-/*
-  pwm.setPWM(1, 0, pulseWidth(90));
-  Serial.println(pwm.getPWM(1))
-  */
-  UpAndDown(2,3,6,POS_UP,POS_UP,POS_DOWN,0);
-  delay(100000);
- /* init_mouv();
+void loop() { 
+   
+  delay(12000);
+  AngleToHMI();
+  delay(1000);
+  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,0);
+  /*init_mouv();
   delay(1000);
   int B_Moving=1;
   Moving(B_Moving,5,POS_FRONT);
