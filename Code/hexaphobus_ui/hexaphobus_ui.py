@@ -26,7 +26,6 @@ import struct
 import binascii
 
 import serial
-from PyQt5 import QtSerialPort
 
 from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
@@ -121,6 +120,7 @@ class SerialChecker(QThread):
         self.ser = serial.Serial(port,9600)
         self.ser.baudrate = 9600
         self.ser.flushInput()
+        self.serialReceive()
         
 
     def serialReceive(self):
@@ -129,10 +129,10 @@ class SerialChecker(QThread):
         """
         while self.ser.is_open():
             servoTable = []
-            stringData = self.ser.readLine().data()
-            tableData = stringData.split(";")
+            stringData = self.ser.read_until()
+            servoAngle = byteToString(stringData)
+            tableData = servoAngle.split(";")
             for angle in tableData:
-                servoAngle = byteToString(angle)
                 servoTable.append(angle)
             return servoTable
 
