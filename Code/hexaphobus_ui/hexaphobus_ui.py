@@ -120,21 +120,26 @@ class SerialChecker(QThread):
         self.ser = serial.Serial(port,9600)
         self.ser.baudrate = 9600
         self.ser.flushInput()
+
         self.serialReceive()
+
         
 
     def serialReceive(self):
         """
         Get the bytes from the serial port
         """
-        while self.ser.is_open():
+        while self.ser.is_open:
             servoTable = []
             stringData = self.ser.read_until()
             servoAngle = byteToString(stringData)
             tableData = servoAngle.split(";")
+
             for angle in tableData:
                 servoTable.append(angle)
-            return servoTable
+                
+                
+        return servoTable"""
 
     def serialSend(self, command):
         """
