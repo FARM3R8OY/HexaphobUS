@@ -7,7 +7,7 @@ Contributor(s):
 
 Date(s):
     2020-01-29 (Creation)
-    2020-03-11 (Last modification)
+    2020-03-19 (Last modification)
 
 Description:
     User interface designed for intuitive control and monitoring of the
@@ -374,9 +374,13 @@ class MainWindow(QWidget):
         Get the bytes from the serial port
         """
         while self.serial.canReadLine():
+            servoTable = []
             bytesData = self.serial.readLine().data()
-            servoAngle = byteToString(bytesData)
-            return servoAngle
+            tableData = bytesData.split(;)
+            for angle in tableData:
+                servoAngle = byteToString(angle)
+                servoTable.append(angle)
+            return servoTable
 
     def serialSend(self, command):
         """
