@@ -26,6 +26,7 @@ import struct
 import binascii
 
 import serial
+from PyQt5 import QtSerialPort
 
 from PyQt5.QtCore import Qt, QTimer, QPoint
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
@@ -59,7 +60,13 @@ UI_MIN_W = 480
 UI_MIN_H = 360
 
 global nb_command
-nb_command = -1
+nb_command = 0
+
+global ENCODED_VAR
+ENCODED_VAR = b'55'
+
+global edit_place
+edit_place = 0
 
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
@@ -75,6 +82,12 @@ SEP = os.path.sep
 LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
 # --------------------------------------------
+
+# port = "/dev/ttyACM0"
+# ser = serial.Serial(port,9600)
+# ser.baudrate = 9600
+# ser.flushInput()
+
 
 def stringToByte(string):
     """
@@ -96,7 +109,6 @@ def byteToString(encoded_string):
     my_format = str(int(string_size))+"s"
     string = struct.unpack(my_format, packed_data)
     string = string[0].decode('utf-8')
-    print('Unpacked Values:', string)
     return string
 
 class RobotTracking(QWidget):
@@ -148,14 +160,14 @@ class RobotTracking(QWidget):
 
         global ENCODED_VAR
 
-        if direction == "UP" and self._robot_y_pos > 0:
+        if direction == "FORWARD" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('UP')
-        elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
+            ENCODED_VAR = stringToByte('FORWARD')
+        elif direction == "BACKWARD" and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('DOWN')
+            ENCODED_VAR = stringToByte('BACKWARD')
         elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
             # Send direction to call program in Arduino
@@ -210,16 +222,17 @@ class RobotTracking(QWidget):
                    self._target_x_pos, self._target_y_pos)
 
         global nb_command
+        moving_command = byteToString(ENCODED_VAR)
         
         #Suggest to use feedback from the angles of servomotor
-        if nb_command%2 == 0 and nb_command >= 0:
-            move_leg = -6
-        elif nb_command%2 == 1 and nb_command >= 0:
-            move_leg = 6
+        if moving_command == "FORWARD" or moving_command == "BACKWARD":
+            if nb_command%2 == 0 and nb_command >= 0:
+                move_leg = -6
+            elif nb_command%2 == 1 and nb_command >= 0:
+                move_leg = 6
+            nb_command += 1
         else:
             move_leg = 0
-        
-        nb_command += 1
         
         #Leg 1
         q.drawLine(self._robot_x_pos+20, self._robot_y_pos,
@@ -306,6 +319,12 @@ class MainWindow(QWidget):
 
         self.onlyFloat = QDoubleValidator()
 
+
+        self.serial = QtSerialPort.QSerialPort(
+            "/dev/ttyACM0",
+            baudRate=QtSerialPort.QSerialPort.Baud9600,
+            readyRead=self.serialReceive)
+
         self.initUI()
 
     def getServoEdits(self):
@@ -346,9 +365,25 @@ class MainWindow(QWidget):
         self.setLayoutDependencies()
         self.addWidgets()
         self.setLayout(self.global_layout)
-        self.setServoValues(Tests_angles)
         self.setInfoValues("100", "200")
+        self.setServoValues(Tests_angles)
         self.show()
+
+    def serialReceive(self):
+        """
+        Get the bytes from the serial port
+        """
+        while self.serial.canReadLine():
+            bytesData = self.serial.readLine().data()
+            servoAngle = byteToString(bytesData)
+            return servoAngle
+
+    def serialSend(self, command):
+        """
+        Send the bytes to the serial port
+        """
+        bytesData = stringToByte(command)
+        self.serial.write(bytesData) 
 
     def addServos(self):
         """
@@ -388,21 +423,29 @@ class MainWindow(QWidget):
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(lambda: self.tracking.
-                                       changePosition("UP"))
+                                       changePosition("FORWARD"))
         self.shortcut_up.activated.connect(lambda: self.tracking.
-                                           changePosition("UP"))
+                                           changePosition("FORWARD"))
+        self.button_up.clicked.connect(lambda: self.serialSend("FORWARD"))
+        self.shortcut_up.activated.connect(lambda: self.serialSend("FORWARD"))
         self.button_down.clicked.connect(lambda: self.tracking.
-                                         changePosition("DOWN"))
+                                         changePosition("BACKWARD"))
         self.shortcut_down.activated.connect(lambda: self.tracking.
-                                             changePosition("DOWN"))
+                                             changePosition("BACKWARD"))
+        self.button_down.clicked.connect(lambda: self.serialSend("BACKWARD"))
+        self.shortcut_down.activated.connect(lambda: self.serialSend("BACKWARD"))
         self.button_right.clicked.connect(lambda: self.tracking.
                                           changePosition("RIGHT"))
         self.shortcut_right.activated.connect(lambda: self.tracking.
                                               changePosition("RIGHT"))
+        self.button_right.clicked.connect(lambda: self.serialSend("RIGHT"))
+        self.shortcut_right.activated.connect(lambda: self.serialSend("RIGHT"))
         self.button_left.clicked.connect(lambda: self.tracking.
                                          changePosition("LEFT"))
         self.shortcut_left.activated.connect(lambda: self.tracking.
                                              changePosition("LEFT"))
+        self.button_left.clicked.connect(lambda: self.serialSend("LEFT"))
+        self.shortcut_left.activated.connect(lambda: self.serialSend("LEFT"))
 
     def setInfo(self):
         """
@@ -418,15 +461,28 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        byteToString(ENCODED_VAR)
+        print(ENCODED_VAR)
+        string = byteToString(ENCODED_VAR)
+        print('Unpacked Values:', string)
 
     def setServoValues(self, angles_list):
         """
         Set the servomotor edit text.
         """
         # Read values from Arduino (angle servo moteur)
+        a = self.serialReceive()
+        print(a) #None if not working
         for (angle, servo) in zip(angles_list, self._servo_edits):
             servo.setText(angle)
+        """
+        Remove next lines to test full serial communication
+        """
+        # global edit_place
+        # self._servo_edits[edit_place].setText(a)
+        # if edit_place < 11:
+        #     edit_place += 1
+        # else: 
+        #     edit_place = 0
 
     def setInfoValues(self, Speed, Energy):
         """
@@ -533,12 +589,6 @@ if __name__ == '__main__':
     palette.setColor(QPalette.HighlightedText, Qt.black)
     window.setPalette(palette)
 
-    # port = "/dev/ttyACM0" 
-    # ser = serial.Serial(port,9600)
-    # ser.baudrate = 9600
-    # ser.flushInput()
-    # a = ser.readline().decode().strip()
-    # print(a)  
 
     # Kill display
     sys.exit(app.exec_())
