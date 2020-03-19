@@ -1,1 +1,1 @@
-This folder contains informations on the connexions and the normal use of every pieces of electronic in this project.
+This folder contains information on the connections and the normal use of electronic components in this project.
