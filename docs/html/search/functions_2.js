@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['bytetostring_40',['byteToString',['../d7/d9a/namespacehexaphobus__ui_1_1hexaphobus__ui.html#a4455f746e897f36a8faff0a8ec2b352e',1,'hexaphobus_ui::hexaphobus_ui']]]
+  ['forwardandbackward_49',['ForwardAndBackward',['../da/d39/hexaphobus__pwm_8h.html#aef352aa6e85a797b4fa2143bf76e4446',1,'hexaphobus_pwm.h']]]
 ];

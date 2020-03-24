@@ -1,72 +1,100 @@
-/*
-File: functionDefinition.h
-
-Contributor(s):
-    Guay-Tanguay, Carolane | guac3201
-    Lalonde,      Philippe | lalp2803
-    Roy,          Olivier  | royo2206
-
-
-Date(s):
-    2020-02-25 (Creation)
-    2020-03-11 (Last modification)
-
-Description:
-    Function definition for Arduino.
-
-S4-H20 | GRO400
-*/
+/*!
+ * @file hexaphobus_pwm.h
+ * 
+ * @authors
+ *          - Cabana,       Gabriel  | cabg2101
+ *          - Guay-Tanguay, Carolane | guac3201
+ *          - Lalonde,      Philippe | lalp2803
+ *          - Roy,          Olivier  | royo2206
+ * 
+ * @date
+ *       - 2020-02-25 (Creation)
+ *       - 2020-03-24 (Last modification)
+ * 
+ * @details Motion control, communication, and sequencing (header).
+ * 
+ * <b>S4-H20 | GRO400</b>
+ */
 
 /********************************************/
 
+#  include <Adafruit_PWMServoDriver.h>
 
-#include <Adafruit_PWMServoDriver.h>
+/// Encoder value (min).
+#  define MIN_PULSE_WIDTH     650
+/// Encoder value (max).
+#  define MAX_PULSE_WIDTH     2650
+/// Encoder value (calibrated zero).
+#  define DEFAULT_PULSE_WIDTH 1500
+/// Communication frequency.
+#  define FREQUENCY           50
+
+/// Position value (up).
+#  define POS_UP     1
+/// Position value (down).
+#  define POS_DOWN   0
+/// Position value (back).
+#  define POS_BACK   0
+/// Position value (front).
+#  define POS_FRONT  1
+/// Position value (center).
+#  define POS_CENTER 2
+
+/// Angle value in degrees (up).
+#  define UP     35
+/// Angle value in degrees (down).
+#  define DOWN   65
+ /// Angle value in degrees (back).
+#  define BACK   10
+/// Angle value in degrees (front).
+#  define FRONT  75
+/// Angle value in degrees (center).
+#  define CENTER 43
+
+/// Adjustments for each servomotor angle.
+int SHIFT[13] = {-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68};
+/// Servomotor angles.
+int ANGLE[13] = {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+/// Communication port with the PWM servo driver.
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-#define MIN_PULSE_WIDTH       650
-#define MAX_PULSE_WIDTH       2650
-#define DEFAULT_PULSE_WIDTH   1500
-#define FREQUENCY             50
+/********************************************/
 
-//Pos value for function UpAndDown 
-#define POS_UP 1
-#define POS_DOWN 0
-
-//Pos value for function ForwardAndBackward
-#define POS_BACK 0
-#define POS_FRONT 1
-#define POS_CENTER 2
-
-
-//Angle for each position
-#define UP 35
-#define DOWN 65
-#define FRONT 75
-#define BACK 10
-#define CENTER 43
-
-int DECALAGE[13]={-1,-10,-5,0,0,-5,5,56,68,58,56,56,68};
-int ANGLE[13]={-1,0,0,0,0,0,0,0,0,0,0,0,0};
-
-
-//------------------------------------- Communication function------------------------------------
-
-/*marque quelque chose de différent*/
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @return 0 after communication with the HMI.
+ */
 int AngleToHMI()
 {
-  /*marque quelque chose*/
-  String strToSend =String(ANGLE[1]);
-  for(int i=2; i < 13; i++){
-    strToSend += ";" + String(ANGLE[i]);
+  String string_to_send = String(ANGLE[1]);
+
+  for (int i = 2; i < 13; i++) {
+    string_to_send += ";" + String(ANGLE[i]);
   }
-  Serial.println(strToSend);
- 
-  return 0  ;
+  Serial.println(string_to_send);
+
+  return 0;
 }
 
+/********************************************/
 
-//------------------------------------ Conversion function---------------------------------------- 
-//Angle to analog value 
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param angle
+ * 
+ *        Describe the variable.
+ * 
+ * @return analog_value, which is the servomotor encoder value.
+ */
 int pulseWidth(int angle)
 {
   int pulse_wide, analog_value;
@@ -75,7 +103,18 @@ int pulseWidth(int angle)
   return analog_value;
 }
 
-//Analog value to angle
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param analog_value
+ * 
+ *        Describe the variable.
+ * 
+ * @return angle_wide, which is the angle to be reached by the leg part.
+ */
 int AnalogToAngle(int analog_value)
 {
   int angle_wide, pulse_wide;
@@ -84,8 +123,20 @@ int AnalogToAngle(int analog_value)
   return angle_wide;
 }
 
-//------------------------------------ Motion function -------------------------------------------
+/********************************************/
 
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 // Active motors to raise or move down 3 legs to their 3 positions
 //Up = POS_UP or 1 , Down = POS_DOWN or 0
 //Pass 3 Leg in argument (1 to 6) and their 3 positions (0 or 1)
@@ -102,9 +153,9 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
       if(Legs[i]>0 && Legs[i]<7) 
       {
         if (pos[i]==1)
-        { angle[i]=UP+DECALAGE[Legs[i]+6];}
+        { angle[i]=UP+SHIFT[Legs[i]+6];}
         else
-        { angle[i]=DOWN+DECALAGE[Legs[i]+6];}
+        { angle[i]=DOWN+SHIFT[Legs[i]+6];}
 
         if (Legs[i]%2 == 0)
         {
@@ -130,6 +181,18 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
      return 0;
 }
 
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 //Active motors to move foward, move backwards or move to center 3 legs to their 3 positions
 //Back = POS_BACK or 0 , Front = POS_FRONT or 1 , Center= POS_CENTER or 2
 //Pass 3 Leg in argument (1 to 6) and their 3 positions
@@ -144,11 +207,11 @@ int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, 
     if(Legs[i]>0 && Legs[i]<7) 
     {
       if (pos[i]==0)
-        {angle[i]=BACK+DECALAGE[Legs[i]];}
+        {angle[i]=BACK+SHIFT[Legs[i]];}
       else if (pos[i]==1)
-        {angle[i]=FRONT+DECALAGE[Legs[i]];}
+        {angle[i]=FRONT+SHIFT[Legs[i]];}
       else
-        {angle[i]=CENTER+DECALAGE[Legs[i]];}
+        {angle[i]=CENTER+SHIFT[Legs[i]];}
     
       if (Legs[i]%2 == 0)
       {
@@ -175,6 +238,18 @@ int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, 
    return 0;
 } 
 
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 //Mouvement d'une jambe
 int MoveOneLeg(int leg, int direction, int time)
 {
@@ -192,7 +267,20 @@ int MoveOneLeg(int leg, int direction, int time)
   return 0;
 }
 
-//-------------------------------------Movement sequencing function-------------------------------------------
+/********************************************/
+
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 //Robot Initialisation 
 //Legs are in initial position
 int init_mouv()
@@ -208,6 +296,19 @@ int init_mouv()
   MoveOneLeg(5,POS_CENTER,75);
   return 0;
 }
+
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 //Function allowing the robot to move forward or backward as long as the button is pressed
 //Connect the button UP of the HMI
 //Move 1 leg at a time 
@@ -239,10 +340,21 @@ int Moving(int B_Moving,int nb_sequence,int dir)
     return 0;
 }
 
-
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 //Function allowing the robot to back up as long as the button is pressed
 //Connect the button DOWN of the HMI
-//To be remove if Moving works---------------------------------------------------********************
+//To be removed if Moving works---------------------------------------------------********************
 int MovingBackward(int B_MovingBackward,int nb_sequence)
 {
     while (B_MovingBackward<nb_sequence)
@@ -261,6 +373,18 @@ int MovingBackward(int B_MovingBackward,int nb_sequence)
     return 0;
 }
 
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 //Function allowing the robot to turn right as long as the button is pressed
 //Connect the button RIGHT of the HMI
 int MovingRight(int B_MovingRight,int nb_sequence)
@@ -286,6 +410,18 @@ int MovingRight(int B_MovingRight,int nb_sequence)
   return 0;
 }
 
+/*!
+ * @brief Brief description.
+ *
+ *        Longer description with
+ *        more details.
+ * 
+ * @param varname
+ * 
+ *        Describe the variable.
+ * 
+ * @return describe the return value.
+ */
 //Function allowing the robot to turn left as long as the button is pressed
 //Connect the button LEFT of the HMI
 int MovingLeft(int B_MovingLeft,int nb_sequence)
@@ -309,8 +445,3 @@ int MovingLeft(int B_MovingLeft,int nb_sequence)
     } 
     return 0;
 }
-
-
-
-
-

@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['getservoedits_6',['getServoEdits',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a496742550cfd65739dab309bb1c18b4b',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
-  ['getservolabels_7',['getServoLabels',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a215d53c8e9d0f38bd9dc814039e2aea9',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]]
+  ['forwardandbackward_8',['ForwardAndBackward',['../da/d39/hexaphobus__pwm_8h.html#aef352aa6e85a797b4fa2143bf76e4446',1,'hexaphobus_pwm.h']]],
+  ['frequency_9',['FREQUENCY',['../da/d39/hexaphobus__pwm_8h.html#a84142cd3e3bf14c4ecd4b6707a808c39',1,'hexaphobus_pwm.h']]],
+  ['front_10',['FRONT',['../da/d39/hexaphobus__pwm_8h.html#ac25c6a324554f8ae267ad7c1638074a8',1,'hexaphobus_pwm.h']]]
 ];
