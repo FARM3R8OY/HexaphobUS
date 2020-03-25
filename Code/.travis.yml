@@ -59,11 +59,11 @@ git:
   quiet: true
 
 script:
-  - doxygen ../docs/Doxyfile
+  - doxygen ./docs/Doxyfile
 
 deploy:
   provider: pages
-  local_dir: ../docs/html
+  local_dir: ./docs/html
   github_token: $GH_REPO_TOKEN
   on:
     branch: code
@@ -97,12 +97,12 @@ notifications:
 #     quiet: true
 #   },
 #   script: [
-#     - doxygen ../docs/Doxyfile
+#     - doxygen ./docs/Doxyfile
 #   ],
 #   deploy: [
 #     {
 #       provider: pages,
-#       local_dir: ../docs/html,
+#       local_dir: ./docs/html,
 #       on: {
 #         branch: [
 #           code
@@ -123,7 +123,7 @@ notifications:
 #     include: [
 #       {
 #         language: python,
-#         python: "3.8.1",
+#         python: "3.8.2",
 #         before_install: [
 #           - pwd,
 #           - python --version,

@@ -42,11 +42,3 @@ test(RaiseLeg) {
     assertEqual(UpAndDown(1, 4, 5, -2, POS_UP, POS_UP), 0);
     assertEqual(FowardAndBackwards(1, 4, 5, -2, POS_UP, POS_UP), 0);
 }
-
-
-
-
-
-
-
-
