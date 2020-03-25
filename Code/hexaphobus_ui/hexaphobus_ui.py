@@ -67,8 +67,6 @@ ENCODED_VAR = b'55'
 global edit_place
 edit_place = 0
 
-global servoTable 
-servoTable = []
 
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
@@ -310,6 +308,8 @@ class MainWindow(QWidget):
         # Servos
         self._servo_edits = list()
         self._servo_labels = list()
+        global servoTable 
+        servoTable = []
 
         # Layouts
         self.global_layout = QVBoxLayout()
@@ -439,6 +439,7 @@ class MainWindow(QWidget):
         functions.
         """
         self.button_serial_start.clicked.connect(self.serialCheck.SerialRun)
+        self.button_serial_start.clicked.connect(self.setServoValues)
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(lambda: self.tracking.
@@ -466,7 +467,7 @@ class MainWindow(QWidget):
         self.button_left.clicked.connect(lambda: self.serialCheck.serialSend("LEFT"))
         self.shortcut_left.activated.connect(lambda: self.serialCheck.serialSend("LEFT"))
 
-        (self.setServoValues)
+
 
     def setInfo(self):
         """
@@ -490,8 +491,9 @@ class MainWindow(QWidget):
         """
         Set the servomotor edit text.
         """
-        for (angle, servo) in zip(servoTable, self._servo_edits):
-            servo.setText(angle)
+        while True:
+            for (angle, servo) in zip(servoTable, self._servo_edits):
+                servo.setText(angle)
 
     def setInfoValues(self, Speed, Energy):
         """
