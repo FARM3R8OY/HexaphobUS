@@ -62,10 +62,10 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 /********************************************/
 
 /*!
- * @brief Brief description.
+ * @brief Motors Angle to HMI 
  *
- *        Longer description with
- *        more details.
+ *       Print in the terminal the angle value for each motors
+ *       and send the information to the HMI.
  * 
  * @return 0 after communication with the HMI.
  */
@@ -84,14 +84,13 @@ int AngleToHMI()
 /********************************************/
 
 /*!
- * @brief Brief description.
+ * @brief Angle to Pulse width 
  *
- *        Longer description with
- *        more details.
+ *        Convert an angle to pulse width for motors.
  * 
  * @param angle
  * 
- *        Describe the variable.
+ *        Angle want for a motor.
  * 
  * @return analog_value, which is the servomotor encoder value.
  */
@@ -103,44 +102,51 @@ int pulseWidth(int angle)
   return analog_value;
 }
 
-/*!
- * @brief Brief description.
- *
- *        Longer description with
- *        more details.
- * 
- * @param analog_value
- * 
- *        Describe the variable.
- * 
- * @return angle_wide, which is the angle to be reached by the leg part.
- */
-int AnalogToAngle(int analog_value)
-{
-  int angle_wide, pulse_wide;
-  pulse_wide = int(float(analog_value) * 1000000 / FREQUENCY / 4096);
-  angle_wide = map(pulse_wide, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH, 0 ,180);
-  return angle_wide;
-}
 
 /********************************************/
 
 /*!
- * @brief Brief description.
+ * @brief Up and down mouvement for motors
  *
- *        Longer description with
- *        more details.
+ *       Move up to 3 motors (Leg 1 to 6) up or down
+ *       with the number of the leg associate with the 
+ *       motor. Use Leg 0 to do nothing with a Leg.
  * 
- * @param varname
+ * @param Leg1
  * 
- *        Describe the variable.
+ *       first leg to move (number between 1 and 6).
  * 
- * @return describe the return value.
+ * @param Leg2
+ * 
+ *       Second leg to move (number between 1 and 6).
+ *       Use 0 to not move a leg.
+ * 
+ * @param Leg3
+ * 
+ *       Third leg to move (number between 1 and 6).
+ *       Use 0 to not move a leg.
+ * 
+ * @param pos1
+ * 
+ *       Pass the position of the Leg 1 to move. 
+ *       POS_UP to move up (1) and POS_DOWN to move DOWN (0).
+ * 
+ * @param pos2
+ * 
+ *       Pass the position of the Leg 2 to move.
+ *       POS_UP to move up (1) and POS_DOWN to move DOWN (0).
+ * 
+ * @param pos3
+ * 
+ *       Pass the position of the Leg 3 to move.
+ *       POS_UP to move up (1) and POS_DOWN to move DOWN (0).
+ * 
+ * @param time
+ * 
+ *       Pass the delay to wait after send the information to motors. 
+ * 
+ * @return -1 if a problem occurs, 0 if not 
  */
-// Active motors to raise or move down 3 legs to their 3 positions
-//Up = POS_UP or 1 , Down = POS_DOWN or 0
-//Pass 3 Leg in argument (1 to 6) and their 3 positions (0 or 1)
-//Add management for errors cases
 int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
 {
 
@@ -182,21 +188,50 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
 }
 
 /*!
- * @brief Brief description.
+ * @brief Foward, backward and center mouvement for motors
  *
- *        Longer description with
- *        more details.
+ *       Move up to 3 motors (Leg 1 to 6) foward, center or backward
+ *       with the number of the leg associate with the 
+ *       motor. Use Leg 0 to do nothing with a Leg.
  * 
- * @param varname
+ * @param Leg1
  * 
- *        Describe the variable.
+ *       First leg to move (number between 1 and 6).
  * 
- * @return describe the return value.
+ * @param Leg2
+ * 
+ *       Second leg to move (number between 1 and 6).
+ *       Use 0 to not move a leg.
+ * 
+ * @param Leg3
+ * 
+ *       Third leg to move (number between 1 and 6).
+ *       Use 0 to not move a leg.
+ * 
+ * @param pos1
+ * 
+ *       Pass the position of the Leg 1 to move. 
+ *       POS_FRONT to move foward (1) and POS_BACK to move backward (0)
+ *       POS_CENTER to move to center (2).
+ * 
+ * @param pos2
+ * 
+ *       Pass the position of the Leg 2 to move. 
+ *       POS_FRONT to move foward (1) and POS_BACK to move backward (0)
+ *       POS_CENTER to move to center (2).
+ * 
+ * @param pos3
+ * 
+ *       Pass the position of the Leg 3 to move .
+ *       POS_FRONT to move foward (1) and POS_BACK to move backward (0)
+ *       POS_CENTER to move to center (2).
+ * 
+ * @param time
+ * 
+ *       Pass the delay to wait after send the information to motors. 
+ * 
+ * @return -1 if a problem occurs, 0 if not 
  */
-//Active motors to move foward, move backwards or move to center 3 legs to their 3 positions
-//Back = POS_BACK or 0 , Front = POS_FRONT or 1 , Center= POS_CENTER or 2
-//Pass 3 Leg in argument (1 to 6) and their 3 positions
-//Add management for errors cases
 int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, int time)
 {
    int Legs [3] = {Leg1, Leg2, Leg3};
@@ -239,16 +274,26 @@ int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, 
 } 
 
 /*!
- * @brief Brief description.
+ * @brief Move one leg 
  *
- *        Longer description with
- *        more details.
+ *        Make the complete movement to move one leg 
+ *        into the disered direction.
  * 
- * @param varname
+ * @param leg
  * 
- *        Describe the variable.
+ *        Number of the leg to move (1 to 6).
  * 
- * @return describe the return value.
+ * @param direction
+ * 
+ *       Pass the direction of the leg to move. 
+ *       POS_FRONT to move foward (1) and POS_BACK to move backward (0)
+ *       POS_CENTER to move to center (2).
+ * 
+ * @param time
+ * 
+ *       Pass the delay to wait after send the information to motors.
+ * 
+ * @return -1 if a problem occurs, 0 if not 
  */
 //Mouvement d'une jambe
 int MoveOneLeg(int leg, int direction, int time)
@@ -270,19 +315,13 @@ int MoveOneLeg(int leg, int direction, int time)
 /********************************************/
 
 /*!
- * @brief Brief description.
+ * @brief Initialisation of all the motors
  *
- *        Longer description with
- *        more details.
+ *        Initialite all the motors to the center position.
+ *        Make the robot ready to move.
  * 
- * @param varname
- * 
- *        Describe the variable.
- * 
- * @return describe the return value.
+ * @return -1 if a problem occurs, 0 if not
  */
-//Robot Initialisation 
-//Legs are in initial position
 int init_mouv()
 {
   UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
@@ -298,20 +337,22 @@ int init_mouv()
 }
 
 /*!
- * @brief Brief description.
+ * @brief Moving the robot foward or backward
  *
- *        Longer description with
- *        more details.
+ *        Function allowing the robot to move forward or backward as 
+ *        long as the button is pressed. 
+ * 
+ * @param dir
+ * 
+ *        Direction to move.
+ *        POS_FRONT to move foward (1) and POS_BACK to move backward (0)
  * 
  * @param varname
  * 
- *        Describe the variable.
+ *        A MODIFIER !!!!!!!!!!!!!!
  * 
- * @return describe the return value.
+ * @return -1 if a problem occurs, 0 if not
  */
-//Function allowing the robot to move forward or backward as long as the button is pressed
-//Connect the button UP of the HMI
-//Move 1 leg at a time 
 int Moving(int B_Moving,int nb_sequence,int dir)
 {
     int inv_dir=0;
@@ -341,52 +382,17 @@ int Moving(int B_Moving,int nb_sequence,int dir)
 }
 
 /*!
- * @brief Brief description.
+ * @brief Move the robot to the right
  *
- *        Longer description with
- *        more details.
+ *        Function allowing the robot to turn to the right as 
+ *        long as the button is pressed.
  * 
  * @param varname
  * 
- *        Describe the variable.
+ *        A MODIFIER !!!!!!!!!!!!!!
  * 
- * @return describe the return value.
+ * @return -1 if a problem occurs, 0 if not
  */
-//Function allowing the robot to back up as long as the button is pressed
-//Connect the button DOWN of the HMI
-//To be removed if Moving works---------------------------------------------------********************
-int MovingBackward(int B_MovingBackward,int nb_sequence)
-{
-    while (B_MovingBackward<nb_sequence)
-    {
-      UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,0);
-      ForwardAndBackward(2,3,6,POS_BACK,POS_BACK,POS_BACK,0);
-      ForwardAndBackward(1,4,5,POS_FRONT,POS_FRONT,POS_FRONT,0);
-      UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
-
-      UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP,0);
-      ForwardAndBackward(1,4,5,POS_BACK,POS_BACK,POS_BACK,0);
-      ForwardAndBackward(2,3,6,POS_FRONT,POS_FRONT,POS_FRONT,0);
-      UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN,0); 
-      B_MovingBackward+=1;
-    }
-    return 0;
-}
-
-/*!
- * @brief Brief description.
- *
- *        Longer description with
- *        more details.
- * 
- * @param varname
- * 
- *        Describe the variable.
- * 
- * @return describe the return value.
- */
-//Function allowing the robot to turn right as long as the button is pressed
-//Connect the button RIGHT of the HMI
 int MovingRight(int B_MovingRight,int nb_sequence)
 {
     init_mouv();
@@ -411,19 +417,17 @@ int MovingRight(int B_MovingRight,int nb_sequence)
 }
 
 /*!
- * @brief Brief description.
+ * @brief Move the robot to the left
  *
- *        Longer description with
- *        more details.
+ *        Function allowing the robot to turn to the left as 
+ *        long as the button is pressed.
  * 
  * @param varname
  * 
- *        Describe the variable.
+ *        A MODIFIER !!!!!!!!!!!!!!
  * 
- * @return describe the return value.
+ * @return -1 if a problem occurs, 0 if not
  */
-//Function allowing the robot to turn left as long as the button is pressed
-//Connect the button LEFT of the HMI
 int MovingLeft(int B_MovingLeft,int nb_sequence)
 {
     while (B_MovingLeft<nb_sequence)
