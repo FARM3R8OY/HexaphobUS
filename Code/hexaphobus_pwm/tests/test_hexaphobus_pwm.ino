@@ -19,7 +19,7 @@
 
 #  include <AUnit.h>
 #  include <AUnitVerbose.h>
-#  include "../hexaphobus_pwm.h"
+#  include "hexaphobus_pwm.h"
 
 /********************************************/
 

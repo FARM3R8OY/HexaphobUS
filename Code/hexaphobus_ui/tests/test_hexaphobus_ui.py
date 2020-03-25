@@ -50,17 +50,17 @@ class TestHexaphobusUI(unittest.TestCase):
 
     def test_encodingType(self):
         string = "ABCDE"
-        self._encoded_data = hexaphobus_ui.stringToByte(string)
+        self._encoded_data = stringToByte(string)
         self.assertTrue(isinstance(self._encoded_data, bytes))
 
     def test_decodingType(self):
         self._encoded_data = b'5550'
-        string = hexaphobus_ui.byteToString(self._encoded_data)
+        string = byteToString(self._encoded_data)
         self.assertTrue(isinstance(string, str))
 
     def test_decodingSize(self):
         self._encoded_data = b'5550'
-        string = hexaphobus_ui.byteToString(self._encoded_data)
+        string = byteToString(self._encoded_data)
         self.assertEqual(len(string), 2)
 
 if __name__ == '__main__':
