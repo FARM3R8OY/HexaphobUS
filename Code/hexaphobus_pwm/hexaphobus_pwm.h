@@ -76,8 +76,10 @@ int AngleToHMI()
   for (int i = 2; i < 13; i++) {
     string_to_send += ";" + String(ANGLE[i]);
   }
+  if(sizeof(string_to_send)<6)
+  {return -1;}
+  
   Serial.println(string_to_send);
-
   return 0;
 }
 
