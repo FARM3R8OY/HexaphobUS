@@ -27,6 +27,8 @@ import binascii
 
 import serial
 
+from threading import Timer
+
 from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
@@ -39,6 +41,8 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
 Tests_angles = ["1.12", "12.3", "-113.0", "133.1", "24.3", "24.4",
                 "234.5", "467.3", "353.3", "244.2", "2442", "244.5"]
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
+
+SERIAL_UPDATE_RATE = 2
 
 ARROW_W = 60
 ARROW_H = 30
@@ -67,6 +71,7 @@ ENCODED_VAR = b'55'
 global edit_place
 edit_place = 0
 
+global servoTable
 
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
@@ -93,11 +98,11 @@ def stringToByte(string):
     """
     Encodes string and returns byte values.
     """
-    string_size = len(string)
-    bytes_string = bytes(string, 'utf-8')
-    my_format = str(string_size) + "s"
-    packed_data = struct.pack(my_format, bytes_string)
-    encoded_string = binascii.hexlify(packed_data)
+    # string_size = len(string)
+    bytes_string = string.encode()
+    # my_format = str(string_size) + "s"
+    # packed_data = struct.pack(my_format, bytes_string)
+    # encoded_string = binascii.hexlify(packed_data)
     return encoded_string
 
 def byteToString(encoded_string):
@@ -111,33 +116,57 @@ def byteToString(encoded_string):
     string = encoded_string.decode().strip()
     return string
 
+class RepeatedTimer(object):
+    def __init__(self, interval, function, *args, **kwargs):
+        self._timer     = None
+        self.interval   = interval
+        self.function   = function
+        self.args       = args
+        self.kwargs     = kwargs
+        self.is_running = False
+        self.start()
+
+    def _run(self):
+        self.is_running = False
+        self.start()
+        self.function(*self.args, **self.kwargs)
+
+    def start(self):
+        if not self.is_running:
+            self._timer = Timer(self.interval, self._run)
+            self._timer.start()
+            self.is_running = True
+
+    def stop(self):
+        self._timer.cancel()
+        self.is_running = False
+
 class SerialChecker(QThread):
     def __init__(self):
         QThread.__init__(self)
         self.ser = None
+        self.s1 = 0
 
     def SerialRun(self):
         port = "/dev/ttyACM0"
         self.ser = serial.Serial(port,9600)
         self.ser.flushInput()
-        while True:
-            self.serialReceive()
-
+        self.rt = RepeatedTimer(SERIAL_UPDATE_RATE,self.serialReceive)
+            
     def serialReceive(self):
         """
         Get the bytes from the serial port
         """
-        while self.serial.canReadLine():
-        #while True:
-            stringData = self.ser.read_until()
-            servoAngle = byteToString(stringData)
-            tableData = servoAngle.split(";")
+        global servoTable
+        stringData = self.ser.read_until()
+        servoAngle = byteToString(stringData)
+        tableData = servoAngle.split(";")
 
-            if len(servoTable) > 11:
-                    servoTable = []
-            for angle in tableData:
-                servoTable.append(angle)
+        if len(tableData) == 12:
+                servoTable = tableData
 
+    def serialQuit(self):
+        self.rt.stop()
 
     def serialSend(self, command):
         """
@@ -358,6 +387,8 @@ class MainWindow(QWidget):
 
         self.serialCheck = SerialChecker()
 
+        self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE,self.setServoValues)
+
         self.initUI()
 
     def getServoEdits(self):
@@ -439,7 +470,7 @@ class MainWindow(QWidget):
         functions.
         """
         self.button_serial_start.clicked.connect(self.serialCheck.SerialRun)
-        self.button_serial_start.clicked.connect(self.setServoValues)
+        self.button_serial_start.clicked.connect(self.removeButton)
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(lambda: self.tracking.
@@ -467,7 +498,14 @@ class MainWindow(QWidget):
         self.button_left.clicked.connect(lambda: self.serialCheck.serialSend("LEFT"))
         self.shortcut_left.activated.connect(lambda: self.serialCheck.serialSend("LEFT"))
 
+    def cleanUp(self):
+        print("quitting")
+        self.serialCheck.serialQuit()
+        self.repeater.stop()
+        print("end")
 
+    def removeButton(self):
+        self.button_serial_start.setEnabled(False)
 
     def setInfo(self):
         """
@@ -484,16 +522,15 @@ class MainWindow(QWidget):
 
     def runProgram(self):
         print(ENCODED_VAR)
-        string = byteToString(ENCODED_VAR)
-        print('Unpacked Values:', string)
+        # string = byteToString(ENCODED_VAR)
+        # print('Unpacked Values:', string)
 
     def setServoValues(self):
         """
         Set the servomotor edit text.
         """
-        while self.serialCheck.ser.isOpen():
-            for (angle, servo) in zip(servoTable, self._servo_edits):
-                servo.setText(angle)
+        for (angle, servo) in zip(servoTable, self._servo_edits):
+            servo.setText(angle)
 
     def setInfoValues(self, Speed, Energy):
         """
@@ -582,6 +619,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + SEP + LOGO))
     window = MainWindow()
+    app.aboutToQuit.connect(window.cleanUp)
 
     # Set style
     palette = window.palette()
@@ -599,7 +637,6 @@ if __name__ == '__main__':
     palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
     palette.setColor(QPalette.HighlightedText, Qt.black)
     window.setPalette(palette)
-
 
     # Kill display
     sys.exit(app.exec_())
