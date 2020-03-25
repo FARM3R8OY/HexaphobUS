@@ -123,8 +123,6 @@ class SerialChecker(QThread):
 
         self.serialReceive()
 
-        
-
     def serialReceive(self):
         """
         Get the bytes from the serial port
@@ -137,9 +135,8 @@ class SerialChecker(QThread):
 
             for angle in tableData:
                 servoTable.append(angle)
-                
-                
-        return servoTable"""
+                        
+        return servoTable
 
     def serialSend(self, command):
         """

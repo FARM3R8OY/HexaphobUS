@@ -1,7 +1,7 @@
 matrix:
   include:
     - language: python
-      python: "3.8.1"
+      python: "3.8.2"
       before_install:
         - pwd
         - python --version
@@ -32,6 +32,7 @@ matrix:
         - arduino --install-library "Adafruit SleepyDog Library"
         - arduino --install-library "Adafruit FONA Library"
         - arduino --install-library "Adafruit PWM Servo Driver Library"
+        - arduino --install-library "AUnit"
       script:
         - build_main_platforms
       after_success:
@@ -162,7 +163,8 @@ notifications:
 #         install: [
 #           - arduino --install-library "Adafruit SleepyDog Library",
 #           - arduino --install-library "Adafruit FONA Library",
-#           - arduino --install-library "Adafruit PWM Servo Driver Library"
+#           - arduino --install-library "Adafruit PWM Servo Driver Library",
+#           - arduino --install-library "AUnit"
 #         ],
 #         script: [
 #           - build_main_platforms

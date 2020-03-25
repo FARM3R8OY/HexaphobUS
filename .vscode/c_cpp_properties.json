@@ -6,14 +6,7 @@
                 "${workspaceFolder}\\**",
                 "C:\\Program Files\\Arduino\\tools\\**",
                 "C:\\Program Files\\Arduino\\libraries\\**",
-                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\**",
-                "C:\\Program Files\\Arduion\\hardware\\arduino\\avr\\cores\\arduino",
-                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\libraries\\EEPROM\\src",
-                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\libraries\\HID\\src",
-                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\libraries\\SoftwareSerial\\src",
-                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\libraries\\SPI\\src",
-                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\libraries\\Wire\\src",
-                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\libraries\\SPI\\src"
+                "C:\\Program Files\\Arduino\\hardware\\arduino\\avr\\**"
             ],
             "defines": [
                 "_DEBUG",
@@ -24,7 +17,6 @@
                 "ARDUINO_AVR_UNO",
                 "ARDUINO_ARCH_AVR"
             ],
-            "compilerPath": "C:\\Program Files\\Arduino\\hardware\\tools\\avr\\bin\\avr-gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "msvc-x64",
