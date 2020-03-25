@@ -69,6 +69,8 @@ void setup() {
     Serial.begin(9600);
     pwm.begin();
     pwm.setPWMFreq(FREQUENCY);
+    delay(1000);
+    AngleToHMI();
 }
 
 /*!
@@ -78,17 +80,20 @@ void setup() {
  *        to move according to user input.
  */
 void loop() { 
-  delay(12000);
-  AngleToHMI();
-  delay(1000);
-  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,0);
+  ReceiveCommand();
+  showNewData();
+  
+  //UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
+  delay(100);
+  //ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
+  delay(100);
   /*init_mouv();
   delay(1000);
   int B_Moving=1;
-  Moving(B_Moving,5,POS_FRONT);
+  Moving(B_Moving,1,POS_FRONT);
   //delay(2000);
   B_Moving=1;
-  Moving(B_Moving,5,POS_BACK);
+  Moving(B_Moving,1,POS_BACK);
   B_Moving=1;
   //delay(2000);
   MovingRight(B_Moving,10);

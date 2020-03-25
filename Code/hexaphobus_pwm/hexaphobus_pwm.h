@@ -51,6 +51,9 @@
 /// Angle value in degrees (center).
 #  define CENTER 43
 
+boolean newData = false;
+String read_string;
+
 /// Adjustments for each servomotor angle.
 int SHIFT[13] = {-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68};
 /// Servomotor angles.
@@ -78,7 +81,8 @@ int AngleToHMI()
   }
   if(sizeof(string_to_send)<6)
   {return -1;}
-  
+  Serial.flush();
+  delay(10);
   Serial.println(string_to_send);
   return 0;
 }
@@ -101,6 +105,8 @@ int pulseWidth(int angle)
   int pulse_wide, analog_value;
   pulse_wide   = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
   analog_value = int(float(pulse_wide) / 1000000 * FREQUENCY * 4096);
+  if(analog_value>180)
+  {return -1;}
   return analog_value;
 }
 
@@ -176,7 +182,7 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
         else
         {
           pwm.setPWM(Legs[i]+6, 0, pulseWidth(angle[i]));
-          ANGLE[Legs[i]+6]=180-angle[i];
+          ANGLE[Legs[i]+6]=angle[i];
           AngleToHMI();
         }
       }
@@ -236,6 +242,8 @@ int UpAndDown(int Leg1,int Leg2,int Leg3,int pos1,int pos2,int pos3,int time)
  */
 int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, int time)
 {
+   if(time<0)
+   {return -1;}
    int Legs [3] = {Leg1, Leg2, Leg3};
    int pos[3] = {pos1, pos2, pos3};
    int angle[3]={0,0,0};
@@ -253,7 +261,7 @@ int ForwardAndBackward(int Leg1,int Leg2,int Leg3,int pos1, int pos2, int pos3, 
       if (Legs[i]%2 == 0)
       {
         pwm.setPWM(Legs[i], 0, pulseWidth(180-angle[i]));
-        ANGLE[Legs[i]]=angle[i];
+        ANGLE[Legs[i]]=180-angle[i];
         AngleToHMI();
       }
       
@@ -451,3 +459,44 @@ int MovingLeft(int B_MovingLeft,int nb_sequence)
     } 
     return 0;
 }
+
+
+
+/*!
+ * @brief Receive commnand  
+ *
+ *       Receive command from the HMI.
+ * 
+ * @return 0 after communication with the HMI.
+ */
+void ReceiveCommand()
+{
+  while (Serial.available() > 0 && newData == false) 
+  {
+    read_string = Serial.readString();
+    if(sizeof(read_string)>0)
+    {newData = true;}
+    
+  }
+  //Serial.println(receivedChars);
+}
+
+void showNewData() {
+  if (newData == true) 
+  {
+    Serial.flush();
+    delay(100);
+    Serial.println(read_string);
+    newData = false;
+  }
+  
+}
+
+
+
+
+
+
+
+
+
