@@ -104,11 +104,11 @@ def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
-    packed_data = binascii.unhexlify(encoded_string)
-    string_size = len(encoded_string)/2
-    my_format = str(int(string_size))+"s"
-    string = struct.unpack(my_format, packed_data)
-    string = string[0].decode('utf-8')
+    # packed_data = binascii.unhexlify(encoded_string)
+    # string_size = len(encoded_string)/2
+    # my_format = str(int(string_size))+"s"
+    # string = struct.unpack(my_format, packed_data)
+    string = encoded_string.decode().strip()
     return string
 
 class SerialChecker(QThread):
@@ -119,16 +119,16 @@ class SerialChecker(QThread):
     def SerialRun(self):
         port = "/dev/ttyACM0"
         self.ser = serial.Serial(port,9600)
+        self.ser.flushInput()
         while True:
-            # self.ser.flushInput()
-            if self.ser:
-                self.serialReceive()
+            self.serialReceive()
 
     def serialReceive(self):
         """
         Get the bytes from the serial port
         """
-        while self.ser.is_open:
+        while self.serial.canReadLine():
+        #while True:
             stringData = self.ser.read_until()
             servoAngle = byteToString(stringData)
             tableData = servoAngle.split(";")
@@ -491,7 +491,7 @@ class MainWindow(QWidget):
         """
         Set the servomotor edit text.
         """
-        while True:
+        while self.serialCheck.ser.isOpen():
             for (angle, servo) in zip(servoTable, self._servo_edits):
                 servo.setText(angle)
 
