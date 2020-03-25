@@ -159,7 +159,9 @@ class SerialChecker(QThread):
         """
         global servoTable
         stringData = self.ser.read_until()
+        print(stringData)
         servoAngle = byteToString(stringData)
+        print(servoAngle)
         tableData = servoAngle.split(";")
 
         if len(tableData) == 12:
@@ -531,6 +533,7 @@ class MainWindow(QWidget):
         """
         for (angle, servo) in zip(servoTable, self._servo_edits):
             servo.setText(angle)
+        print("fff")
 
     def setInfoValues(self, Speed, Energy):
         """

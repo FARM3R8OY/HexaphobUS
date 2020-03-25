@@ -80,13 +80,21 @@ void setup() {
  *        to move according to user input.
  */
 void loop() { 
-  ReceiveCommand();
+ 
+ 
+ pwm.setPWM(1, 0, pulseWidth(90));
+ pwm.setPWM(1, 0, pulseWidth(30));
+ /* ReceiveCommand();
   showNewData();
-  
-  //UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
-  delay(100);
-  //ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
-  delay(100);
+  */
+  /*UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
+  delay(500);
+  ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
+  delay(500);
+  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,0);
+  delay(500);
+  ForwardAndBackward(2,3,6,POS_BACK,POS_BACK,POS_BACK,0);
+  delay(500);*/
   /*init_mouv();
   delay(1000);
   int B_Moving=1;
