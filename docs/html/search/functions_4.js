@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['loop_51',['loop',['../df/d44/hexaphobus__pwm_8ino.html#afe461d27b9c48d5921c00d521181f12f',1,'hexaphobus_pwm.ino']]]
+  ['forwardandbackward_81',['ForwardAndBackward',['../da/d39/hexaphobus__pwm_8h.html#aef352aa6e85a797b4fa2143bf76e4446',1,'hexaphobus_pwm.h']]]
 ];

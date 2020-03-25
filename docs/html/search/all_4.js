@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['forwardandbackward_8',['ForwardAndBackward',['../da/d39/hexaphobus__pwm_8h.html#aef352aa6e85a797b4fa2143bf76e4446',1,'hexaphobus_pwm.h']]],
-  ['frequency_9',['FREQUENCY',['../da/d39/hexaphobus__pwm_8h.html#a84142cd3e3bf14c4ecd4b6707a808c39',1,'hexaphobus_pwm.h']]],
-  ['front_10',['FRONT',['../da/d39/hexaphobus__pwm_8h.html#ac25c6a324554f8ae267ad7c1638074a8',1,'hexaphobus_pwm.h']]]
+  ['default_5fpulse_5fwidth_10',['DEFAULT_PULSE_WIDTH',['../da/d39/hexaphobus__pwm_8h.html#a7eada57cb49e7b1766a813e4635d79bd',1,'hexaphobus_pwm.h']]],
+  ['down_11',['DOWN',['../da/d39/hexaphobus__pwm_8h.html#a4193cd1c8c2e6ebd0e056fa2364a663f',1,'hexaphobus_pwm.h']]]
 ];

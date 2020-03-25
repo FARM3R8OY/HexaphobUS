@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['init_5fmouv_15',['init_mouv',['../da/d39/hexaphobus__pwm_8h.html#ab3f7dbe5656f6f49ef85c9bb3745cdfd',1,'hexaphobus_pwm.h']]]
+  ['getservoedits_15',['getServoEdits',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a496742550cfd65739dab309bb1c18b4b',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
+  ['getservolabels_16',['getServoLabels',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a215d53c8e9d0f38bd9dc814039e2aea9',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]]
 ];
