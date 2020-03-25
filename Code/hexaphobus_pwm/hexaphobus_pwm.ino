@@ -11,7 +11,7 @@
  *       - 2020-01-29 (Creation)
  *       - 2020-03-24 (Last modification)
  * 
- * @details Motion control, communication, and sequencing (main).
+ * Motion control, communication, and sequencing (main).
  * 
  * <b>S4-H20 | GRO400</b>
  */

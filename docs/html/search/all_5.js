@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['hexaphobus_5fpwm_2eh_11',['hexaphobus_pwm.h',['../da/d39/hexaphobus__pwm_8h.html',1,'']]],
-  ['hexaphobus_5fpwm_2eino_12',['hexaphobus_pwm.ino',['../df/d44/hexaphobus__pwm_8ino.html',1,'']]],
-  ['hexaphobus_5fui_13',['hexaphobus_ui',['../d7/d9a/namespacehexaphobus__ui_1_1hexaphobus__ui.html',1,'hexaphobus_ui']]],
-  ['test_5fhexaphobus_5fui_14',['test_hexaphobus_ui',['../d5/d21/namespacehexaphobus__ui_1_1tests_1_1test__hexaphobus__ui.html',1,'hexaphobus_ui::tests']]]
+  ['forwardandbackward_12',['ForwardAndBackward',['../da/d39/hexaphobus__pwm_8h.html#aef352aa6e85a797b4fa2143bf76e4446',1,'hexaphobus_pwm.h']]],
+  ['frequency_13',['FREQUENCY',['../da/d39/hexaphobus__pwm_8h.html#a84142cd3e3bf14c4ecd4b6707a808c39',1,'hexaphobus_pwm.h']]],
+  ['front_14',['FRONT',['../da/d39/hexaphobus__pwm_8h.html#ac25c6a324554f8ae267ad7c1638074a8',1,'hexaphobus_pwm.h']]]
 ];

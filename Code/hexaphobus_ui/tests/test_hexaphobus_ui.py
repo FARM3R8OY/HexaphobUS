@@ -19,10 +19,9 @@ S4-H20 | GRO400
 
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import unittest
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import hexaphobus_ui
-from PyQt5.QtWidgets import QApplication
 
 # --------------------------------------------
 
@@ -50,17 +49,17 @@ class TestHexaphobusUI(unittest.TestCase):
 
     def test_encodingType(self):
         string = "ABCDE"
-        self._encoded_data = stringToByte(string)
+        self._encoded_data = hexaphobus_ui.stringToByte(string)
         self.assertTrue(isinstance(self._encoded_data, bytes))
 
     def test_decodingType(self):
         self._encoded_data = b'5550'
-        string = byteToString(self._encoded_data)
+        string = hexaphobus_ui.byteToString(self._encoded_data)
         self.assertTrue(isinstance(string, str))
 
     def test_decodingSize(self):
         self._encoded_data = b'5550'
-        string = byteToString(self._encoded_data)
+        string = hexaphobus_ui.byteToString(self._encoded_data)
         self.assertEqual(len(string), 2)
 
 if __name__ == '__main__':

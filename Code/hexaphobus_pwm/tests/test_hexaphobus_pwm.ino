@@ -10,7 +10,7 @@
  *       - 2020-02-25 (Creation)
  *       - 2020-03-24 (Last modification)
  * 
- * @details Motion control, communication, and sequencing (test).
+ * Motion control, communication, and sequencing (test).
  * 
  * <b>S4-H20 | GRO400</b>
  */
