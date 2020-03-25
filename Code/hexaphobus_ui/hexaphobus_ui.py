@@ -67,6 +67,9 @@ ENCODED_VAR = b'55'
 global edit_place
 edit_place = 0
 
+global servoTable 
+servoTable = []
+
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
 BUTTON_DOWN = "\u2193"
@@ -118,25 +121,25 @@ class SerialChecker(QThread):
     def SerialRun(self):
         port = "/dev/ttyACM0"
         self.ser = serial.Serial(port,9600)
-        self.ser.baudrate = 9600
-        self.ser.flushInput()
-
-        self.serialReceive()
+        while True:
+            # self.ser.flushInput()
+            if self.ser:
+                self.serialReceive()
 
     def serialReceive(self):
         """
         Get the bytes from the serial port
         """
         while self.ser.is_open:
-            servoTable = []
             stringData = self.ser.read_until()
             servoAngle = byteToString(stringData)
             tableData = servoAngle.split(";")
 
+            if len(servoTable) > 11:
+                    servoTable = []
             for angle in tableData:
                 servoTable.append(angle)
-                        
-        return servoTable
+
 
     def serialSend(self, command):
         """
@@ -487,20 +490,8 @@ class MainWindow(QWidget):
         """
         Set the servomotor edit text.
         """
-        # Read values from Arduino (angle servo moteur)
-        a = self.serialReceive()
-        print(a) #None if not working
-        # for (angle, servo) in zip(angles_list, self._servo_edits):
-        #     servo.setText(angle)
-        """
-        Remove comment next lines to test full serial communication
-        """
-        # global edit_place
-        # self._servo_edits[edit_place].setText(a)
-        # if edit_place < 11:
-        #     edit_place += 1
-        # else: 
-        #     edit_place = 0
+        for (angle, servo) in zip(servoTable, self._servo_edits):
+            servo.setText(angle)
 
     def setInfoValues(self, Speed, Energy):
         """
