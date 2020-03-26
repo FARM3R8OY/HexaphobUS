@@ -31,9 +31,9 @@
  *        frequency.
  */
 void setup() {
-    Serial.begin(9600);
-    pwm.begin();
-    pwm.setPWMFreq(FREQUENCY);
+  Serial.begin(9600);
+  pwm.begin();
+  pwm.setPWMFreq(FREQUENCY);
 }
 
 /*!
@@ -42,7 +42,7 @@ void setup() {
  *        This function sets the test-running class.
  */
 void loop() {
-    TestRunner::run();
+  TestRunner::run();
 }
 
 /*!
@@ -52,11 +52,11 @@ void loop() {
  *        validate the "hexaphobus_pwm" header code.
  */
 test(RaiseLeg) {
-    assertEqual(UpAndDown(1, 4, 5, POS_UP, POS_UP, POS_UP), 0);
-    assertEqual(FowardAndBackwards(1, 4, 5, POS_UP, POS_UP, POS_UP), 0);
-    assertEqual(UpAndDown(1, 4, -1, POS_UP, POS_UP, POS_UP), -1);
-    assertEqual(UpAndDown(1, -1, 5, POS_UP, POS_UP, POS_UP), -1);
-    assertEqual(FowardAndBackwards(-1, 1, 5, POS_UP, POS_UP, POS_UP), -1);
-    assertEqual(UpAndDown(1, 4, 5, -2, POS_UP, POS_UP), 0);
-    assertEqual(FowardAndBackwards(1, 4, 5, -2, POS_UP, POS_UP), 0);
+  assertEqual(UpAndDown(1, 4, 5, POS_UP, POS_UP, POS_UP), 0);
+  assertEqual(FowardAndBackwards(1, 4, 5, POS_UP, POS_UP, POS_UP), 0);
+  assertEqual(UpAndDown(1, 4, -1, POS_UP, POS_UP, POS_UP), -1);
+  assertEqual(UpAndDown(1, -1, 5, POS_UP, POS_UP, POS_UP), -1);
+  assertEqual(FowardAndBackwards(-1, 1, 5, POS_UP, POS_UP, POS_UP), -1);
+  assertEqual(UpAndDown(1, 4, 5, -2, POS_UP, POS_UP), 0);
+  assertEqual(FowardAndBackwards(1, 4, 5, -2, POS_UP, POS_UP), 0);
 }

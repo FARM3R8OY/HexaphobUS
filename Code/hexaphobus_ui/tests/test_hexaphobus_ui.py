@@ -38,14 +38,14 @@ class TestHexaphobusUI(unittest.TestCase):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #self._app = QApplication(sys.argv)
-        #self._window = hexaphobus_ui.MainWindow()
+        # self._app = QApplication(sys.argv)
+        # self._window = hexaphobus_ui.MainWindow()
         self._encoded_data = None
 
-    #def test_servoValues(self):
-    #    self._window.setServoValues(TEST_SERVO_ANGLES)
-    #    for count, edit in enumerate(self._window.getServoEdits()):
-    #        self.assertEqual(TEST_SERVO_ANGLES[count], edit.text())
+    # def test_servoValues(self):
+    #     self._window.setServoValues(TEST_SERVO_ANGLES)
+    #     for count, edit in enumerate(self._window.getServoEdits()):
+    #         self.assertEqual(TEST_SERVO_ANGLES[count], edit.text())
 
     def test_encodingType(self):
         string = "ABCDE"
@@ -60,7 +60,7 @@ class TestHexaphobusUI(unittest.TestCase):
     def test_decodingSize(self):
         self._encoded_data = b'5550'
         string = hexaphobus_ui.byteToString(self._encoded_data)
-        self.assertEqual(len(string), 2)
+        self.assertEqual(len(string), 4)
 
 if __name__ == '__main__':
     unittest.main()

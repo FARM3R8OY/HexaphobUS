@@ -11,8 +11,9 @@ var searchData=
   ['setlayoutdependencies_54',['setLayoutDependencies',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#aaf3e93cabd78648a425d96b504674f53',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
   ['setservovalues_55',['setServoValues',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#ab24e35e6fa7f73aae212a6bfc2d5e5d9',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
   ['setsizebuttons_56',['setSizeButtons',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#ab75f155d7aeaaddc9209b918f42aedb6',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
-  ['setup_57',['setup',['../df/d44/hexaphobus__pwm_8ino.html#a4fc01d736fe50cf5b977f755b675f11d',1,'hexaphobus_pwm.ino']]],
+  ['setup_57',['setup',['../df/d44/hexaphobus__pwm_8ino.html#a4fc01d736fe50cf5b977f755b675f11d',1,'setup():&#160;hexaphobus_pwm.ino'],['../de/d0b/test__hexaphobus__pwm_8ino.html#a4fc01d736fe50cf5b977f755b675f11d',1,'setup():&#160;test_hexaphobus_pwm.ino']]],
   ['shift_58',['SHIFT',['../da/d39/hexaphobus__pwm_8h.html#a6f7a789d874e9d44826ab34eb139b7f2',1,'hexaphobus_pwm.h']]],
-  ['strechservolayouts_59',['strechServoLayouts',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#aa596730ba2bd94462e02460fd43f48ee',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
-  ['stringtobyte_60',['stringToByte',['../d7/d9a/namespacehexaphobus__ui_1_1hexaphobus__ui.html#af292acabf7d3a090d80fbfda83174199',1,'hexaphobus_ui::hexaphobus_ui']]]
+  ['shownewdata_59',['showNewData',['../da/d39/hexaphobus__pwm_8h.html#af64efae30d7e70aaeaa58837f1464f3a',1,'hexaphobus_pwm.h']]],
+  ['strechservolayouts_60',['strechServoLayouts',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#aa596730ba2bd94462e02460fd43f48ee',1,'hexaphobus_ui::hexaphobus_ui::MainWindow']]],
+  ['stringtobyte_61',['stringToByte',['../d7/d9a/namespacehexaphobus__ui_1_1hexaphobus__ui.html#af292acabf7d3a090d80fbfda83174199',1,'hexaphobus_ui::hexaphobus_ui']]]
 ];

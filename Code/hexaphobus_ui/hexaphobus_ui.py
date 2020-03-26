@@ -22,12 +22,11 @@ import math
 import os
 import sys
 
-import struct
-import binascii
-
-import serial
+# import struct
+# import binascii
 
 from threading import Timer
+import serial
 
 from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
@@ -62,16 +61,13 @@ UI_H = 600
 UI_MIN_W = 480
 UI_MIN_H = 360
 
-global nb_command
-nb_command = 0
-
-global ENCODED_VAR
+NB_COMMAND = 0
 ENCODED_VAR = b'55'
+EDIT_PLACE = 0
+SERVO_TABLE = list()
 
-global edit_place
-edit_place = 0
-
-global servoTable
+PORT = "/dev/ttyACM0"
+BAUD_RATE = 9600
 
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
@@ -88,20 +84,15 @@ LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
 # --------------------------------------------
 
-# port = "/dev/ttyACM0"
-# ser = serial.Serial(port,9600)
-# ser.baudrate = 9600
-# ser.flushInput()
-
 
 def stringToByte(string):
     """
     Encodes string and returns byte values.
     """
     # string_size = len(string)
-    bytes_string = string.encode()
+    encoded_string = string.encode()
     # my_format = str(string_size) + "s"
-    # packed_data = struct.pack(my_format, bytes_string)
+    # packed_data = struct.pack(my_format, encoded_string)
     # encoded_string = binascii.hexlify(packed_data)
     return encoded_string
 
@@ -116,48 +107,78 @@ def byteToString(encoded_string):
     string = encoded_string.decode().strip()
     return string
 
+# --------------------------------------------
+
+
 class RepeatedTimer(object):
+    """
+    The 'RepeatedTimer' class allows the user to time some operations
+    at a specified frequency.
+    """
     def __init__(self, interval, function, *args, **kwargs):
-        self._timer     = None
-        self.interval   = interval
-        self.function   = function
-        self.args       = args
-        self.kwargs     = kwargs
+        """
+        The 'RepeatedTimer' class constructor initializes the flagging
+        interval, the operation to launch, the state, and other
+        arguments.
+        """
+        self._timer = None
+        self.interval = interval
+        self.function = function
+        self.args = args
+        self.kwargs = kwargs
         self.is_running = False
         self.start()
 
     def _run(self):
+        """
+        Runs the timer and its operation.
+        """
         self.is_running = False
         self.start()
         self.function(*self.args, **self.kwargs)
 
     def start(self):
+        """
+        Starts the timer.
+        """
         if not self.is_running:
             self._timer = Timer(self.interval, self._run)
             self._timer.start()
             self.is_running = True
 
     def stop(self):
+        """
+        Stops the timer.
+        """
         self._timer.cancel()
         self.is_running = False
 
 class SerialChecker(QThread):
+    """
+    The 'SerialChecker' class is a QThread subclass that allows the user
+     to initiate a serial communication with a specified port.
+    """
     def __init__(self):
-        QThread.__init__(self)
+        """
+        The 'SerialChecker' class constructor initializes the serial
+        port, and the timer.
+        """
+        super().__init__()
         self.ser = None
-        self.s1 = 0
+        self.rt = None
 
     def SerialRun(self):
-        port = "/dev/ttyACM0"
-        self.ser = serial.Serial(port,9600)
+        """
+        Initiates the serial communication.
+        """
+        self.ser = serial.Serial(PORT, BAUD_RATE)
         self.ser.flushInput()
-        self.rt = RepeatedTimer(SERIAL_UPDATE_RATE,self.serialReceive)
-            
+        self.rt = RepeatedTimer(SERIAL_UPDATE_RATE, self.serialReceive)
+
     def serialReceive(self):
         """
-        Get the bytes from the serial port
+        Gets the information from the serial port.
         """
-        global servoTable
         stringData = self.ser.read_until()
         print(stringData)
         servoAngle = byteToString(stringData)
@@ -165,17 +186,20 @@ class SerialChecker(QThread):
         tableData = servoAngle.split(";")
 
         if len(tableData) == 12:
-                servoTable = tableData
+            SERVO_TABLE = tableData
 
     def serialQuit(self):
+        """
+        Ends the serial communication.
+        """
         self.rt.stop()
 
     def serialSend(self, command):
         """
-        Send the bytes to the serial port
+        Sends the information to the serial port.
         """
         bytesData = stringToByte(command)
-        self.ser.write(bytesData) 
+        self.ser.write(bytesData)
 
 class RobotTracking(QWidget):
     """
@@ -223,8 +247,6 @@ class RobotTracking(QWidget):
         """
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
-
-        global ENCODED_VAR
 
         if direction == "FORWARD" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
@@ -283,41 +305,40 @@ class RobotTracking(QWidget):
         q.setPen(QColor(0, 0, 0))
         q.drawPixmap(QPoint(self._robot_x_pos-20, self._robot_y_pos-20),
                      pix_robot)
-        #From center to robot             
+        #From center to robot
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
-        global nb_command
         moving_command = byteToString(ENCODED_VAR)
-        
+
         #Suggest to use feedback from the angles of servomotor
         if moving_command == "FORWARD" or moving_command == "BACKWARD":
-            if nb_command%2 == 0 and nb_command >= 0:
+            if NB_COMMAND % 2 == 0 and NB_COMMAND >= 0:
                 move_leg = -6
-            elif nb_command%2 == 1 and nb_command >= 0:
+            elif NB_COMMAND % 2 == 1 and NB_COMMAND >= 0:
                 move_leg = 6
-            nb_command += 1
+            NB_COMMAND += 1
         else:
             move_leg = 0
-        
+
         #Leg 1
         q.drawLine(self._robot_x_pos+20, self._robot_y_pos,
-                    self._robot_x_pos+40, self._robot_y_pos+move_leg)
+                   self._robot_x_pos+40, self._robot_y_pos+move_leg)
         #Leg 2
         q.drawLine(self._robot_x_pos+12, self._robot_y_pos+13,
-                    self._robot_x_pos+32, self._robot_y_pos+13-move_leg)
+                   self._robot_x_pos+32, self._robot_y_pos+13-move_leg)
         #Leg 3
         q.drawLine(self._robot_x_pos+12, self._robot_y_pos-13,
-                    self._robot_x_pos+32, self._robot_y_pos-13-move_leg)
+                   self._robot_x_pos+32, self._robot_y_pos-13-move_leg)
         #Leg 4
         q.drawLine(self._robot_x_pos-20, self._robot_y_pos,
-                    self._robot_x_pos-40, self._robot_y_pos-move_leg)
+                   self._robot_x_pos-40, self._robot_y_pos-move_leg)
         #Leg 5
         q.drawLine(self._robot_x_pos-12, self._robot_y_pos+13,
-                    self._robot_x_pos-32, self._robot_y_pos+13+move_leg)
+                   self._robot_x_pos-32, self._robot_y_pos+13+move_leg)
         #Leg 6
         q.drawLine(self._robot_x_pos-12, self._robot_y_pos-13,
-                    self._robot_x_pos-32, self._robot_y_pos-13+move_leg)
+                   self._robot_x_pos-32, self._robot_y_pos-13+move_leg)
 
 
 class MainWindow(QWidget):
@@ -339,8 +360,7 @@ class MainWindow(QWidget):
         # Servos
         self._servo_edits = list()
         self._servo_labels = list()
-        global servoTable 
-        servoTable = []
+        SERVO_TABLE = list()
 
         # Layouts
         self.global_layout = QVBoxLayout()
@@ -389,7 +409,7 @@ class MainWindow(QWidget):
 
         self.serialCheck = SerialChecker()
 
-        self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE,self.setServoValues)
+        self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE, self.setServoValues)
 
         self.initUI()
 
@@ -432,7 +452,7 @@ class MainWindow(QWidget):
         self.addWidgets()
         self.setLayout(self.global_layout)
         self.setInfoValues("100", "200")
-        
+
         self.show()
 
 
@@ -475,30 +495,54 @@ class MainWindow(QWidget):
         self.button_serial_start.clicked.connect(self.removeButton)
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
-        self.button_up.clicked.connect(lambda: self.tracking.
-                                       changePosition("FORWARD"))
-        self.shortcut_up.activated.connect(lambda: self.tracking.
-                                           changePosition("FORWARD"))
-        self.button_up.clicked.connect(lambda: self.serialCheck.serialSend("FORWARD"))
-        self.shortcut_up.activated.connect(lambda: self.serialCheck.serialSend("FORWARD"))
-        self.button_down.clicked.connect(lambda: self.tracking.
-                                         changePosition("BACKWARD"))
-        self.shortcut_down.activated.connect(lambda: self.tracking.
-                                             changePosition("BACKWARD"))
-        self.button_down.clicked.connect(lambda: self.serialCheck.serialSend("BACKWARD"))
-        self.shortcut_down.activated.connect(lambda: self.serialCheck.serialSend("BACKWARD"))
-        self.button_right.clicked.connect(lambda: self.tracking.
-                                          changePosition("RIGHT"))
-        self.shortcut_right.activated.connect(lambda: self.tracking.
-                                              changePosition("RIGHT"))
-        self.button_right.clicked.connect(lambda: self.serialCheck.serialSend("RIGHT"))
-        self.shortcut_right.activated.connect(lambda: self.serialCheck.serialSend("RIGHT"))
-        self.button_left.clicked.connect(lambda: self.tracking.
-                                         changePosition("LEFT"))
-        self.shortcut_left.activated.connect(lambda: self.tracking.
-                                             changePosition("LEFT"))
-        self.button_left.clicked.connect(lambda: self.serialCheck.serialSend("LEFT"))
-        self.shortcut_left.activated.connect(lambda: self.serialCheck.serialSend("LEFT"))
+        self.button_up.clicked.connect(
+            lambda: self.tracking.changePosition("FORWARD")
+        )
+        self.shortcut_up.activated.connect(
+            lambda: self.tracking.changePosition("FORWARD")
+        )
+        self.button_up.clicked.connect(
+            lambda: self.serialCheck.serialSend("FORWARD")
+        )
+        self.shortcut_up.activated.connect(
+            lambda: self.serialCheck.serialSend("FORWARD")
+        )
+        self.button_down.clicked.connect(
+            lambda: self.tracking.changePosition("BACKWARD")
+        )
+        self.shortcut_down.activated.connect(
+            lambda: self.tracking.changePosition("BACKWARD")
+        )
+        self.button_down.clicked.connect(
+            lambda: self.serialCheck.serialSend("BACKWARD")
+        )
+        self.shortcut_down.activated.connect(
+            lambda: self.serialCheck.serialSend("BACKWARD")
+        )
+        self.button_right.clicked.connect(
+            lambda: self.tracking.changePosition("RIGHT")
+        )
+        self.shortcut_right.activated.connect(
+            lambda: self.tracking.changePosition("RIGHT")
+        )
+        self.button_right.clicked.connect(
+            lambda: self.serialCheck.serialSend("RIGHT")
+        )
+        self.shortcut_right.activated.connect(
+            lambda: self.serialCheck.serialSend("RIGHT")
+        )
+        self.button_left.clicked.connect(
+            lambda: self.tracking.changePosition("LEFT")
+        )
+        self.shortcut_left.activated.connect(
+            lambda: self.tracking.changePosition("LEFT")
+        )
+        self.button_left.clicked.connect(
+            lambda: self.serialCheck.serialSend("LEFT")
+        )
+        self.shortcut_left.activated.connect(
+            lambda: self.serialCheck.serialSend("LEFT")
+        )
 
     def cleanUp(self):
         print("quitting")
@@ -531,7 +575,7 @@ class MainWindow(QWidget):
         """
         Set the servomotor edit text.
         """
-        for (angle, servo) in zip(servoTable, self._servo_edits):
+        for (angle, servo) in zip(SERVO_TABLE, self._servo_edits):
             servo.setText(angle)
         print("fff")
 
