@@ -40,6 +40,10 @@
 
 #### <a id="SetupUsers"></a>Setup for Users
 
+- Clone or download the repository;
+- Connect the hexapod's microcontroller (Arduino) to your computer;
+- Open the file ```hexaphobus_pwm.ino``` in the *./Code/hexaphobus_pwm* folder, and build the code into the microcontroller with your favorite IDE.
+
 #### <a id="SetupContrib"></a>Setup for Repository Contributors
 
 To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](https://github.com/gabrielcabana21/HexaphobUS/blob/code/Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
