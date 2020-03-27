@@ -9,7 +9,7 @@
  * 
  * @date
  *       - 2020-01-29 (Creation)
- *       - 2020-03-25 (Last modification)
+ *       - 2020-03-27 (Last modification)
  * 
  * Motion control, communication, and sequencing (main).
  * 
@@ -77,30 +77,23 @@ void setup() {
  *        to move according to user input.
  */
 void loop() { 
-  pwm.setPWM(1, 0, pulseWidth(90));
-  pwm.setPWM(1, 0, pulseWidth(30));
-  // ReceiveCommand();
-  // showNewData();
-  // UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,0);
-  // delay(500);
-  // ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,0);
-  // delay(500);
-  // UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,0);
-  // delay(500);
-  // ForwardAndBackward(2,3,6,POS_BACK,POS_BACK,POS_BACK,0);
-  // delay(500);*/
-  // init_move();
-  // delay(1000);
-  // int B_Moving=1;
-  // Moving(B_Moving,1,POS_FRONT);
-  // delay(2000);
-  // B_Moving=1;
-  // Moving(B_Moving,1,POS_BACK);
-  // B_Moving=1;
-  // delay(2000);
-  // MovingRight(B_Moving,10);
-  // B_Moving=1;
-  // delay(2000);
-  // MovingLeft(B_Moving,10);
-  // delay(2000);
+  
+   ReceiveCommand();
+   showNewData();
+   delay(100);
+   
+   init_move();
+   delay(1000);
+   int B_Moving=1;
+   Moving(B_Moving,2,POS_FRONT);
+   delay(2000);
+   B_Moving=1;
+   Moving(B_Moving,2,POS_BACK);
+   B_Moving=1;
+   delay(2000);
+   MovingRight(B_Moving,7);
+   B_Moving=1;
+   delay(2000);
+   MovingLeft(B_Moving,7);
+   delay(2000);
 }

@@ -9,7 +9,7 @@
  * 
  * @date
  *       - 2020-02-25 (Creation)
- *       - 2020-03-25 (Last modification)
+ *       - 2020-03-27 (Last modification)
  * 
  * Motion control, communication, and sequencing (header).
  * 
@@ -43,7 +43,7 @@
 /// Angle value in degrees (down).
 #  define DOWN   65
 /// Angle value in degrees (up).
-#  define UP     35
+#  define UP     25
 /// Angle value in degrees (back).
 #  define BACK   10
 /// Angle value in degrees (front).
@@ -105,14 +105,12 @@ int AngleToHMI() {
  * @return analog_value, which is the servomotor encoder value.
  */
 int pulseWidth(int angle) {
+  if(angle>180)
+  {return -1;}
+  
   int pulse_wide, analog_value;
-
   pulse_wide   = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
   analog_value = int(float(pulse_wide) / 1000000 * FREQUENCY * 4096);
-  
-  if (analog_value > 180) {
-    return -1;
-  }
   
   return analog_value;
 }
@@ -158,7 +156,7 @@ int pulseWidth(int angle) {
  *        - POS_DOWN (0): move down;
  *        - POS_UP (1): move up.
  * 
- * @param time
+ * @param Time
  * 
  *        Delay after sending the information to the servomotors.
  *        Crucial for optimized sequencing. 
@@ -171,7 +169,7 @@ int UpAndDown(int Leg1,
               int pos1,
               int pos2,
               int pos3,
-              int time) {
+              int Time) {
   int Legs[3]  = {Leg1, Leg2, Leg3};
   int pos[3]   = {pos1, pos2, pos3};
   int angle[3] = {0, 0, 0};
@@ -206,7 +204,7 @@ int UpAndDown(int Leg1,
     }
   }
 
-  delay(time);
+  delay(Time);
 
   return 0;
 }
@@ -254,7 +252,7 @@ int UpAndDown(int Leg1,
  *        - POS_FRONT (1): move backward;
  *        - POS_CENTER (2): move to the center.
  * 
- * @param time
+ * @param Time
  * 
  *        Delay after sending the information to the servomotors.
  *        Crucial for optimized sequencing. 
@@ -267,8 +265,8 @@ int ForwardAndBackward(int Leg1,
                        int pos1,
                        int pos2,
                        int pos3,
-                       int time) {
-  if (time < 0) {
+                       int Time) {
+  if (Time < 0) {
     return -1;
   }
   
@@ -308,7 +306,7 @@ int ForwardAndBackward(int Leg1,
     }
   }
 
-  delay(time);
+  delay(Time);
   
   return 0;
 } 
@@ -325,14 +323,14 @@ int ForwardAndBackward(int Leg1,
  *        Leg to move (any from #1 to #6). If leg parameter is
  *        equal to 0, the corresponding leg will not move.
  * 
- * @param direction
+ * @param Direction
  * 
  *       Pass the coxa direction to the servomotor.
  *       - POS_BACK (0): move forward;
  *       - POS_FRONT (1): move backward;
  *       - POS_CENTER (2): move to the center.
  * 
- * @param time
+ * @param Time
  * 
  *        Delay after sending the information to the servomotors.
  *        Crucial for optimized sequencing. 
@@ -340,22 +338,23 @@ int ForwardAndBackward(int Leg1,
  * @return -1 for handling errors, 0 if execution was correct.
  */
 int MoveOneLeg(int leg,
-               int direction,
-               int time) {
-  UpAndDown(leg, 0, 0, POS_UP, POS_UP, POS_UP, time);
+               int Direction,
+               int Time) {
+                
+  UpAndDown(leg, 0, 0, POS_UP, POS_UP, POS_UP, 50);
   
-  if(direction == POS_FRONT) {
-    ForwardAndBackward(leg, 0, 0, POS_FRONT, POS_CENTER, POS_CENTER, time);
+  if(Direction == POS_FRONT) {
+    ForwardAndBackward(leg, 0, 0, POS_FRONT, POS_CENTER, POS_CENTER, 50);
   }
-  else if (direction == POS_BACK) {
-    ForwardAndBackward(leg, 0, 0, POS_BACK, POS_CENTER, POS_CENTER, time);
+  else if (Direction == POS_BACK) {
+    ForwardAndBackward(leg, 0, 0, POS_BACK, POS_CENTER, POS_CENTER, 50);
     }
   else {
-    ForwardAndBackward(leg, 0, 0, POS_CENTER, POS_CENTER, POS_CENTER, time);
+    ForwardAndBackward(leg, 0, 0, POS_CENTER, POS_CENTER, POS_CENTER, 50);
   }
   
-  UpAndDown(leg, 0, 0, POS_DOWN, POS_DOWN, POS_DOWN, time);
-
+  UpAndDown(leg, 0, 0, POS_DOWN, POS_DOWN, POS_DOWN, 50);
+  delay(Time);
   return 0;
 }
 
