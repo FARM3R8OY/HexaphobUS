@@ -52,6 +52,14 @@
 /********************************************/
 
 uint8_t servonum = 0; ///< Servomotor counter.
+int State = 0; ///State of the robot
+/*
+IDLE = 0
+FORWARD = 1
+BACKWARD = 2
+LEFT = 3
+RIGHT = 4
+*/
 
 /********************************************/
 
@@ -68,6 +76,7 @@ void setup() {
   pwm.setPWMFreq(FREQUENCY);
   delay(1000);
   AngleToHMI();
+  init_move();
 }
 
 /*!
@@ -78,11 +87,37 @@ void setup() {
  */
 void loop() { 
   
-   ReceiveCommand();
-   showNewData();
-   delay(100);
    
-   init_move();
+  //showNewData();
+  
+  State = UpdateCommand();
+  if (State != 0)
+  {
+    if (State == 1)
+    {
+      //Move forward
+      Moving(POS_FRONT);
+    }
+    if (State == 2)
+    {
+      //Move Backward
+      Moving(POS_BACK);
+    }
+    if (State == 3)
+    {
+      //Move Left
+      MovingLeft();
+    }
+    if (State == 4)
+    {
+      //Move Right
+      MovingRight();
+    }
+  }
+
+  delay(100);
+   
+  /*
    delay(1000);
    int B_Moving=1;
    Moving(B_Moving,2,POS_FRONT);
@@ -96,4 +131,5 @@ void loop() {
    delay(2000);
    MovingLeft(B_Moving,7);
    delay(2000);
+   */
 }

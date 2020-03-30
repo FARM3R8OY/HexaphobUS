@@ -2,6 +2,7 @@
  * @file hexaphobus_pwm.h
  * 
  * @authors
+ *          - Boulet,       Philippe | boup2341
  *          - Cabana,       Gabriel  | cabg2101
  *          - Guay-Tanguay, Carolane | guac3201
  *          - Lalonde,      Philippe | lalp2803
@@ -51,8 +52,9 @@
 /// Angle value in degrees (center).
 #  define CENTER 43
 
+/// Variable for commucation
 boolean newData = false;
-String read_string;
+String input_string;
 
 /// Adjustments for each servomotor angle.
 int SHIFT[13] = {-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68};
@@ -407,19 +409,19 @@ int init_move() {
  * 
  * @return -1 for handling errors, 0 if execution was correct.
  */
-int Moving(int B_Moving,
-           int nb_sequence,
-           int dir) {
+int Moving(int dir) 
+{
   int inv_dir=0;
   
-  if (dir == POS_FRONT) {
+  if (dir == POS_FRONT) 
+  {
     inv_dir = POS_BACK;
   }
-  else if (dir == POS_BACK) {
+  else if (dir == POS_BACK)
+  {
     inv_dir=POS_FRONT;
   }
 
-  while (B_Moving < nb_sequence) {
     MoveOneLeg(2, dir, 100);
     MoveOneLeg(3, dir, 100);
     MoveOneLeg(6, dir, 100);
@@ -433,9 +435,6 @@ int Moving(int B_Moving,
     ForwardAndBackward(2, 3, 6, inv_dir, inv_dir, inv_dir, 0);
     ForwardAndBackward(1, 4, 5, POS_CENTER, POS_CENTER, POS_CENTER, 0);   
     delay(200);
-
-    B_Moving += 1;
-  }
 
   return 0;
 }
@@ -456,27 +455,24 @@ int Moving(int B_Moving,
  * 
  * @return -1 for handling errors, 0 if execution was correct.
  */
-int MovingRight(int B_MovingRight,
-                int nb_sequence) {
-  init_move();
+int MovingRight() 
+{
+  //init_move();
 
-  while (B_MovingRight < nb_sequence) {
-    MoveOneLeg(2, POS_FRONT, 100);
-    MoveOneLeg(3, POS_BACK, 100);
-    MoveOneLeg(6, POS_FRONT, 100);
-    ForwardAndBackward(2, 3, 6, POS_CENTER, POS_CENTER, POS_CENTER, 0);
-    ForwardAndBackward(1, 4, 5, POS_FRONT, POS_BACK, POS_FRONT, 0);
-    delay(500);
-    
-    MoveOneLeg(1, POS_BACK, 150);
-    MoveOneLeg(4, POS_FRONT, 100);
-    MoveOneLeg(5, POS_BACK, 100);
-    ForwardAndBackward(2, 3, 6, POS_BACK, POS_FRONT, POS_BACK, 0);
-    ForwardAndBackward(1, 4, 5, POS_CENTER, POS_CENTER, POS_CENTER, 0);
-    delay(500);
-    B_MovingRight += 1;
-  }
-
+  MoveOneLeg(2, POS_FRONT, 100);
+  MoveOneLeg(3, POS_BACK, 100);
+  MoveOneLeg(6, POS_FRONT, 100);
+  ForwardAndBackward(2, 3, 6, POS_CENTER, POS_CENTER, POS_CENTER, 0);
+  ForwardAndBackward(1, 4, 5, POS_FRONT, POS_BACK, POS_FRONT, 0);
+  delay(500);
+  
+  MoveOneLeg(1, POS_BACK, 150);
+  MoveOneLeg(4, POS_FRONT, 100);
+  MoveOneLeg(5, POS_BACK, 100);
+  ForwardAndBackward(2, 3, 6, POS_BACK, POS_FRONT, POS_BACK, 0);
+  ForwardAndBackward(1, 4, 5, POS_CENTER, POS_CENTER, POS_CENTER, 0);
+  delay(500);
+  
   return 0;
 }
 
@@ -496,45 +492,81 @@ int MovingRight(int B_MovingRight,
  * 
  * @return -1 for handling errors, 0 if execution was correct.
  */
-int MovingLeft(int B_MovingLeft,
-               int nb_sequence) {
-  while (B_MovingLeft < nb_sequence) {
-    MoveOneLeg(1, POS_FRONT, 100);
-    MoveOneLeg(4, POS_BACK, 100);
-    MoveOneLeg(5, POS_FRONT, 100);
-    ForwardAndBackward(1, 4, 5, POS_CENTER, POS_CENTER, POS_CENTER, 0);
-    ForwardAndBackward(2, 3, 6, POS_FRONT, POS_BACK, POS_FRONT, 0);
-    delay(250);
-    
-    MoveOneLeg(2, POS_BACK, 100);
-    MoveOneLeg(3, POS_FRONT, 100);
-    MoveOneLeg(6, POS_BACK, 100);
-    ForwardAndBackward(1, 4, 5, POS_BACK, POS_FRONT, POS_BACK, 0);
-    ForwardAndBackward(2, 3, 6, POS_CENTER, POS_CENTER, POS_CENTER, 0);
-    delay(250);
-    B_MovingLeft += 1;
-  } 
+int MovingLeft() 
+{
+
+  MoveOneLeg(1, POS_FRONT, 100);
+  MoveOneLeg(4, POS_BACK, 100);
+  MoveOneLeg(5, POS_FRONT, 100);
+  ForwardAndBackward(1, 4, 5, POS_CENTER, POS_CENTER, POS_CENTER, 0);
+  ForwardAndBackward(2, 3, 6, POS_FRONT, POS_BACK, POS_FRONT, 0);
+  delay(250);
+  
+  MoveOneLeg(2, POS_BACK, 100);
+  MoveOneLeg(3, POS_FRONT, 100);
+  MoveOneLeg(6, POS_BACK, 100);
+  ForwardAndBackward(1, 4, 5, POS_BACK, POS_FRONT, POS_BACK, 0);
+  ForwardAndBackward(2, 3, 6, POS_CENTER, POS_CENTER, POS_CENTER, 0);
+  delay(250);
   
   return 0;
 }
 
 /*!
- * @brief Receives a new instruction from the HMI.
+ * @brief Every time a command arrive in the serial buffer this function is called.
  *
  *        TBD
  * 
  * @return 0 after communication with the HMI.
  */
-void ReceiveCommand() {
+void serialEvent() {
   while (Serial.available() > 0 && newData == false) {
-    read_string = Serial.readString();
+    input_string = Serial.readString();
 
-    if (sizeof(read_string) > 0) {
+    if (sizeof(input_string) > 0) {
       newData = true;
     } 
   }
   
   //Serial.println(receivedChars);
+}
+
+/*!
+ * @brief Verify a new instruction from the HMI.
+ *        
+ *        TBD
+ * 
+ * @return The state that the robot should be in:
+ *  FORWARD = 1
+ *  BACKWARD = 2
+ *  LEFT = 3
+ *  RIGHT = 4.
+ */
+int UpdateCommand()
+{
+  //if new command
+  if (newData == true)
+  {
+
+    Serial.flush();
+
+    if (input_string == "Forward")
+    {  return 1;}
+    if (input_string == "Backward")
+    {  return 2;}
+    if (input_string == "Left")
+    {  return 3;}
+    if (input_string == "Right")
+    {  return 4;}
+
+    newData = false;
+  }
+  // else idle
+  else
+  {
+    return 0;
+  }
+
 }
 
 /*!
@@ -548,7 +580,7 @@ void showNewData() {
   if (newData == true) {
     Serial.flush();
     delay(100);
-    Serial.println(read_string);
+    Serial.println(input_string);
     newData = false;
   }
 }
