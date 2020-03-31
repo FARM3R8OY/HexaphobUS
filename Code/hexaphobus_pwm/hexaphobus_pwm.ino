@@ -91,6 +91,7 @@ void loop() {
   //showNewData();
   
   State = UpdateCommand();
+  
   if (State != 0)
   {
     if (State == 1)

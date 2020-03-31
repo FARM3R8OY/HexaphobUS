@@ -54,7 +54,9 @@
 
 /// Variable for commucation
 boolean newData = false;
+boolean serialReady = true;
 String input_string;
+
 
 /// Adjustments for each servomotor angle.
 int SHIFT[13] = {-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68};
@@ -75,6 +77,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
  * @return 0 after communication with the HMI.
  */
 int AngleToHMI() {
+  
   String string_to_send = String(ANGLE[1]);
 
   for (int i = 2; i < 13; i++) {
@@ -85,10 +88,9 @@ int AngleToHMI() {
     return -1;
   }
   
-  Serial.flush();
-  delay(10);
   Serial.println(string_to_send);
-
+  Serial.flush();
+  
   return 0;
 }
 
@@ -188,7 +190,6 @@ int UpAndDown(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i] + 6] = 180 - angle[i];
-        AngleToHMI();
       }
       else if (Legs[i] == 0)
       {}
@@ -196,7 +197,6 @@ int UpAndDown(int Leg1,
       {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(angle[i]));
         ANGLE[Legs[i] + 6] = angle[i];
-        AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {
@@ -291,14 +291,12 @@ int ForwardAndBackward(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i], 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i]] = 180 - angle[i];
-        AngleToHMI();
       }
       else if (Legs[i] == 0) {
       }
       else {
         pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
         ANGLE[Legs[i]] = angle[i];
-        AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {
@@ -457,7 +455,6 @@ int Moving(int dir)
  */
 int MovingRight() 
 {
-  //init_move();
 
   MoveOneLeg(2, POS_FRONT, 100);
   MoveOneLeg(3, POS_BACK, 100);
@@ -519,16 +516,17 @@ int MovingLeft()
  * 
  * @return 0 after communication with the HMI.
  */
-void serialEvent() {
-  while (Serial.available() > 0 && newData == false) {
+void serialEvent() 
+{
+  while (Serial.available() && newData == false) {
     input_string = Serial.readString();
-
+    
     if (sizeof(input_string) > 0) {
       newData = true;
     } 
   }
-  
-  //Serial.println(receivedChars);
+  //Serial.println(input_string);
+  //Serial.flush();
 }
 
 /*!
@@ -544,29 +542,34 @@ void serialEvent() {
  */
 int UpdateCommand()
 {
+  int returnstate = 0;
+
   //if new command
   if (newData == true)
   {
-
+    AngleToHMI();
+    Serial.println(input_string);
     Serial.flush();
-
     if (input_string == "Forward")
-    {  return 1;}
+    { returnstate = 1;}
     if (input_string == "Backward")
-    {  return 2;}
+    { returnstate = 2;}
     if (input_string == "Left")
-    {  return 3;}
+    { returnstate = 3;}
     if (input_string == "Right")
-    {  return 4;}
-
+    { returnstate = 4;}
+    else
+    { Serial.println("invalid information");
+      return -1;}
     newData = false;
   }
+  
   // else idle
   else
-  {
-    return 0;
-  }
-
+  {returnstate = 0;}
+  delay(50);
+  
+  return returnstate;
 }
 
 /*!
