@@ -7,7 +7,7 @@ Contributor(s):
 
 Date(s):
     2020-01-29 (Creation)
-    2020-03-19 (Last modification)
+    2020-04-01 (Last modification)
 
 Description:
     User interface designed for intuitive control and monitoring of the
@@ -37,8 +37,6 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
 
 # --------------------------------------------
 
-Tests_angles = ["1.12", "12.3", "-113.0", "133.1", "24.3", "24.4",
-                "234.5", "467.3", "353.3", "244.2", "2442", "244.5"]
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
 
 SERIAL_UPDATE_RATE = 2
@@ -67,7 +65,7 @@ EDIT_PLACE = 0
 SERVO_TABLE = list()
 
 PORT = "/dev/ttyACM0"
-BAUD_RATE = 9600
+BAUD_RATE = 500000
 
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
@@ -89,6 +87,7 @@ def stringToByte(string):
     """
     Encodes string and returns byte values.
     """
+    string = string + '|'
     encoded_string = string.encode()
     ''' Uncomment for struct encoding
     string_size = len(string)
