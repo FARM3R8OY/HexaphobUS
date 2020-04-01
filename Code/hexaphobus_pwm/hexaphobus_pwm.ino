@@ -71,7 +71,7 @@ RIGHT = 4
  *        frequency.
  */
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(500000);
   pwm.begin();
   pwm.setPWMFreq(FREQUENCY);
   delay(1000);
@@ -86,12 +86,34 @@ void setup() {
  *        to move according to user input.
  */
 void loop() { 
-  
+/*
+  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,100);
+  UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP,100);
+  ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,100);
+  ForwardAndBackward(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER,100);
+  delay(500);
+  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,100);
+  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN,100);
+ */
+
+  //init_move();
+
+  /*
+   Moving(POS_FRONT);
+   delay(10);
+   Moving(POS_FRONT);
+   delay(10);
+   Moving(POS_FRONT);
+   delay(500);
+   MovingRight();
+   delay(10);
+   MovingRight();
+   delay(10);*/
    
   //showNewData();
   
   State = UpdateCommand();
-  
+
   if (State != 0)
   {
     if (State == 1)
@@ -116,21 +138,6 @@ void loop() {
     }
   }
 
-  delay(100);
-   
-  /*
-   delay(1000);
-   int B_Moving=1;
-   Moving(B_Moving,2,POS_FRONT);
-   delay(2000);
-   B_Moving=1;
-   Moving(B_Moving,2,POS_BACK);
-   B_Moving=1;
-   delay(2000);
-   MovingRight(B_Moving,7);
-   B_Moving=1;
-   delay(2000);
-   MovingLeft(B_Moving,7);
-   delay(2000);
-   */
+ //delay(100);
+
 }

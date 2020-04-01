@@ -6,8 +6,8 @@ import time
 def setup():
     port = "/dev/ttyACM0"
     global ser
-    ser = serial.Serial(port,9600)
-    ser.baudrate = 9600
+    ser = serial.Serial(port,500000)
+    ser.baudrate = 500000
      
 def write_to_ard(etat):
     ser.write(etat.encode())
@@ -28,14 +28,20 @@ def read_to_ard():
 def main():
     setup()
     while True:
-        write_to_ard("Forward")
+        write_to_ard("Right|")
         read_to_ard()
         time.sleep(0.2)
         read_to_ard()
         time.sleep(0.2)
         read_to_ard()
         time.sleep(0.2)
-        write_to_ard("Forward")
+        read_to_ard()
+        time.sleep(0.2)
+        read_to_ard()
+        time.sleep(0.2)
+        read_to_ard()
+        time.sleep(0.2)
+        #write_to_ard("Forward")
         #read_to_ard()
         #time.sleep(2)
         #read_to_ard()

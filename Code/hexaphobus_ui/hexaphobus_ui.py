@@ -21,6 +21,7 @@ S4-H20 | GRO400
 import math
 import os
 import sys
+import time
 
 # import struct
 # import binascii
@@ -39,7 +40,7 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
 
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
 
-SERIAL_UPDATE_RATE = 2
+SERIAL_UPDATE_RATE = 1
 
 ARROW_W = 60
 ARROW_H = 30
@@ -182,14 +183,17 @@ class SerialChecker(QThread):
         """
         Gets the information from the serial port.
         """
-        stringData = self.ser.read_until()
-        print(stringData)
-        servoAngle = byteToString(stringData)
-        print(servoAngle)
-        tableData = servoAngle.split(";")
+        for counter in range(5):
+            stringData = self.ser.read_until()
+            #print(stringData)
+            servoAngle = byteToString(stringData)
+            print(servoAngle)
+            tableData = servoAngle.split(";")
 
-        if len(tableData) == 12:
-            SERVO_TABLE = tableData
+            if len(tableData) == 12:
+                SERVO_TABLE = tableData
+                
+            time.sleep(0.2)
 
     def serialQuit(self):
         """
@@ -202,6 +206,7 @@ class SerialChecker(QThread):
         Sends the information to the serial port.
         """
         bytesData = stringToByte(command)
+        print(command)
         self.ser.write(bytesData)
 
 class RobotTracking(QWidget):

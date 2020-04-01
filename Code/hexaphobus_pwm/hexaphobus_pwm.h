@@ -42,9 +42,9 @@
 #  define POS_CENTER 2
 
 /// Angle value in degrees (down).
-#  define DOWN   65
+#  define DOWN   65-15
 /// Angle value in degrees (up).
-#  define UP     25
+#  define UP     25-15
 /// Angle value in degrees (back).
 #  define BACK   10
 /// Angle value in degrees (front).
@@ -55,7 +55,9 @@
 /// Variable for commucation
 boolean newData = false;
 boolean serialReady = true;
+boolean flag = false;
 String input_string;
+
 
 
 /// Adjustments for each servomotor angle.
@@ -67,6 +69,96 @@ int ANGLE[13] = {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 /********************************************/
+
+/*******************************************************to modify****************
+/*!
+ * @brief Verify a new instruction from the HMI.
+ *        
+ *        TBD
+ * 
+ * @return The state that the robot should be in:
+ *  FORWARD = 1
+ *  BACKWARD = 2
+ *  LEFT = 3
+ *  RIGHT = 4.
+ */
+int writeCommand(String string_to_write )
+{  
+  Serial.println(string_to_write);
+ 
+}
+
+/*!
+ * @brief Every time a command arrive in the serial buffer this function is called.
+ *
+ *        TBD
+ * 
+ * @return 0 after communication with the HMI.
+ */
+void serialEvent() 
+{
+  flag = true;
+}
+
+/*!
+ * @brief Verify a new instruction from the HMI.
+ *        
+ *        TBD
+ * 
+ * @return The state that the robot should be in:
+ *  FORWARD = 1
+ *  BACKWARD = 2
+ *  LEFT = 3
+ *  RIGHT = 4.
+ */
+int UpdateCommand()
+{
+  int returnstate = 0;
+  if (serialReady == true)
+  {
+    if (flag == true)
+    {
+      while (Serial.available() && newData == false)
+      {
+        input_string = Serial.readStringUntil('|');
+        
+        if (sizeof(input_string) > 0) {
+          newData = true;
+        } 
+      }
+    
+     /* while(Serial.available())
+      {
+        char nimportequoi = Serial.read(); 
+      }*/
+    
+      //if new command
+      if (newData == true)
+      {
+        writeCommand(input_string);
+        if (input_string == "FORWARD")
+        { returnstate = 1;}
+        if (input_string == "BACKWARD")
+        { returnstate = 2;}
+        if (input_string == "LEFT")
+        { returnstate = 3;}
+        if (input_string == "RIGHT")
+        { returnstate = 4;}
+        else
+        {//writeCommand("invalid information");
+          return -1;}
+        newData = false;
+      }
+      
+      // else idle
+      else
+      {returnstate = 0;}
+      flag = false;
+    }
+  }
+  
+  return returnstate;
+}
 
 /*!
  * @brief Sends servomotor angles to the HMI.
@@ -88,9 +180,7 @@ int AngleToHMI() {
     return -1;
   }
   
-  Serial.println(string_to_send);
-  Serial.flush();
-  
+  writeCommand(string_to_send);
   return 0;
 }
 
@@ -174,6 +264,8 @@ int UpAndDown(int Leg1,
               int pos2,
               int pos3,
               int Time) {
+  
+  serialReady = false;
   int Legs[3]  = {Leg1, Leg2, Leg3};
   int pos[3]   = {pos1, pos2, pos3};
   int angle[3] = {0, 0, 0};
@@ -190,6 +282,7 @@ int UpAndDown(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i] + 6] = 180 - angle[i];
+        AngleToHMI();
       }
       else if (Legs[i] == 0)
       {}
@@ -197,17 +290,19 @@ int UpAndDown(int Leg1,
       {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(angle[i]));
         ANGLE[Legs[i] + 6] = angle[i];
+        AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {
     }
     else {
+      serialReady = true;
       return -1;
     }
   }
 
   delay(Time);
-
+  serialReady = true;
   return 0;
 }
 
@@ -220,7 +315,7 @@ int UpAndDown(int Leg1,
  * 
  * @param Leg1
  * 
- *        First leg to move (any from #1 to #6). If leg parameter is
+ *        First leg to move (any from #1 to #6). If leg izeof(input_string) > 0parameter is
  *        equal to 0, the corresponding leg will not move.
  * 
  * @param Leg2
@@ -268,6 +363,7 @@ int ForwardAndBackward(int Leg1,
                        int pos2,
                        int pos3,
                        int Time) {
+  serialReady = false;
   if (Time < 0) {
     return -1;
   }
@@ -291,23 +387,26 @@ int ForwardAndBackward(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i], 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i]] = 180 - angle[i];
+        AngleToHMI();
       }
       else if (Legs[i] == 0) {
       }
       else {
         pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
         ANGLE[Legs[i]] = angle[i];
+        AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {
     }
     else {
+      serialReady = true;
       return -1;
     }
   }
 
   delay(Time);
-  
+  serialReady = true;
   return 0;
 } 
 
@@ -509,68 +608,6 @@ int MovingLeft()
   return 0;
 }
 
-/*!
- * @brief Every time a command arrive in the serial buffer this function is called.
- *
- *        TBD
- * 
- * @return 0 after communication with the HMI.
- */
-void serialEvent() 
-{
-  while (Serial.available() && newData == false) {
-    input_string = Serial.readString();
-    
-    if (sizeof(input_string) > 0) {
-      newData = true;
-    } 
-  }
-  //Serial.println(input_string);
-  //Serial.flush();
-}
-
-/*!
- * @brief Verify a new instruction from the HMI.
- *        
- *        TBD
- * 
- * @return The state that the robot should be in:
- *  FORWARD = 1
- *  BACKWARD = 2
- *  LEFT = 3
- *  RIGHT = 4.
- */
-int UpdateCommand()
-{
-  int returnstate = 0;
-
-  //if new command
-  if (newData == true)
-  {
-    AngleToHMI();
-    Serial.println(input_string);
-    Serial.flush();
-    if (input_string == "Forward")
-    { returnstate = 1;}
-    if (input_string == "Backward")
-    { returnstate = 2;}
-    if (input_string == "Left")
-    { returnstate = 3;}
-    if (input_string == "Right")
-    { returnstate = 4;}
-    else
-    { Serial.println("invalid information");
-      return -1;}
-    newData = false;
-  }
-  
-  // else idle
-  else
-  {returnstate = 0;}
-  delay(50);
-  
-  return returnstate;
-}
 
 /*!
  * @brief Shows a new instruction from the HMI.
