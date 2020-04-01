@@ -89,21 +89,25 @@ def stringToByte(string):
     """
     Encodes string and returns byte values.
     """
-    # string_size = len(string)
     encoded_string = string.encode()
-    # my_format = str(string_size) + "s"
-    # packed_data = struct.pack(my_format, encoded_string)
-    # encoded_string = binascii.hexlify(packed_data)
+    ''' Uncomment for struct encoding
+    string_size = len(string)
+    my_format = str(string_size) + "s"
+    packed_data = struct.pack(my_format, encoded_string)
+    encoded_string = binascii.hexlify(packed_data)
+    '''
     return encoded_string
 
 def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
-    # packed_data = binascii.unhexlify(encoded_string)
-    # string_size = len(encoded_string)/2
-    # my_format = str(int(string_size))+"s"
-    # string = struct.unpack(my_format, packed_data)
+    ''' Uncomment for struct decoding
+    packed_data = binascii.unhexlify(encoded_string)
+    string_size = len(encoded_string)/2
+    my_format = str(int(string_size))+"s"
+    string = struct.unpack(my_format, packed_data)
+    '''
     string = encoded_string.decode().strip()
     return string
 
@@ -223,9 +227,7 @@ class RobotTracking(QWidget):
         self._vel = 60  # pixels per second
         self._speed = 10
 
-        #self.setMouseTracking(True)
         self.timer = QTimer(self)
-        #self.timer.timeout.connect(self.changePosition)
         self.timer.start(round(1000 / self._vel))
         self.initTracking()
 
@@ -577,13 +579,12 @@ class MainWindow(QWidget):
         """
         for (angle, servo) in zip(SERVO_TABLE, self._servo_edits):
             servo.setText(angle)
-        print("fff")
 
     def setInfoValues(self, Speed, Energy):
         """
         Set additional information values.
         """
-        #Read values from Arduino (Speed? et energie batterie )
+        #Read values from Arduino (Speed? et energy battery )
         self.speed_edit.setText(Speed)
         self.energy_edit.setText(Energy)
 
