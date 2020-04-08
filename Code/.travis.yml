@@ -1,8 +1,10 @@
+# Test matrix (multiple programming languages)
 matrix:
   include:
     - language: python
       python: "3.8.2"
       before_install:
+        - cd $TRAVIS_BUILD_DIR
         - pwd
         - python --version
         - pip install -U pip
@@ -38,36 +40,54 @@ matrix:
       after_success:
         - source < (curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
 
+# Operating system parameters
 os: linux
   sudo: required
   env: BUILDARCH=x64
   dist: bionic
 
+# Blacklist
 branches:
   only:
     - code
 
+# Environment variables
+env:
+  global:
+    - GH_REPO_NAME: HexaphobUS
+    - DOXYFILE: $TRAVIS_BUILD_DIR/gabrielcabana21/HexaphobUS/docs
+    - GH_REPO_REF: github.com/gabrielcabana21/HexaphobUS.git
+
+# Install dependencies
 addons:
   apt:
     packages:
+      - doxygen
+      - doxygen-doc
+      - doxygen-latex
+      - doxygen-gui
+      - graphviz
       - x11-utils
       - libxkbcommon-x11-0
-      - doxygen
 
+# Git parameters
 git:
-  depth: false
-  quiet: true
+  depth: false # Clones all commits
+  quiet: true  # Silence git clone log output
 
+# Custom scripts
 script:
-  - doxygen ./docs/Doxyfile
+  - doxygen $DOXYFILE/Doxyfile
 
+# Deployment of auto-generated documentation
 deploy:
   provider: pages
-  local_dir: ./docs/html
+  local_dir: $TRAVIS_BUILD_DIR/gabrielcabana21/HexaphobUS/docs/html
   github_token: $GH_REPO_TOKEN
   on:
     branch: code
 
+# Notifications (sends email only when build status changes)
 notifications:
   email:
     on_success: change
