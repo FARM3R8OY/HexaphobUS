@@ -77,6 +77,7 @@ void setup() {
   delay(1000);
   AngleToHMI();
   init_move();
+  AngleToHMI;
 }
 
 /*!
@@ -121,22 +122,23 @@ void loop() {
       //Move forward
       Moving(POS_FRONT);
     }
-    if (State == 2)
+    else if (State == 2)
     {
       //Move Backward
       Moving(POS_BACK);
     }
-    if (State == 3)
+    else if (State == 3)
     {
       //Move Left
       MovingLeft();
     }
-    if (State == 4)
+    else if (State == 4)
     {
       //Move Right
       MovingRight();
     }
   }
+  AngleToHMI();
 
  //delay(100);
 

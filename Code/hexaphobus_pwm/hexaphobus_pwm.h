@@ -57,6 +57,7 @@ boolean newData = false;
 boolean serialReady = true;
 boolean flag = false;
 String input_string;
+int returnstate = 0;
 
 
 
@@ -95,10 +96,10 @@ int writeCommand(String string_to_write )
  * 
  * @return 0 after communication with the HMI.
  */
-void serialEvent() 
+/*void serialEvent() 
 {
   flag = true;
-}
+}*/
 
 /*!
  * @brief Verify a new instruction from the HMI.
@@ -113,14 +114,15 @@ void serialEvent()
  */
 int UpdateCommand()
 {
-  int returnstate = 0;
-  if (serialReady == true)
-  {
-    if (flag == true)
-    {
-      while (Serial.available() && newData == false)
+  
+  //if (serialReady == true)
+  //{
+   // if (flag == true)
+    //{
+      while (/*Serial.available() &&*/ newData == false)
       {
         input_string = Serial.readStringUntil('|');
+        input_string = String(input_string);
         
         if (sizeof(input_string) > 0) {
           newData = true;
@@ -138,26 +140,28 @@ int UpdateCommand()
         writeCommand(input_string);
         if (input_string == "FORWARD")
         { returnstate = 1;}
-        if (input_string == "BACKWARD")
+        else if (input_string == "BACKWARD")
         { returnstate = 2;}
-        if (input_string == "LEFT")
+        else if (input_string == "LEFT")
         { returnstate = 3;}
-        if (input_string == "RIGHT")
+        else if (input_string == "RIGHT")
         { returnstate = 4;}
         else
         {//writeCommand("invalid information");
+          //flag = false;
+          newData = false;
           return -1;}
         newData = false;
+        return returnstate;
       }
       
       // else idle
       else
       {returnstate = 0;}
-      flag = false;
-    }
-  }
-  
-  return returnstate;
+      //flag = false;
+    //}
+ // }
+  return 0;
 }
 
 /*!
@@ -282,7 +286,7 @@ int UpAndDown(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i] + 6] = 180 - angle[i];
-        AngleToHMI();
+        //AngleToHMI();
       }
       else if (Legs[i] == 0)
       {}
@@ -290,7 +294,7 @@ int UpAndDown(int Leg1,
       {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(angle[i]));
         ANGLE[Legs[i] + 6] = angle[i];
-        AngleToHMI();
+        //AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {
@@ -387,14 +391,14 @@ int ForwardAndBackward(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i], 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i]] = 180 - angle[i];
-        AngleToHMI();
+        //AngleToHMI();
       }
       else if (Legs[i] == 0) {
       }
       else {
         pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
         ANGLE[Legs[i]] = angle[i];
-        AngleToHMI();
+       // AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {

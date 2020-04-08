@@ -40,7 +40,7 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
 
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
 
-SERIAL_UPDATE_RATE = 1
+SERIAL_UPDATE_RATE = 0.1
 
 ARROW_W = 60
 ARROW_H = 30
@@ -183,17 +183,21 @@ class SerialChecker(QThread):
         """
         Gets the information from the serial port.
         """
-        for counter in range(5):
+        try:
             stringData = self.ser.read_until()
-            #print(stringData)
-            servoAngle = byteToString(stringData)
-            print(servoAngle)
+        except:
+            return 
+        #print(stringData)
+        servoAngle = byteToString(stringData)
+        print(servoAngle)
+        try:
             tableData = servoAngle.split(";")
+        except:
+            print("Erreur")
 
-            if len(tableData) == 12:
-                SERVO_TABLE = tableData
+        if len(tableData) == 12:
+            SERVO_TABLE = tableData
                 
-            time.sleep(0.2)
 
     def serialQuit(self):
         """
