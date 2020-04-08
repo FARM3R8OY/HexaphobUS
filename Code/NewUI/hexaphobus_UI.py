@@ -25,9 +25,9 @@ import time
 from threading import Timer
 import serial
 
-from PyQt5 import QtSerialPort, QtCore
+from PyQt5 import QtSerialPort
 
-from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
+from PyQt5.QtCore import Qt, QTimer, QPoint, QThread, pyqtSlot, QIODevice
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
@@ -68,6 +68,7 @@ SHIFT = [-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68];
 NB_COMMAND = 0
 ENCODED_VAR = b'55'
 isreadyFlag = "0"
+nextTask = True
 
 
 PORT = "/dev/ttyACM0"
@@ -311,10 +312,16 @@ class MainWindow(QWidget):
 
         self.ser = QtSerialPort.QSerialPort(
             PORT,
-            baudRate=QtSerialPort.QSerialPort.Baud9600,
-            readyRead=self.serialReceive
+            baudRate = QtSerialPort.QSerialPort.Baud9600,
+            readyRead = self.checkSerialState
         )
-        self.ser.open(QtCore.QIODevice.ReadWrite)
+        self.ser.open(QIODevice.ReadWrite)
+
+
+        self._timer = QTimer(self)
+        self._timer.start(100)
+        self._timer.timeout.connect(self.serialReceive)
+
 
         self.initUI()
 
@@ -360,23 +367,30 @@ class MainWindow(QWidget):
 
         self.show()
 
+    def checkSerialState(self):
+        if isreadyFlag == "69":
+            print("check")
+            nextTask = True
+
+    @pyqtSlot()
     def serialReceive(self):
         """
         Gets the information from the serial port.
         """
+        global isreadyFlag
         try:
             stringData = self.ser.read_until()
             
         except:
             return
         isreadyFlag = byteToString(stringData)
-        print(isreadyFlag)
+        
 
-    def serialSend(self, moteur, angle):
+    def serialSend(self, motor, angle):
         """
         Sends the information to the serial port.
         """
-        moteur = str(moteur)
+        motor = str(motor)
         angle = str(angle)
 
         if len(angle) == 1:
@@ -384,21 +398,13 @@ class MainWindow(QWidget):
         elif len(angle) == 2:
             angle = "0" + angle
         
-        if len(moteur) == 1:
-            moteur = "0" + moteur
+        if len(motor) == 1:
+            motor = "0" + motor
             
-        commandString = moteur + ';' + angle
-        print(commandString)
+        commandString = motor + ';' + angle
         bytesData = stringToByte(commandString)
-        self.ser.write(bytesData)
+        # self.ser.write(bytesData)
 
-    def isWaiting(self):
-        
-        if self.ser.isOpen():
-            print("WAIT")
-            while not isreadyFlag == "69":
-                self.serialReceive()
-                print("waiting")
 
     def addServos(self):
         """
@@ -500,7 +506,9 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
+        global isreadyFlag
         isreadyFlag = "69"
+        self.checkSerialState()
         #print(ENCODED_VAR)
         # string = byteToString(ENCODED_VAR)
         # print('Unpacked Values:', string)
@@ -614,19 +622,22 @@ class MainWindow(QWidget):
         """
         Sequencing for moving forward.
         """
+        global nextTask
         motorOrder = [8,9,12,2,5,6,1,4,5,8,9,12,7,10,11,1,4,5,2,3,
                     6,7,10,11]
         posOrder = [UP,UP,UP,FRONT,FRONT,FRONT,BACK,BACK,BACK,DOWN,
                     DOWN,DOWN,UP,UP,UP,FRONT,FRONT,FRONT,BACK,BACK,
                     BACK,DOWN,DOWN,DOWN]
         for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
-            self.isWaiting()
-        
-
-        
-         
+            if nextTask :
+                print(mot)
+                self.serialSend(mot,pos+SHIFT[mot-1])
+                self.setServoValues(mot,pos+SHIFT[mot-1]) 
+                nextTask = False
+        ###########################################################
+        # May need to make a simple one call function and call when 
+        # nextTask is True     
+        ###########################################################
 
     def moveBackward(self):
         """
@@ -640,10 +651,7 @@ class MainWindow(QWidget):
         for (mot,pos) in zip(motorOrder, posOrder):
             self.serialSend(mot,pos+SHIFT[mot-1])
             self.setServoValues(mot,pos+SHIFT[mot-1])
-        
-        
-        self.isWaiting()
-        
+
 
     def moveLeft(self):
         """
@@ -658,10 +666,6 @@ class MainWindow(QWidget):
             self.serialSend(mot,pos+SHIFT[mot-1])
             self.setServoValues(mot,pos+SHIFT[mot-1])
         
-        self.isWaiting()
-         
-
-
 
     def moveRight(self):
         """
@@ -675,13 +679,7 @@ class MainWindow(QWidget):
         for (mot,pos) in zip(motorOrder, posOrder):
             self.serialSend(mot,pos+SHIFT[mot-1])
             self.setServoValues(mot,pos+SHIFT[mot-1])
-        
-        self.isWaiting()
-         
 
-        
-
-    
 
 # --------------------------------------------
 
