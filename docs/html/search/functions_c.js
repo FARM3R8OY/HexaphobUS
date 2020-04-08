@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['test_119',['test',['../de/d0b/test__hexaphobus__pwm_8ino.html#a97e98fc2497e7fffa53bb19d48232500',1,'test_hexaphobus_pwm.ino']]]
+  ['upanddown_120',['UpAndDown',['../da/d39/hexaphobus__pwm_8h.html#adbadcc07a7512c34e3dfffb0f835ab28',1,'hexaphobus_pwm.h']]],
+  ['updatecommand_121',['UpdateCommand',['../da/d39/hexaphobus__pwm_8h.html#acf4a3ef2e90be64cf833796362c72df8',1,'hexaphobus_pwm.h']]]
 ];

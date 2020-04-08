@@ -51,7 +51,7 @@ PROJECT_BRIEF          = "Hexapod robot | UdeS-GRO"
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = "C:/Users/g53bo/Desktop/PROJECTS/University/2020-01-06. GRO-S4/Projet/HexaphobUS/img/hexaphobus_logo.png"
+PROJECT_LOGO           = "C:/Users/g53bo/Desktop/PROJECTS/University/2020-01-06. GRO-S4/Projet/HexaphobUS/img/hexaphobus_logo_256.png"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is

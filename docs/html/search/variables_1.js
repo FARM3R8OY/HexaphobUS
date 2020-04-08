@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pwm_122',['pwm',['../da/d39/hexaphobus__pwm_8h.html#a2c06cc8f85429bb0f7cb91917164dc54',1,'hexaphobus_pwm.h']]]
+  ['newdata_123',['newData',['../da/d39/hexaphobus__pwm_8h.html#a5d547ae6451858d6fe3118108823fbdc',1,'hexaphobus_pwm.h']]]
 ];
