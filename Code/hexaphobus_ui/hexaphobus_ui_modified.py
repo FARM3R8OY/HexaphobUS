@@ -2,11 +2,12 @@
 File: hexaphobus_ui.py
 
 Contributor(s):
+    Cabana,  Gabriel  | cabg2101
     Lalonde, Philippe | lalp2803
 
 Date(s):
-    2020-04-08 (Creation)
-    2020-04-08 (Last modification)
+    2020-01-29 (Creation)
+    2020-04-01 (Last modification)
 
 Description:
     User interface designed for intuitive control and monitoring of the
@@ -22,12 +23,16 @@ import os
 import sys
 import time
 
-from threading import Timer
-import serial
+# import struct
+# import binascii
 
-from PyQt5 import QtSerialPort, QtCore
+from threading import Timer
+#import serial
+
+from PyQt5 import QtSerialPort,QtCore
 
 from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
+
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
@@ -37,6 +42,8 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
 # --------------------------------------------
 
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
+
+SERIAL_UPDATE_RATE = 0.1
 
 ARROW_W = 60
 ARROW_H = 30
@@ -56,22 +63,13 @@ UI_H = 600
 UI_MIN_W = 480
 UI_MIN_H = 360
 
-# Angle value in degrees.
-DOWN = 65-15
-UP = 25-15
-BACK = 10
-FRONT =  75
-CENTER = 43
-
-SHIFT = [-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68];
-
 NB_COMMAND = 0
 ENCODED_VAR = b'55'
-isreadyFlag = "0"
-
+EDIT_PLACE = 0
+SERVO_TABLE = list()
 
 PORT = "/dev/ttyACM0"
-BAUD_RATE = 500000
+BAUD_RATE = 115200
 
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
@@ -95,16 +93,150 @@ def stringToByte(string):
     """
     string = string + '|'
     encoded_string = string.encode()
+    ''' Uncomment for struct encoding
+    string_size = len(string)
+    my_format = str(string_size) + "s"
+    packed_data = struct.pack(my_format, encoded_string)
+    encoded_string = binascii.hexlify(packed_data)
+    '''
     return encoded_string
 
 def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
+    ''' Uncomment for struct decoding
+    packed_data = binascii.unhexlify(encoded_string)
+    string_size = len(encoded_string)/2
+    my_format = str(int(string_size))+"s"
+    string = struct.unpack(my_format, packed_data)
+    '''
     string = encoded_string.decode().strip()
     return string
 
 # --------------------------------------------
+
+
+class RepeatedTimer(object):
+    """
+    The 'RepeatedTimer' class allows the user to time some operations
+    at a specified frequency.
+    """
+    def __init__(self, interval, function, *args, **kwargs):
+        """
+        The 'RepeatedTimer' class constructor initializes the flagging
+        interval, the operation to launch, the state, and other
+        arguments.
+        """
+        self._timer = None
+        self.interval = interval
+        self.function = function
+        self.args = args
+        self.kwargs = kwargs
+        self.is_running = False
+        self.start()
+
+    def _run(self):
+        """
+        Runs the timer and its operation.
+        """
+        self.is_running = False
+        self.start()
+        self.function(*self.args, **self.kwargs)
+
+    def start(self):
+        """
+        Starts the timer.
+        """
+        if not self.is_running:
+            self._timer = Timer(self.interval, self._run)
+            self._timer.start()
+            self.is_running = True
+
+    def stop(self):
+        """
+        Stops the timer.
+        """
+        self._timer.cancel()
+        self.is_running = False
+    
+
+class SerialChecker():
+    """
+    The 'SerialChecker' class is a QThread subclass that allows the user
+     to initiate a serial communication with a specified port.
+    """
+    def __init__(self):
+        """
+        The 'SerialChecker' class constructor initializes the serial
+        port, and the timer.
+        """
+        super().__init__()
+        self.ser = None
+        #self.rtself.rt = None
+
+    @QtCore.pyqtSlot(bool)
+    def SerialRun(self):
+        """
+        Initiates the serial communication.
+        """
+        self.ser = QtSerialPort.QSerialPort(
+            '/dev/ttyACM0',
+            baudRate = QtSerialPort.QSerialPort.Baud115200,
+            readyRead = self.serialReceive)
+
+        if not self.ser.isOpen():
+            self.ser.open(QtCore.QIODevice.ReadWrite)
+                    
+
+        #self.ser = serial.Serial(PORT, BAUD_RATE)
+        #self.ser.flushInput()
+        #self.rt = RepeatedTimer(SERIAL_UPDATE_RATE, self.serialReceive)
+        
+    @QtCore.pyqtSlot()
+    def serialReceive(self):
+        """
+        Gets the information from the serial port.
+        """
+        while self.ser.canReadLine():
+            text = self.ser.readLine().data().decode()
+            text = text.rstrip('\r\n')
+            print(text)
+        """
+        try:
+            stringData = self.ser.read_until()
+        except:
+            return 
+        #print(stringData)
+        servoAngle = byteToString(stringData)
+        print(servoAngle)
+        try:
+            tableData = servoAngle.split(";")
+        except:
+            print("Erreur")
+
+        if len(tableData) == 12:
+            SERVO_TABLE = tableData
+        """
+                
+
+    def serialQuit(self):
+        """
+        Ends the serial communication.
+        """
+        self.ser.close()
+
+    @QtCore.pyqtSlot()
+    def serialSend(self, command):
+        """
+        Sends the information to the serial port.
+        """
+        self.ser.write(command.text().encode())
+        """
+        bytesData = stringToByte(command)
+        print(command)
+        self.ser.write(bytesData)
+        """
 
 class RobotTracking(QWidget):
     """
@@ -288,6 +420,7 @@ class MainWindow(QWidget):
         self.button_left = QPushButton(BUTTON_LEFT)
         self.button_right = QPushButton(BUTTON_RIGHT)
 
+        self.button_serial_start = QPushButton(BUTTON_SERIAL)
         self.button_init = QPushButton(BUTTON_INIT)
         self.button_prog = QPushButton(BUTTON_PRG1)
 
@@ -309,12 +442,9 @@ class MainWindow(QWidget):
 
         self.onlyFloat = QDoubleValidator()
 
-        self.ser = QtSerialPort.QSerialPort(
-            PORT,
-            baudRate=QtSerialPort.QSerialPort.Baud9600,
-            readyRead=self.serialReceive
-        )
-        self.ser.open(QtCore.QIODevice.ReadWrite)
+        self.serialCheck = SerialChecker()
+
+        self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE, self.setServoValues)
 
         self.initUI()
 
@@ -360,45 +490,6 @@ class MainWindow(QWidget):
 
         self.show()
 
-    def serialReceive(self):
-        """
-        Gets the information from the serial port.
-        """
-        try:
-            stringData = self.ser.read_until()
-            
-        except:
-            return
-        isreadyFlag = byteToString(stringData)
-        print(isreadyFlag)
-
-    def serialSend(self, moteur, angle):
-        """
-        Sends the information to the serial port.
-        """
-        moteur = str(moteur)
-        angle = str(angle)
-
-        if len(angle) == 1:
-            angle = "00" + angle
-        elif len(angle) == 2:
-            angle = "0" + angle
-        
-        if len(moteur) == 1:
-            moteur = "0" + moteur
-            
-        commandString = moteur + ';' + angle
-        print(commandString)
-        bytesData = stringToByte(commandString)
-        self.ser.write(bytesData)
-
-    def isWaiting(self):
-        
-        if self.ser.isOpen():
-            print("WAIT")
-            while not isreadyFlag == "69":
-                self.serialReceive()
-                print("waiting")
 
     def addServos(self):
         """
@@ -426,6 +517,7 @@ class MainWindow(QWidget):
         self.button_left.setFixedSize(ARROW_W, ARROW_H)
         self.button_right.setFixedSize(ARROW_W, ARROW_H)
 
+        self.button_serial_start.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_init.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
@@ -434,6 +526,8 @@ class MainWindow(QWidget):
         Connect the buttons and shortcuts to the corresponding
         functions.
         """
+        self.button_serial_start.clicked.connect(self.serialCheck.SerialRun)
+        self.button_serial_start.clicked.connect(self.removeButton)
         self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(
@@ -443,10 +537,10 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("FORWARD")
         )
         self.button_up.clicked.connect(
-            lambda: self.moveForward()
+            lambda: self.serialCheck.serialSend("FORWARD")
         )
         self.shortcut_up.activated.connect(
-            lambda: self.moveForward()
+            lambda: self.serialCheck.serialSend("FORWARD")
         )
         self.button_down.clicked.connect(
             lambda: self.tracking.changePosition("BACKWARD")
@@ -455,10 +549,10 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("BACKWARD")
         )
         self.button_down.clicked.connect(
-            lambda: self.moveBackward()
+            lambda: self.serialCheck.serialSend("BACKWARD")
         )
         self.shortcut_down.activated.connect(
-            lambda: self.moveBackward()
+            lambda: self.serialCheck.serialSend("BACKWARD")
         )
         self.button_right.clicked.connect(
             lambda: self.tracking.changePosition("RIGHT")
@@ -467,10 +561,10 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("RIGHT")
         )
         self.button_right.clicked.connect(
-            lambda: self.moveRight()
+            lambda: self.serialCheck.serialSend("RIGHT")
         )
         self.shortcut_right.activated.connect(
-            lambda: self.moveRight()
+            lambda: self.serialCheck.serialSend("RIGHT")
         )
         self.button_left.clicked.connect(
             lambda: self.tracking.changePosition("LEFT")
@@ -479,12 +573,20 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("LEFT")
         )
         self.button_left.clicked.connect(
-            lambda: self.moveLeft()
+            lambda: self.serialCheck.serialSend("LEFT")
         )
         self.shortcut_left.activated.connect(
-            lambda: self.moveLeft()
+            lambda: self.serialCheck.serialSend("LEFT")
         )
 
+    def cleanUp(self):
+        print("quitting")
+        self.serialCheck.serialQuit()
+        self.repeater.stop()
+        print("end")
+
+    def removeButton(self):
+        self.button_serial_start.setEnabled(False)
 
     def setInfo(self):
         """
@@ -500,37 +602,16 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        isreadyFlag = "69"
-        #print(ENCODED_VAR)
+        print(ENCODED_VAR)
         # string = byteToString(ENCODED_VAR)
         # print('Unpacked Values:', string)
 
-    def setServoValues(self, pos, angle):
+    def setServoValues(self):
         """
         Set the servomotor edit text.
         """
-        if pos == 7:
-            pos = 0
-        elif pos == 9:
-            pos = 1
-        elif pos == 11:
-            pos = 2
-        elif pos == 1:
-            pos = 3
-        elif pos == 3:
-            pos = 4
-        elif pos == 2:
-            pos = 6
-        elif pos == 4:
-            pos = 7
-        elif pos == 6:
-            pos = 8
-        elif pos == 8:
-            pos = 9
-        elif pos == 12:
-            pos = 11
-
-        self._servo_edits[pos].setText(str(angle))
+        for (angle, servo) in zip(SERVO_TABLE, self._servo_edits):
+            servo.setText(angle)
 
     def setInfoValues(self, Speed, Energy):
         """
@@ -557,6 +638,7 @@ class MainWindow(QWidget):
         self.bottom_layout.addLayout(self.info_layout)
         self.bottom_layout.addLayout(self.prog_layout)
         self.bottom_layout.addLayout(self.move_layout)
+        self.bottom_layout.addWidget(self.button_serial_start)
 
     def strechServoLayouts(self):
         """
@@ -610,79 +692,6 @@ class MainWindow(QWidget):
         self.move_layout.addWidget(self.button_left, 1, 0)
         self.move_layout.addWidget(self.button_right, 1, 2)
 
-    def moveForward(self):
-        """
-        Sequencing for moving forward.
-        """
-        motorOrder = [8,9,12,2,5,6,1,4,5,8,9,12,7,10,11,1,4,5,2,3,
-                    6,7,10,11]
-        posOrder = [UP,UP,UP,FRONT,FRONT,FRONT,BACK,BACK,BACK,DOWN,
-                    DOWN,DOWN,UP,UP,UP,FRONT,FRONT,FRONT,BACK,BACK,
-                    BACK,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
-            self.isWaiting()
-        
-
-        
-         
-
-    def moveBackward(self):
-        """
-        Sequencing for moving backward.
-        """
-        motorOrder = [8,9,12,2,5,6,1,4,5,8,9,12,7,10,11,1,4,5,2,3,
-                    6,7,10,11]
-        posOrder = [UP,UP,UP,BACK,BACK,BACK,FRONT,FRONT,FRONT,DOWN,
-                    DOWN,DOWN,UP,UP,UP,BACK,BACK,BACK,FRONT,FRONT,
-                    FRONT,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
-        
-        
-        self.isWaiting()
-        
-
-    def moveLeft(self):
-        """
-        Sequencing for turning left.
-        """
-        motorOrder = [8,9,12,2,6,3,1,5,4,8,9,12,7,10,11,1,5,4,2,6,
-                    3,7,10,11]
-        posOrder = [UP,UP,UP,FRONT,FRONT,BACK,FRONT,FRONT,BACK,DOWN,
-                    DOWN,DOWN,UP,UP,UP,BACK,BACK,FRONT,BACK,BACK,
-                    FRONT,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
-        
-        self.isWaiting()
-         
-
-
-
-    def moveRight(self):
-        """
-        Sequencing for turning right.
-        """
-        motorOrder = [8,9,12,2,6,3,1,5,4,8,9,12,7,10,11,1,5,4,2,6,
-                    3,7,10,11]
-        posOrder = [UP,UP,UP,BACK,BACK,FRONT,BACK,BACK,FRONT,DOWN,
-                    DOWN,DOWN,UP,UP,UP,FRONT,FRONT,BACK,FRONT,FRONT,
-                    BACK,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
-        
-        self.isWaiting()
-         
-
-        
-
-    
-
 # --------------------------------------------
 
 
@@ -691,6 +700,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + SEP + LOGO))
     window = MainWindow()
+    app.aboutToQuit.connect(window.cleanUp)
 
     # Set style
     palette = window.palette()
