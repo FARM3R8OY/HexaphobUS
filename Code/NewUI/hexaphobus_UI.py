@@ -68,7 +68,7 @@ SHIFT = [-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68];
 NB_COMMAND = 0
 ENCODED_VAR = b'55'
 isreadyFlag = "0"
-nextTask = True
+
 
 
 PORT = "/dev/ttyACM0"
@@ -368,9 +368,19 @@ class MainWindow(QWidget):
         self.show()
 
     def checkSerialState(self):
+        global step
         if isreadyFlag == "69":
             print("check")
-            nextTask = True
+            step += 1
+            if ForwardActivated:
+                self.moveForward(step)
+            elif BackwardActivated:
+                self.moveBackward(step)
+            elif LeftActivated:
+                self.moveLeft(step)
+            elif RightActivated:
+                self.moveRight(step)
+
 
     @pyqtSlot()
     def serialReceive(self):
@@ -384,6 +394,7 @@ class MainWindow(QWidget):
         except:
             return
         isreadyFlag = byteToString(stringData)
+
         
 
     def serialSend(self, motor, angle):
@@ -449,10 +460,10 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("FORWARD")
         )
         self.button_up.clicked.connect(
-            lambda: self.moveForward()
+            lambda: self.moveForward(0)
         )
         self.shortcut_up.activated.connect(
-            lambda: self.moveForward()
+            lambda: self.moveForward(0)
         )
         self.button_down.clicked.connect(
             lambda: self.tracking.changePosition("BACKWARD")
@@ -461,10 +472,10 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("BACKWARD")
         )
         self.button_down.clicked.connect(
-            lambda: self.moveBackward()
+            lambda: self.moveBackward(0)
         )
         self.shortcut_down.activated.connect(
-            lambda: self.moveBackward()
+            lambda: self.moveBackward(0)
         )
         self.button_right.clicked.connect(
             lambda: self.tracking.changePosition("RIGHT")
@@ -473,10 +484,10 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("RIGHT")
         )
         self.button_right.clicked.connect(
-            lambda: self.moveRight()
+            lambda: self.moveRight(0)
         )
         self.shortcut_right.activated.connect(
-            lambda: self.moveRight()
+            lambda: self.moveRight(0)
         )
         self.button_left.clicked.connect(
             lambda: self.tracking.changePosition("LEFT")
@@ -485,10 +496,10 @@ class MainWindow(QWidget):
             lambda: self.tracking.changePosition("LEFT")
         )
         self.button_left.clicked.connect(
-            lambda: self.moveLeft()
+            lambda: self.moveLeft(0)
         )
         self.shortcut_left.activated.connect(
-            lambda: self.moveLeft()
+            lambda: self.moveLeft(0)
         )
 
 
@@ -618,67 +629,90 @@ class MainWindow(QWidget):
         self.move_layout.addWidget(self.button_left, 1, 0)
         self.move_layout.addWidget(self.button_right, 1, 2)
 
-    def moveForward(self):
+    def moveForward(self,index):
         """
         Sequencing for moving forward.
         """
-        global nextTask
+        global ForwardActivated, step
         motorOrder = [8,9,12,2,5,6,1,4,5,8,9,12,7,10,11,1,4,5,2,3,
                     6,7,10,11]
         posOrder = [UP,UP,UP,FRONT,FRONT,FRONT,BACK,BACK,BACK,DOWN,
                     DOWN,DOWN,UP,UP,UP,FRONT,FRONT,FRONT,BACK,BACK,
                     BACK,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            if nextTask :
-                print(mot)
-                self.serialSend(mot,pos+SHIFT[mot-1])
-                self.setServoValues(mot,pos+SHIFT[mot-1]) 
-                nextTask = False
-        ###########################################################
-        # May need to make a simple one call function and call when 
-        # nextTask is True     
-        ###########################################################
 
-    def moveBackward(self):
+        print(motorOrder[index])
+        if index == 0:
+            ForwardActivated = True
+        elif index == len[motorOrder]+1:
+            step = 0
+            ForwardActivated = False
+        self.serialSend(motorOrder[index],
+                        posOrder[index]+SHIFT[motorOrder[index]-1])
+        self.setServoValues(motorOrder[index],
+                            posOrder[index]+SHIFT[motorOrder[index]-1]) 
+
+
+    def moveBackward(self,index):
         """
         Sequencing for moving backward.
         """
+        global BackwardActivated, step
         motorOrder = [8,9,12,2,5,6,1,4,5,8,9,12,7,10,11,1,4,5,2,3,
                     6,7,10,11]
         posOrder = [UP,UP,UP,BACK,BACK,BACK,FRONT,FRONT,FRONT,DOWN,
                     DOWN,DOWN,UP,UP,UP,BACK,BACK,BACK,FRONT,FRONT,
                     FRONT,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
+        if index == 0:
+            BackwardActivated = True
+        elif index == len[motorOrder]+1:
+            step = 0
+            BackwardActivated = False
+        self.serialSend(motorOrder[index],
+                        posOrder[index]+SHIFT[motorOrder[index]-1])
+        self.setServoValues(motorOrder[index],
+                            posOrder[index]+SHIFT[motorOrder[index]-1]) 
 
 
-    def moveLeft(self):
+    def moveLeft(self,index):
         """
         Sequencing for turning left.
         """
+        global LeftActivated, step
         motorOrder = [8,9,12,2,6,3,1,5,4,8,9,12,7,10,11,1,5,4,2,6,
                     3,7,10,11]
         posOrder = [UP,UP,UP,FRONT,FRONT,BACK,FRONT,FRONT,BACK,DOWN,
                     DOWN,DOWN,UP,UP,UP,BACK,BACK,FRONT,BACK,BACK,
                     FRONT,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
+        if index == 0:
+            LeftActivated = True
+        elif index == len[motorOrder]+1:
+            step = 0
+            LeftActivated = False
+        self.serialSend(motorOrder[index],
+                        posOrder[index]+SHIFT[motorOrder[index]-1])
+        self.setServoValues(motorOrder[index],
+                            posOrder[index]+SHIFT[motorOrder[index]-1]) 
         
 
-    def moveRight(self):
+    def moveRight(self,index):
         """
         Sequencing for turning right.
         """
+        global RightActivated, step
         motorOrder = [8,9,12,2,6,3,1,5,4,8,9,12,7,10,11,1,5,4,2,6,
                     3,7,10,11]
         posOrder = [UP,UP,UP,BACK,BACK,FRONT,BACK,BACK,FRONT,DOWN,
                     DOWN,DOWN,UP,UP,UP,FRONT,FRONT,BACK,FRONT,FRONT,
                     BACK,DOWN,DOWN,DOWN]
-        for (mot,pos) in zip(motorOrder, posOrder):
-            self.serialSend(mot,pos+SHIFT[mot-1])
-            self.setServoValues(mot,pos+SHIFT[mot-1])
+        if index == 0:
+            RightActivated = True
+        elif index == len[motorOrder]+1:
+            step = 0
+            RightActivated = False
+        self.serialSend(motorOrder[index],
+                        posOrder[index]+SHIFT[motorOrder[index]-1])
+        self.setServoValues(motorOrder[index],
+                            posOrder[index]+SHIFT[motorOrder[index]-1]) 
 
 
 # --------------------------------------------
