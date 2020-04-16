@@ -312,7 +312,7 @@ class MainWindow(QWidget):
 
         self.ser = QtSerialPort.QSerialPort(
             PORT,
-            baudRate = QtSerialPort.QSerialPort.Baud9600,
+            baudRate = QtSerialPort.QSerialPort.Baud57600,
             readyRead = self.serialReceive
         )
         self.ser.open(QIODevice.ReadWrite)
@@ -396,7 +396,6 @@ class MainWindow(QWidget):
         except:
             return
         isreadyFlag = byteToString(stringData)
-
         
 
     def serialSend(self, motor, angle):

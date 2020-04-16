@@ -59,7 +59,7 @@
  *        frequency.
  */
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(57600);
   pwm.begin();
   pwm.setPWMFreq(FREQUENCY);
   delay(1000);
@@ -77,9 +77,9 @@ void loop() {
 
   //Serial.println("08;066");
   serialString = readSerial();
- // serialString = "08;080";
-  //Serial.println(serialString);
-  if(serialString != "None"){
+  //serialString = "08;080";
+  //Serial.println(serialString.length());
+  if(serialString.length() == 6){
     //Serial.println("ALLO!!");
     int motorId = getMotorId(serialString);
     int motorAngle = getMotorAngle(serialString);
