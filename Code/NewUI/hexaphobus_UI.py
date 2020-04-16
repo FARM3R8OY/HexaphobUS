@@ -102,7 +102,9 @@ def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
+   
     string = encoded_string.decode().strip()
+    print(string)
     return string
 
 # --------------------------------------------
@@ -312,7 +314,7 @@ class MainWindow(QWidget):
 
         self.ser = QtSerialPort.QSerialPort(
             PORT,
-            baudRate = QtSerialPort.QSerialPort.Baud9600,
+            baudRate = QtSerialPort.QSerialPort.Baud57600,
             readyRead = self.serialReceive
         )
         
@@ -390,10 +392,17 @@ class MainWindow(QWidget):
         Gets the information from the serial port.
         """
         global isreadyFlag
-        stringData = self.ser.read_until("\r")
+        try:
+            stringData = self.ser.readAll()
+            #print(stringData)
+        except:
+            return
+        stringData = stringData[0:2]
         print(stringData)
         isreadyFlag = byteToString(stringData)
-
+        print(isreadyFlag)
+        #isreadyFlag.strip()
+        
         
 
     def serialSend(self, motor, angle):
