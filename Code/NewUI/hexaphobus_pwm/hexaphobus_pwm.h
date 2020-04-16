@@ -73,8 +73,8 @@ String readSerial()
         if (sizeof(input_string) > 0) {
           newData = true;
         } 
-        //else
-          //{input_string = "None";}
+        else
+          {input_string = "None";}
       }
 
   return input_string;

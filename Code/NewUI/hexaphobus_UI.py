@@ -313,14 +313,14 @@ class MainWindow(QWidget):
         self.ser = QtSerialPort.QSerialPort(
             PORT,
             baudRate = QtSerialPort.QSerialPort.Baud9600,
-            readyRead = self.checkSerialState
+            readyRead = self.serialReceive
         )
         self.ser.open(QIODevice.ReadWrite)
 
 
         self._timer = QTimer(self)
         self._timer.start(100)
-        self._timer.timeout.connect(self.serialReceive)
+        self._timer.timeout.connect(self.checkSerialState)
 
 
         self.initUI()
@@ -380,6 +380,7 @@ class MainWindow(QWidget):
                 self.moveLeft(step)
             elif RightActivated:
                 self.moveRight(step)
+            isreadyFlag = "0"
 
 
     @pyqtSlot()
@@ -390,6 +391,7 @@ class MainWindow(QWidget):
         global isreadyFlag
         try:
             stringData = self.ser.read_until()
+            print("lalal")
             
         except:
             return
@@ -414,7 +416,7 @@ class MainWindow(QWidget):
             
         commandString = motor + ';' + angle
         bytesData = stringToByte(commandString)
-        # self.ser.write(bytesData)
+        self.ser.write(bytesData)
 
 
     def addServos(self):
@@ -646,6 +648,7 @@ class MainWindow(QWidget):
         elif index == len[motorOrder]+1:
             step = 0
             ForwardActivated = False
+            return
         self.serialSend(motorOrder[index],
                         posOrder[index]+SHIFT[motorOrder[index]-1])
         self.setServoValues(motorOrder[index],
@@ -667,6 +670,7 @@ class MainWindow(QWidget):
         elif index == len[motorOrder]+1:
             step = 0
             BackwardActivated = False
+            return 
         self.serialSend(motorOrder[index],
                         posOrder[index]+SHIFT[motorOrder[index]-1])
         self.setServoValues(motorOrder[index],
@@ -688,6 +692,7 @@ class MainWindow(QWidget):
         elif index == len[motorOrder]+1:
             step = 0
             LeftActivated = False
+            return
         self.serialSend(motorOrder[index],
                         posOrder[index]+SHIFT[motorOrder[index]-1])
         self.setServoValues(motorOrder[index],
@@ -709,6 +714,7 @@ class MainWindow(QWidget):
         elif index == len[motorOrder]+1:
             step = 0
             RightActivated = False
+            return
         self.serialSend(motorOrder[index],
                         posOrder[index]+SHIFT[motorOrder[index]-1])
         self.setServoValues(motorOrder[index],
