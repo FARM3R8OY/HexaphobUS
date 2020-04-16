@@ -68,6 +68,12 @@ SHIFT = [-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68];
 NB_COMMAND = 0
 isreadyFlag = "0"
 
+global step
+step = 0
+
+global isReadyToRead
+isReadyToRead = False
+
 global FORWARD,BACKWARD,LEFT,RIGHT
 FORWARD = False
 BACKWARD = False
@@ -105,7 +111,9 @@ def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
-    string = encoded_string.decode().strip()
+    string = encoded_string.decode()
+    string = string.strip()
+
     return string
 
 # --------------------------------------------
@@ -205,6 +213,7 @@ class RobotTracking(QWidget):
         Event that draws a line between the target's position and its
         origin.
         """
+        global NB_COMMAND
         robot = QPixmap(SCRIPT_DIR + SEP + LOGO)
         pix_robot = robot.scaledToHeight(40)
 
@@ -315,14 +324,15 @@ class MainWindow(QWidget):
         self.ser = QtSerialPort.QSerialPort(
             PORT,
             baudRate = QtSerialPort.QSerialPort.Baud57600,
-            readyRead = self.serialReceive
+            readyRead = self.checkSerialState
         )
         self.ser.open(QIODevice.ReadWrite)
-
+        
 
         self._timer = QTimer(self)
         self._timer.start(100)
-        self._timer.timeout.connect(self.checkSerialState)
+        #self._timer.timeout.connect(self.checkSerialState)
+        self._timer.timeout.connect(self.serialReceive)
 
 
         self.initUI()
@@ -369,43 +379,58 @@ class MainWindow(QWidget):
 
         self.show()
 
-    def checkSerialState(self):
-        global step
-        if isreadyFlag == "69":
-            print("check")
-            step += 1
-            if ForwardActivated:
-                self.moveForward(step)
-            elif BackwardActivated:
-                self.moveBackward(step)
-            elif LeftActivated:
-                self.moveLeft(step)
-            elif RightActivated:
-                self.moveRight(step)
-            isreadyFlag = "0"
-
-
     @pyqtSlot()
+    def checkSerialState(self):
+        global isReadyToRead
+        print("STATE")
+
+        isReadyToRead = True
+
+    
     def serialReceive(self):
         """
         Gets the information from the serial port.
         """
-        global isreadyFlag
-        try:
-            stringData = self.ser.read_until()
-            print("lalal")
-            
-        except:
-            return
-        isreadyFlag = byteToString(stringData)
-        
 
+        global isreadyFlag,step
+        print("Receive")
+        if isReadyToRead:
+            try:
+
+                stringData = self.ser.readLine(10)
+                print(stringData)
+            except:
+                print("exit")
+                return
+            
+            if(stringData==b'69\r\n'):
+                stringData = b'69\r\n'
+            
+                isreadyFlag = byteToString(stringData)
+                print("serreceive")
+            
+            if isreadyFlag == "69":
+                print("check")
+                step = step + 1
+                print(step)
+                if ForwardActivated:
+                    self.moveForward(step)
+                elif BackwardActivated:
+                    self.moveBackward(step)
+                elif LeftActivated:
+                    self.moveLeft(step)
+                elif RightActivated:
+                    self.moveRight(step)
+                isreadyFlag = "0"
+        
+    @pyqtSlot()
     def serialSend(self, motor, angle):
         """
         Sends the information to the serial port.
         """
         motor = str(motor)
         angle = str(angle)
+       # print(angle+'B')
 
         if len(angle) == 1:
             angle = "00" + angle
@@ -520,9 +545,11 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        global isreadyFlag
+        v = byteToString(b'69\r\n')
+        print(v)
+        """global isreadyFlag
         isreadyFlag = "69"
-        self.checkSerialState()
+        self.checkSerialState()"""
 
     def setServoValues(self, pos, angle):
         """
@@ -641,16 +668,19 @@ class MainWindow(QWidget):
                     BACK,DOWN,DOWN,DOWN]
 
         print(motorOrder[index])
+        
         if index == 0:
             ForwardActivated = True
-        elif index == len[motorOrder]+1:
+        elif index == len(motorOrder)+1:
             step = 0
             ForwardActivated = False
             return
+    
         self.serialSend(motorOrder[index],
                         posOrder[index]+SHIFT[motorOrder[index]-1])
         self.setServoValues(motorOrder[index],
-                            posOrder[index]+SHIFT[motorOrder[index]-1]) 
+                            posOrder[index]+SHIFT[motorOrder[index]-1])
+        print("move")
 
 
     def moveBackward(self,index):
