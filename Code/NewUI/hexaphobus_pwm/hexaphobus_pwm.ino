@@ -77,15 +77,14 @@ void loop() {
 
   //Serial.println("08;066");
   serialString = readSerial();
-  //serialString = "08;080";
-  Serial.println(serialString);
+ // serialString = "08;080";
+  //Serial.println(serialString);
   if(serialString != "None"){
-    Serial.println("ALLO!!");
+    //Serial.println("ALLO!!");
     int motorId = getMotorId(serialString);
     int motorAngle = getMotorAngle(serialString);
     motorCommand(motorId, motorAngle);
     delay(timeDelay);
     writeSerial("69");
   }
-  //writeSerial("69");
 }
