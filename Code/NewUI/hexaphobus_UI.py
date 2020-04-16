@@ -315,7 +315,6 @@ class MainWindow(QWidget):
             baudRate = QtSerialPort.QSerialPort.Baud9600,
             readyRead = self.serialReceive
         )
-        
         self.ser.open(QIODevice.ReadWrite)
 
 
@@ -369,7 +368,7 @@ class MainWindow(QWidget):
         self.show()
 
     def checkSerialState(self):
-        global step, isreadyFlag
+        global step
         if isreadyFlag == "69":
             print("check")
             step += 1
@@ -390,8 +389,12 @@ class MainWindow(QWidget):
         Gets the information from the serial port.
         """
         global isreadyFlag
-        stringData = self.ser.read_until("\r")
-        print(stringData)
+        try:
+            stringData = self.ser.read_until()
+            print("lalal")
+            
+        except:
+            return
         isreadyFlag = byteToString(stringData)
 
         
@@ -516,11 +519,10 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        self.serialReceive()
-        """global isreadyFlag
+        global isreadyFlag
         isreadyFlag = "69"
         self.checkSerialState()
-        #print(ENCODED_VAR)"""
+        #print(ENCODED_VAR)
         # string = byteToString(ENCODED_VAR)
         # print('Unpacked Values:', string)
 
