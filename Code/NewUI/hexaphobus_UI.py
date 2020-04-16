@@ -66,10 +66,13 @@ CENTER = 43
 SHIFT = [-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68];
 
 NB_COMMAND = 0
-ENCODED_VAR = b'55'
 isreadyFlag = "0"
 
-
+global FORWARD,BACKWARD,LEFT,RIGHT
+FORWARD = False
+BACKWARD = False
+LEFT = False
+RIGHT = False
 
 PORT = "/dev/ttyACM0"
 BAUD_RATE = 500000
@@ -149,25 +152,26 @@ class RobotTracking(QWidget):
         Updates the target's distance and position according to
         geometry.
         """
+        global FORWARD,BACKWARD,LEFT,RIGHT
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
 
         if direction == "FORWARD" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('FORWARD')
+            FORWARD = True
         elif direction == "BACKWARD" and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('BACKWARD')
+            BACKWARD = True
         elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('RIGHT')
+            RIGHT = True
         elif direction == "LEFT" and self._robot_x_pos > 0:
             self._robot_x_pos -= self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('LEFT')
+            LEFT = True
 
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()
@@ -213,10 +217,8 @@ class RobotTracking(QWidget):
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
-        moving_command = byteToString(ENCODED_VAR)
-
         #Suggest to use feedback from the angles of servomotor
-        if moving_command == "FORWARD" or moving_command == "BACKWARD":
+        if FORWARD or BACKWARD:
             if NB_COMMAND % 2 == 0 and NB_COMMAND >= 0:
                 move_leg = -6
             elif NB_COMMAND % 2 == 1 and NB_COMMAND >= 0:
@@ -521,9 +523,6 @@ class MainWindow(QWidget):
         global isreadyFlag
         isreadyFlag = "69"
         self.checkSerialState()
-        #print(ENCODED_VAR)
-        # string = byteToString(ENCODED_VAR)
-        # print('Unpacked Values:', string)
 
     def setServoValues(self, pos, angle):
         """
