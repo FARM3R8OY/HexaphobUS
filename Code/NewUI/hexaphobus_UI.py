@@ -1,21 +1,21 @@
-"""
-File: hexaphobus_ui.py
+##@file hexaphobus_ui.py
+#
+##@authors
+#     - Cabana,       Gabriel  | cabg2101
+#     - Guay-Tanguay, Carolane | guac3201
+#     - Lalonde,      Philippe | lalp2803
+#     - Roy,          Olivier  | royo2206
+#
+##@date
+#     - 2020-01-29 (Creation)
+#     - 2020-04-17 (Last modification)
+#
+# User interface designed for intuitive control and monitoring of the
+# HexaphobUS robot.
+#
+# <b>S4-H20 | GRO400</b>
 
-Contributor(s):
-    Lalonde, Philippe | lalp2803
-
-Date(s):
-    2020-04-08 (Creation)
-    2020-04-08 (Last modification)
-
-Description:
-    User interface designed for intuitive control and monitoring of the
-    HexaphobUS robot.
-
-S4-H20 | GRO400
-"""
-
-# --------------------------------------------
+#********************************************#
 
 import math
 import os
@@ -34,63 +34,102 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget,
                              QShortcut, QFrame, QSizePolicy)
 
-# --------------------------------------------
+#********************************************#
 
+## Servomotor number (to define positioning and sequencing)
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
 
-ARROW_W = 60
-ARROW_H = 30
-BUTTON_W = 120
-BUTTON_H = 60
-INFO_W = 190
-INFO_H = 30
-SV_NBR = 12
+## Number of servomotors
+SV_NBR = len(Servos_Num)
+## Servomotor window width
 SV_W = 100
+## Servomotor window height
 SV_H = 30
+## Arrow button width
+ARROW_W = 60
+## Arrow button height
+ARROW_H = 30
+## Button width
+BUTTON_W = 120
+## Button height
+BUTTON_H = 60
+## Information window width
+INFO_W = 190
+## Information window height
+INFO_H = 30
+## Position tracking window width
 TRACK_W = 250
+## Position tracking window height
 TRACK_H = 50
+## User interface position (x)
 UI_X = 80
+## User interface position (y)
 UI_Y = 80
+## User interface width
 UI_W = 800
+## User interface height
 UI_H = 600
+## User interface width (minimum)
 UI_MIN_W = 480
+## User interface height (minimum)
 UI_MIN_H = 360
 
-# Angle value in degrees.
+## Servomotor angle (down position)
 DOWN = 65-15
+## Servomotor angle (up position)
 UP = 25-15
+## Servomotor angle (back position)
 BACK = 10
+## Servomotor angle (front position)
 FRONT =  75
+## Servomotor angle (central position)
 CENTER = 43
-
+## Servomotor encoder compensation (for calibration)
 SHIFT = [-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68];
 
+## Flag (command number to define next position to reach)
 NB_COMMAND = 0
-isreadyFlag = "0"
+## Flag (communication ready)
+IS_READY = "0"
 
-global FORWARD,BACKWARD,LEFT,RIGHT
+#global FORWARD, BACKWARD, LEFT, RIGHT
+## Flag (forward movement)
 FORWARD = False
+## Flag (backward movement)
 BACKWARD = False
+## Flag (left turn)
 LEFT = False
+## Flag (right turn)
 RIGHT = False
 
+## Communication port directory
 PORT = "/dev/ttyACM0"
-BAUD_RATE = 500000
 
+## User interface window name
 WINDOW_NAME = "HexaphobUS UI"
+## Up arrow unicode string
 BUTTON_UP = "\u2191"
+## Down arrow unicode string
 BUTTON_DOWN = "\u2193"
+## Left arrow unicode string
 BUTTON_LEFT = "\u2190"
+## Right arrow unicode string
 BUTTON_RIGHT = "\u2192"
+## Serial communication string
 BUTTON_SERIAL = "Start Serial"
+## Initialization button string
 BUTTON_INIT = "POS INIT"
+## Program button string
 BUTTON_PRG1 = "PRG1"
+## Second level parent folder
 SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                           "..", ".."))
+## Separator (OS dependent)
 SEP = os.path.sep
+## User interface logo directory
 LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
-# --------------------------------------------
+#********************************************#
 
 
 def stringToByte(string):
@@ -108,7 +147,7 @@ def byteToString(encoded_string):
     string = encoded_string.decode().strip()
     return string
 
-# --------------------------------------------
+#********************************************#
 
 class RobotTracking(QWidget):
     """
@@ -371,7 +410,7 @@ class MainWindow(QWidget):
 
     def checkSerialState(self):
         global step
-        if isreadyFlag == "69":
+        if IS_READY == "69":
             print("check")
             step += 1
             if ForwardActivated:
@@ -382,7 +421,7 @@ class MainWindow(QWidget):
                 self.moveLeft(step)
             elif RightActivated:
                 self.moveRight(step)
-            isreadyFlag = "0"
+            IS_READY = "0"
 
 
     @pyqtSlot()
@@ -390,14 +429,14 @@ class MainWindow(QWidget):
         """
         Gets the information from the serial port.
         """
-        global isreadyFlag
+        global IS_READY
         try:
             stringData = self.ser.read_until()
             print("lalal")
             
         except:
             return
-        isreadyFlag = byteToString(stringData)
+        IS_READY = byteToString(stringData)
         
 
     def serialSend(self, motor, angle):
@@ -520,8 +559,8 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        global isreadyFlag
-        isreadyFlag = "69"
+        global IS_READY
+        IS_READY = "69"
         self.checkSerialState()
 
     def setServoValues(self, pos, angle):
@@ -719,7 +758,7 @@ class MainWindow(QWidget):
                             posOrder[index]+SHIFT[motorOrder[index]-1]) 
 
 
-# --------------------------------------------
+#********************************************#
 
 
 if __name__ == '__main__':
