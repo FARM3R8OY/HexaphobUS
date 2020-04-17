@@ -90,9 +90,11 @@ SHIFT = [-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68];
 ## Flag (command number to define next position to reach)
 NB_COMMAND = 0
 ## Flag (communication ready)
-IS_READY = "0"
-
-#global FORWARD, BACKWARD, LEFT, RIGHT
+COMM_READY = "0"
+## Flag (sequencing step)
+STEP = 0
+## Flag ()
+READ_READY = False
 ## Flag (forward movement)
 FORWARD = False
 ## Flag (backward movement)
@@ -144,7 +146,9 @@ def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
-    string = encoded_string.decode().strip()
+    string = encoded_string.decode()
+    string = string.strip()
+
     return string
 
 #********************************************#
@@ -244,6 +248,7 @@ class RobotTracking(QWidget):
         Event that draws a line between the target's position and its
         origin.
         """
+        global NB_COMMAND
         robot = QPixmap(SCRIPT_DIR + SEP + LOGO)
         pix_robot = robot.scaledToHeight(40)
 
@@ -354,14 +359,15 @@ class MainWindow(QWidget):
         self.ser = QtSerialPort.QSerialPort(
             PORT,
             baudRate = QtSerialPort.QSerialPort.Baud57600,
-            readyRead = self.serialReceive
+            readyRead = self.checkSerialState
         )
         self.ser.open(QIODevice.ReadWrite)
-
+        
 
         self._timer = QTimer(self)
         self._timer.start(100)
-        self._timer.timeout.connect(self.checkSerialState)
+        #self._timer.timeout.connect(self.checkSerialState)
+        self._timer.timeout.connect(self.serialReceive)
 
 
         self.initUI()
@@ -408,43 +414,58 @@ class MainWindow(QWidget):
 
         self.show()
 
-    def checkSerialState(self):
-        global step
-        if IS_READY == "69":
-            print("check")
-            step += 1
-            if ForwardActivated:
-                self.moveForward(step)
-            elif BackwardActivated:
-                self.moveBackward(step)
-            elif LeftActivated:
-                self.moveLeft(step)
-            elif RightActivated:
-                self.moveRight(step)
-            IS_READY = "0"
-
-
     @pyqtSlot()
+    def checkSerialState(self):
+        global READ_READY
+        print("STATE")
+
+        READ_READY = True
+
+    
     def serialReceive(self):
         """
         Gets the information from the serial port.
         """
-        global IS_READY
-        try:
-            stringData = self.ser.read_until()
-            print("lalal")
-            
-        except:
-            return
-        IS_READY = byteToString(stringData)
-        
 
+        global COMM_READY, STEP
+        print("Receive")
+        if READ_READY:
+            try:
+
+                stringData = self.ser.readLine(10)
+                print(stringData)
+            except:
+                print("exit")
+                return
+            
+            if(stringData==b'69\r\n'):
+                stringData = b'69\r\n'
+            
+                COMM_READY = byteToString(stringData)
+                print("serreceive")
+            
+            if COMM_READY == "69":
+                print("check")
+                STEP = STEP + 1
+                print(STEP)
+                if ForwardActivated:
+                    self.moveForward(STEP)
+                elif BackwardActivated:
+                    self.moveBackward(STEP)
+                elif LeftActivated:
+                    self.moveLeft(STEP)
+                elif RightActivated:
+                    self.moveRight(STEP)
+                COMM_READY = "0"
+        
+    @pyqtSlot()
     def serialSend(self, motor, angle):
         """
         Sends the information to the serial port.
         """
         motor = str(motor)
         angle = str(angle)
+       # print(angle+'B')
 
         if len(angle) == 1:
             angle = "00" + angle
@@ -559,9 +580,11 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        global IS_READY
-        IS_READY = "69"
-        self.checkSerialState()
+        v = byteToString(b'69\r\n')
+        print(v)
+        """global COMM_READY
+        COMM_READY = "69"
+        self.checkSerialState()"""
 
     def setServoValues(self, pos, angle):
         """
@@ -672,7 +695,7 @@ class MainWindow(QWidget):
         """
         Sequencing for moving forward.
         """
-        global ForwardActivated, step
+        global ForwardActivated, STEP
         motorOrder = [8,9,12,2,5,6,1,4,5,8,9,12,7,10,11,1,4,5,2,3,
                     6,7,10,11]
         posOrder = [UP,UP,UP,FRONT,FRONT,FRONT,BACK,BACK,BACK,DOWN,
@@ -680,23 +703,26 @@ class MainWindow(QWidget):
                     BACK,DOWN,DOWN,DOWN]
 
         print(motorOrder[index])
+        
         if index == 0:
             ForwardActivated = True
-        elif index == len[motorOrder]+1:
-            step = 0
+        elif index == len(motorOrder)+1:
+            STEP = 0
             ForwardActivated = False
             return
+    
         self.serialSend(motorOrder[index],
                         posOrder[index]+SHIFT[motorOrder[index]-1])
         self.setServoValues(motorOrder[index],
-                            posOrder[index]+SHIFT[motorOrder[index]-1]) 
+                            posOrder[index]+SHIFT[motorOrder[index]-1])
+        print("move")
 
 
     def moveBackward(self,index):
         """
         Sequencing for moving backward.
         """
-        global BackwardActivated, step
+        global BackwardActivated, STEP
         motorOrder = [8,9,12,2,5,6,1,4,5,8,9,12,7,10,11,1,4,5,2,3,
                     6,7,10,11]
         posOrder = [UP,UP,UP,BACK,BACK,BACK,FRONT,FRONT,FRONT,DOWN,
@@ -705,7 +731,7 @@ class MainWindow(QWidget):
         if index == 0:
             BackwardActivated = True
         elif index == len[motorOrder]+1:
-            step = 0
+            STEP = 0
             BackwardActivated = False
             return 
         self.serialSend(motorOrder[index],
@@ -718,7 +744,7 @@ class MainWindow(QWidget):
         """
         Sequencing for turning left.
         """
-        global LeftActivated, step
+        global LeftActivated, STEP
         motorOrder = [8,9,12,2,6,3,1,5,4,8,9,12,7,10,11,1,5,4,2,6,
                     3,7,10,11]
         posOrder = [UP,UP,UP,FRONT,FRONT,BACK,FRONT,FRONT,BACK,DOWN,
@@ -727,7 +753,7 @@ class MainWindow(QWidget):
         if index == 0:
             LeftActivated = True
         elif index == len[motorOrder]+1:
-            step = 0
+            STEP = 0
             LeftActivated = False
             return
         self.serialSend(motorOrder[index],
@@ -740,7 +766,7 @@ class MainWindow(QWidget):
         """
         Sequencing for turning right.
         """
-        global RightActivated, step
+        global RightActivated, STEP
         motorOrder = [8,9,12,2,6,3,1,5,4,8,9,12,7,10,11,1,5,4,2,6,
                     3,7,10,11]
         posOrder = [UP,UP,UP,BACK,BACK,FRONT,BACK,BACK,FRONT,DOWN,
@@ -749,7 +775,7 @@ class MainWindow(QWidget):
         if index == 0:
             RightActivated = True
         elif index == len[motorOrder]+1:
-            step = 0
+            STEP = 0
             RightActivated = False
             return
         self.serialSend(motorOrder[index],

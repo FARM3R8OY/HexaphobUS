@@ -73,11 +73,11 @@ void setup() {
  */
 void loop() { 
   String serialString = "None";
-  int timeDelay = 100;
+  int timeDelay = 10;
 
   //Serial.println("08;066");
   serialString = readSerial();
-  //serialString = "08;080";
+  
   //Serial.println(serialString.length());
   if(serialString.length() == 6){
     //Serial.println("ALLO!!");
@@ -87,4 +87,8 @@ void loop() {
     delay(timeDelay);
     writeSerial("69");
   }
+ /* else {
+    writeSerial("420");
+  }*/
+  
 }
