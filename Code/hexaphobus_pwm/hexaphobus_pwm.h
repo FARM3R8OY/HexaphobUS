@@ -121,6 +121,7 @@ int UpdateCommand()
     //{
       while (/*Serial.available() &&*/ newData == false)
       {
+        input_string = "";
         input_string = Serial.readStringUntil('|');
         input_string = String(input_string);
         
@@ -137,7 +138,7 @@ int UpdateCommand()
       //if new command
       if (newData == true)
       {
-        writeCommand(input_string);
+        //writeCommand(input_string);
         if (input_string == "FORWARD")
         { returnstate = 1;}
         else if (input_string == "BACKWARD")
@@ -179,7 +180,7 @@ int AngleToHMI() {
   for (int i = 2; i < 13; i++) {
     string_to_send += ";" + String(ANGLE[i]);
   }
-
+  
   if (sizeof(string_to_send) < 6) {
     return -1;
   }

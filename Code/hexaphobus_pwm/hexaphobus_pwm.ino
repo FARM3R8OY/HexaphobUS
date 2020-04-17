@@ -71,13 +71,13 @@ RIGHT = 4
  *        frequency.
  */
 void setup() {
-  Serial.begin(500000);
+  Serial.begin(9600);
   pwm.begin();
   pwm.setPWMFreq(FREQUENCY);
   delay(1000);
-  AngleToHMI();
+  //AngleToHMI();
   init_move();
-  AngleToHMI;
+  //AngleToHMI();
 }
 
 /*!
@@ -87,35 +87,12 @@ void setup() {
  *        to move according to user input.
  */
 void loop() { 
-/*
-  UpAndDown(2,3,6,POS_DOWN,POS_DOWN,POS_DOWN,100);
-  UpAndDown(1,4,5,POS_UP,POS_UP,POS_UP,100);
-  ForwardAndBackward(2,3,6,POS_CENTER,POS_CENTER,POS_CENTER,100);
-  ForwardAndBackward(1,4,5,POS_CENTER,POS_CENTER,POS_CENTER,100);
-  delay(500);
-  UpAndDown(2,3,6,POS_UP,POS_UP,POS_UP,100);
-  UpAndDown(1,4,5,POS_DOWN,POS_DOWN,POS_DOWN,100);
- */
-
-  //init_move();
-
-  /*
-   Moving(POS_FRONT);
-   delay(10);
-   Moving(POS_FRONT);
-   delay(10);
-   Moving(POS_FRONT);
-   delay(500);
-   MovingRight();
-   delay(10);
-   MovingRight();
-   delay(10);*/
    
   //showNewData();
   
   State = UpdateCommand();
 
-  if (State != 0)
+  if (State != 0 && State != -1)
   {
     if (State == 1)
     {
@@ -137,9 +114,7 @@ void loop() {
       //Move Right
       MovingRight();
     }
+    AngleToHMI();
+    State = 0;
   }
-  AngleToHMI();
-
- //delay(100);
-
 }

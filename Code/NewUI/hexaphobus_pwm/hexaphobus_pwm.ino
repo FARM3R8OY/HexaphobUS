@@ -73,20 +73,20 @@ void setup() {
  */
 void loop() { 
   String serialString = "None";
-  int timeDelay = 10;
+  int timeDelay = 1000;
 
-  //Serial.println("08;066");
+  //serialString = "08;066";
   serialString = readSerial();
   
   //Serial.println(serialString.length());
   if(serialString.length() == 6){
-    //Serial.println("ALLO!!");
     int motorId = getMotorId(serialString);
     int motorAngle = getMotorAngle(serialString);
     motorCommand(motorId, motorAngle);
     delay(timeDelay);
-    writeSerial("69");
+    writeSerial("12345");
   }
+  delay(100);
  /* else {
     writeSerial("420");
   }*/

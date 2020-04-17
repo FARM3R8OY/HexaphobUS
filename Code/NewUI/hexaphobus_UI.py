@@ -131,6 +131,9 @@ SEP = os.path.sep
 ## User interface logo directory
 LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
+counter = 0
+
+
 #********************************************#
 
 
@@ -324,7 +327,6 @@ class MainWindow(QWidget):
         self.servo_layout_4 = QVBoxLayout()
         self.tracking_layout = QVBoxLayout()
 
-
         self.info_layout = QVBoxLayout()
         self.prog_layout = QVBoxLayout()
         self.move_layout = QGridLayout()
@@ -359,15 +361,14 @@ class MainWindow(QWidget):
         self.ser = QtSerialPort.QSerialPort(
             PORT,
             baudRate = QtSerialPort.QSerialPort.Baud57600,
-            readyRead = self.checkSerialState
+            readyRead = self.serialReceive
         )
         self.ser.open(QIODevice.ReadWrite)
         
-
-        self._timer = QTimer(self)
-        self._timer.start(100)
+        #self._timer = QTimer(self)
+        #self._timer.start(100)
         #self._timer.timeout.connect(self.checkSerialState)
-        self._timer.timeout.connect(self.serialReceive)
+        #self._timer.timeout.connect(self.serialReceive)
 
 
         self.initUI()
@@ -414,51 +415,59 @@ class MainWindow(QWidget):
 
         self.show()
 
-    @pyqtSlot()
-    def checkSerialState(self):
-        global READ_READY
-        print("STATE")
 
-        READ_READY = True
+    def checkSerialState(self, stringData):
+        global STEP,counter
 
-    
-    def serialReceive(self):
-        """
-        Gets the information from the serial port.
-        """
-
-        global COMM_READY, STEP
-        print("Receive")
-        if READ_READY:
-            try:
-
-                stringData = self.ser.readLine(10)
-                print(stringData)
-            except:
-                print("exit")
-                return
             
-            if(stringData==b'69\r\n'):
-                stringData = b'69\r\n'
-            
-                COMM_READY = byteToString(stringData)
-                print("serreceive")
-            
-            if COMM_READY == "69":
+        COMM_READY = byteToString(stringData)
+        print(COMM_READY)
+        
+        if COMM_READY == "12345":
+                COMM_READY = "0"
                 print("check")
                 STEP = STEP + 1
                 print(STEP)
                 if ForwardActivated:
                     self.moveForward(STEP)
+                    print("jai fini")
+                    return
                 elif BackwardActivated:
                     self.moveBackward(STEP)
+                    return
                 elif LeftActivated:
                     self.moveLeft(STEP)
+                    return
                 elif RightActivated:
                     self.moveRight(STEP)
-                COMM_READY = "0"
+                    return
+                
+        print("STATE")
+        #READ_READY = True
+
+    def serialReceive(self):
+        """
+        Gets the information from the serial port.
+        """
+        print("receive")
+        stringData = self.ser.readline()
+        print("ici")
+        if stringData:
+            print(stringData)
+            
+        """
+        try:
+            stringData = self.ser.readLine(15)
+            print(stringData)
+            stringTAB.append(stringData)
+            self.checkSerialState()
+                
+               
+        except:
+            print("exit")
+            return
+        """
         
-    @pyqtSlot()
     def serialSend(self, motor, angle):
         """
         Sends the information to the serial port.
@@ -476,6 +485,7 @@ class MainWindow(QWidget):
             motor = "0" + motor
             
         commandString = motor + ';' + angle
+        print(commandString)
         bytesData = stringToByte(commandString)
         self.ser.write(bytesData)
 
@@ -514,7 +524,8 @@ class MainWindow(QWidget):
         Connect the buttons and shortcuts to the corresponding
         functions.
         """
-        self.button_prog.clicked.connect(self.runProgram)
+        self.button_prog.clicked.connect(self.serialCheck.SerialRun)
+        #self.button_prog.clicked.connect(self.runProgram)
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(
             lambda: self.tracking.changePosition("FORWARD")
@@ -580,7 +591,7 @@ class MainWindow(QWidget):
         self.energy_label.setText("Énergie :")
 
     def runProgram(self):
-        v = byteToString(b'69\r\n')
+        v = byteToString(b'12345\r\n')
         print(v)
         """global COMM_READY
         COMM_READY = "69"
@@ -710,9 +721,12 @@ class MainWindow(QWidget):
             STEP = 0
             ForwardActivated = False
             return
-    
+        SerialChecker.serialSend(motorOrder[index],
+                        posOrder[index]+SHIFT[motorOrder[index]-1])
+        """
         self.serialSend(motorOrder[index],
                         posOrder[index]+SHIFT[motorOrder[index]-1])
+        """
         self.setServoValues(motorOrder[index],
                             posOrder[index]+SHIFT[motorOrder[index]-1])
         print("move")

@@ -66,7 +66,7 @@ EDIT_PLACE = 0
 SERVO_TABLE = list()
 
 PORT = "/dev/ttyACM0"
-BAUD_RATE = 500000
+BAUD_RATE = 9600
 
 WINDOW_NAME = "HexaphobUS UI"
 BUTTON_UP = "\u2191"
@@ -176,28 +176,32 @@ class SerialChecker(QThread):
         Initiates the serial communication.
         """
         self.ser = serial.Serial(PORT, BAUD_RATE)
-        self.ser.flushInput()
-        self.rt = RepeatedTimer(SERIAL_UPDATE_RATE, self.serialReceive)
-
+        self.ser.reset_input_buffer()
+        
+        
+        #self.rt = RepeatedTimer(SERIAL_UPDATE_RATE, self.serialReceive)
+#=----------------------------------------------------------------------------------------
     def serialReceive(self):
         """
         Gets the information from the serial port.
         """
-        try:
-            stringData = self.ser.read_until()
-        except:
-            return 
-        #print(stringData)
-        servoAngle = byteToString(stringData)
-        print(servoAngle)
-        try:
-            tableData = servoAngle.split(";")
-        except:
-            print("Erreur")
+        if self.ser.in_waiting > 0:
+            global SERVO_TABLE
+            try:
+                stringData = self.ser.read_until()
+            except:
+                return 
+            #print(stringData)
+            servoAngle = byteToString(stringData)
+            
+            
+            try:
+                tableData = servoAngle.split(";")
+            except:
+                print("Erreur")
 
-        if len(tableData) == 12:
-            SERVO_TABLE = tableData
-                
+            if len(tableData) == 12:
+                SERVO_TABLE = tableData  
 
     def serialQuit(self):
         """
@@ -370,7 +374,7 @@ class MainWindow(QWidget):
         # Servos
         self._servo_edits = list()
         self._servo_labels = list()
-        SERVO_TABLE = list()
+        global SERVO_TABLE
 
         # Layouts
         self.global_layout = QVBoxLayout()
@@ -417,7 +421,10 @@ class MainWindow(QWidget):
 
         self.onlyFloat = QDoubleValidator()
 
+
         self.serialCheck = SerialChecker()
+        self.serialCheck.SerialRun()
+        
 
         self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE, self.setServoValues)
 
@@ -581,12 +588,19 @@ class MainWindow(QWidget):
         # string = byteToString(ENCODED_VAR)
         # print('Unpacked Values:', string)
 
+        
+#--------------------------------------------------------------------------------------
     def setServoValues(self):
         """
         Set the servomotor edit text.
         """
+        self.serialCheck.serialReceive()
+        #print(SERVO_TABLE)
         for (angle, servo) in zip(SERVO_TABLE, self._servo_edits):
             servo.setText(angle)
+            time.sleep(0.05)
+            #print("Servo: "+ servo.text())
+
 
     def setInfoValues(self, Speed, Energy):
         """

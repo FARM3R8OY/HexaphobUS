@@ -84,7 +84,7 @@ SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
 SEP = os.path.sep
 LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
-# --------------------------------------------
+#********************************************#
 
 
 def stringToByte(string):
@@ -93,150 +93,18 @@ def stringToByte(string):
     """
     string = string + '|'
     encoded_string = string.encode()
-    ''' Uncomment for struct encoding
-    string_size = len(string)
-    my_format = str(string_size) + "s"
-    packed_data = struct.pack(my_format, encoded_string)
-    encoded_string = binascii.hexlify(packed_data)
-    '''
     return encoded_string
 
 def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
-    ''' Uncomment for struct decoding
-    packed_data = binascii.unhexlify(encoded_string)
-    string_size = len(encoded_string)/2
-    my_format = str(int(string_size))+"s"
-    string = struct.unpack(my_format, packed_data)
-    '''
-    string = encoded_string.decode().strip()
+    string = encoded_string.decode()
+    string = string.strip()
+
     return string
 
-# --------------------------------------------
-
-
-class RepeatedTimer(object):
-    """
-    The 'RepeatedTimer' class allows the user to time some operations
-    at a specified frequency.
-    """
-    def __init__(self, interval, function, *args, **kwargs):
-        """
-        The 'RepeatedTimer' class constructor initializes the flagging
-        interval, the operation to launch, the state, and other
-        arguments.
-        """
-        self._timer = None
-        self.interval = interval
-        self.function = function
-        self.args = args
-        self.kwargs = kwargs
-        self.is_running = False
-        self.start()
-
-    def _run(self):
-        """
-        Runs the timer and its operation.
-        """
-        self.is_running = False
-        self.start()
-        self.function(*self.args, **self.kwargs)
-
-    def start(self):
-        """
-        Starts the timer.
-        """
-        if not self.is_running:
-            self._timer = Timer(self.interval, self._run)
-            self._timer.start()
-            self.is_running = True
-
-    def stop(self):
-        """
-        Stops the timer.
-        """
-        self._timer.cancel()
-        self.is_running = False
-    
-
-class SerialChecker():
-    """
-    The 'SerialChecker' class is a QThread subclass that allows the user
-     to initiate a serial communication with a specified port.
-    """
-    def __init__(self):
-        """
-        The 'SerialChecker' class constructor initializes the serial
-        port, and the timer.
-        """
-        super().__init__()
-        self.ser = None
-        #self.rtself.rt = None
-
-    @QtCore.pyqtSlot(bool)
-    def SerialRun(self):
-        """
-        Initiates the serial communication.
-        """
-        self.ser = QtSerialPort.QSerialPort(
-            '/dev/ttyACM0',
-            baudRate = QtSerialPort.QSerialPort.Baud115200,
-            readyRead = self.serialReceive)
-
-        if not self.ser.isOpen():
-            self.ser.open(QtCore.QIODevice.ReadWrite)
-                    
-
-        #self.ser = serial.Serial(PORT, BAUD_RATE)
-        #self.ser.flushInput()
-        #self.rt = RepeatedTimer(SERIAL_UPDATE_RATE, self.serialReceive)
-        
-    @QtCore.pyqtSlot()
-    def serialReceive(self):
-        """
-        Gets the information from the serial port.
-        """
-        while self.ser.canReadLine():
-            text = self.ser.readLine().data().decode()
-            text = text.rstrip('\r\n')
-            print(text)
-        """
-        try:
-            stringData = self.ser.read_until()
-        except:
-            return 
-        #print(stringData)
-        servoAngle = byteToString(stringData)
-        print(servoAngle)
-        try:
-            tableData = servoAngle.split(";")
-        except:
-            print("Erreur")
-
-        if len(tableData) == 12:
-            SERVO_TABLE = tableData
-        """
-                
-
-    def serialQuit(self):
-        """
-        Ends the serial communication.
-        """
-        self.ser.close()
-
-    @QtCore.pyqtSlot()
-    def serialSend(self, command):
-        """
-        Sends the information to the serial port.
-        """
-        self.ser.write(command.text().encode())
-        """
-        bytesData = stringToByte(command)
-        print(command)
-        self.ser.write(bytesData)
-        """
+#********************************************#
 
 class RobotTracking(QWidget):
     """
@@ -280,25 +148,26 @@ class RobotTracking(QWidget):
         Updates the target's distance and position according to
         geometry.
         """
+        global FORWARD,BACKWARD,LEFT,RIGHT
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
 
         if direction == "FORWARD" and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('FORWARD')
+            FORWARD = True
         elif direction == "BACKWARD" and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('BACKWARD')
+            BACKWARD = True
         elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('RIGHT')
+            RIGHT = True
         elif direction == "LEFT" and self._robot_x_pos > 0:
             self._robot_x_pos -= self._speed
             # Send direction to call program in Arduino
-            ENCODED_VAR = stringToByte('LEFT')
+            LEFT = True
 
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()
@@ -332,6 +201,7 @@ class RobotTracking(QWidget):
         Event that draws a line between the target's position and its
         origin.
         """
+        global NB_COMMAND
         robot = QPixmap(SCRIPT_DIR + SEP + LOGO)
         pix_robot = robot.scaledToHeight(40)
 
@@ -344,10 +214,8 @@ class RobotTracking(QWidget):
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
 
-        moving_command = byteToString(ENCODED_VAR)
-
         #Suggest to use feedback from the angles of servomotor
-        if moving_command == "FORWARD" or moving_command == "BACKWARD":
+        if FORWARD or BACKWARD:
             if NB_COMMAND % 2 == 0 and NB_COMMAND >= 0:
                 move_leg = -6
             elif NB_COMMAND % 2 == 1 and NB_COMMAND >= 0:
@@ -442,9 +310,18 @@ class MainWindow(QWidget):
 
         self.onlyFloat = QDoubleValidator()
 
-        self.serialCheck = SerialChecker()
+        self.ser = QtSerialPort.QSerialPort(
+            PORT,
+            baudRate = QtSerialPort.QSerialPort.Baud57600,
+            readyRead = self.serialReceive()
+        )
+        self.ser.open(QIODevice.ReadWrite)
+        
 
-        self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE, self.setServoValues)
+        self._timer = QTimer(self)
+        self._timer.start(100)
+        #self._timer.timeout.connect(self.checkSerialState)
+        #self._timer.timeout.connect(self.serialReceive)
 
         self.initUI()
 
@@ -489,6 +366,45 @@ class MainWindow(QWidget):
         self.setInfoValues("100", "200")
 
         self.show()
+
+        @QtCore.pyqtSlot()
+        def serialSend(self, command):
+            """
+            Sends the information to the serial port.
+            """
+            self.ser.write(command.text().encode())
+            """
+            bytesData = stringToByte(command)
+            print(command)
+            self.ser.write(bytesData)
+            """
+
+
+        @QtCore.pyqtSlot()
+        def serialReceive(self):
+            """
+            Gets the information from the serial port.
+            """
+            while self.ser.canReadLine():
+                text = self.ser.readLine().data().decode()
+                text = text.rstrip('\r\n')
+                print(text)
+            """
+            try:
+                stringData = self.ser.read_until()
+            except:
+                return 
+            #print(stringData)
+            servoAngle = byteToString(stringData)
+            print(servoAngle)
+            try:
+                tableData = servoAngle.split(";")
+            except:
+                print("Erreur")
+            if len(tableData) == 12:
+                SERVO_TABLE = tableData
+            """
+                
 
 
     def addServos(self):
@@ -700,7 +616,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + SEP + LOGO))
     window = MainWindow()
-    app.aboutToQuit.connect(window.cleanUp)
 
     # Set style
     palette = window.palette()
