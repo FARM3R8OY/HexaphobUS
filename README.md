@@ -1,6 +1,6 @@
 <div id="hexaphobus-logo" align="center">
     <br />
-    <img src="./img/hexaphobus_logo.png" alt="HexaphobUS Logo" width="200"/>
+    <img src="./img/hexaphobus_logo.png" alt="HexaphobUS Logo" width="256"/>
     <h1>HexaphobUS</h1>
     <h3>Hexapod robot | UdeS-GRO</h3>
 </div>
@@ -42,11 +42,15 @@
 
 - Clone or download the repository;
 - Connect the hexapod's microcontroller (Arduino) to your computer;
-- Open the file ```hexaphobus_pwm.ino``` in the *./Code/hexaphobus_pwm* folder, and build the code into the microcontroller with your favorite IDE.
+- Open the file ```hexaphobus_pwm.ino``` in the *./Code/hexaphobus_pwm* folder, and build the code into the microcontroller with your favorite IDE;
+- Disconnect the microcontroller and connect the on-board computer (Raspberry Pi) instead (or connect remotely);
+- Verify your Python version (3.5 and above);
+- Run the file ```hexaphobus_ui.py``` in the *./Code/hexaphobus_ui* folder;
+- Initialize the serial communication.
 
 #### <a id="SetupContrib"></a>Setup for Repository Contributors
 
-To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](https://github.com/gabrielcabana21/HexaphobUS/blob/code/Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
+To setup the Git, the Key Management System and/or the Integrated Development Environment, head over to the [code setup file](./Code/setup.md). You can also add your own method, so the file can act as a setup archive for various softwares and operating systems.
 
 To add new functions, refine the code, redesign the 3D model, and more, fork your own copy of the repository and [make a pull request after modifications](http://makeapullrequest.com).
 
@@ -55,6 +59,22 @@ To add new functions, refine the code, redesign the 3D model, and more, fork you
 All the code documentation can be found [here](https://raw.githack.com/gabrielcabana21/HexaphobUS/code/docs/html/index.html).
 
 ## <a id="Operation"></a>Robot Operation
+
+<div id="hexaphobus-ui" align="center">
+    <br />
+    <img src="./img/ui_demo.png" alt="HexaphobUS UI" width="720"/>
+</div>
+
+- &#8593: forward motion;
+- &#8595: backward motion;
+- &#8592: left turn;
+- &#8594: right turn;
+- <kbd>POS INIT</kbd>: resets the robot origin;
+- <kbd>PRG1</kbd>: pre-programmed motion sequence (currently unused);
+- <kbd>Start Serial</kbd>: initializes serial communication with the robot;
+- <kbd>STOP</kbd>: terminates the serial communication, and the user interface.
+- Servo ##: displays the servomotor angle (position of servos on the interface mimicks the robot seen from above);
+- Vitesse / Énergie: robot speed and energy consumption (currently unused).
 
 ## <a id="Resources"></a>External Resources
 
