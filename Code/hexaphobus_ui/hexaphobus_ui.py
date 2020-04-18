@@ -378,8 +378,8 @@ class RobotTracking(QWidget):
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
         moving_command = byteToString(ENCODED_VAR)
-
-        #Suggest to use feedback from the angles of servomotor
+        
+        '''
         if moving_command == STR_F or moving_command == STR_B:
             if NB_COMMAND % 2 == 0 and NB_COMMAND >= 0:
                 move_leg = -6
@@ -407,6 +407,7 @@ class RobotTracking(QWidget):
         #Leg 6
         q.drawLine(self._robot_x_pos-12, self._robot_y_pos-13,
                    self._robot_x_pos-32, self._robot_y_pos-13+move_leg)
+        '''
 
 class MainWindow(QWidget):
     """

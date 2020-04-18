@@ -104,7 +104,7 @@ int UpdateCommand()
     } 
   }
 
-  if newData {
+  if (newData) {
     if (input_string == "FORWARD") {
       return_state = 1;
     }
