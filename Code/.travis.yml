@@ -1,15 +1,94 @@
-#########################
-### TBC               ###
-#########################
+# Test matrix (multiple programming languages)
+matrix:
+  include:
+    - language: python
+      python: "3.8.2"
+      before_install:
+        - cd $TRAVIS_BUILD_DIR
+        - pwd
+        - python --version
+        - pip install -U pip
+        - pip install -U pytest
+        - pip install -U --force-reinstall pyqt5
+        - pip install pyserial
+        - pip install codecov
+      script:
+        - pytest
+      after_success:
+        - codecov
+    
+    - language: c
+      cache:
+        directories:
+          - ~/arduino_ide
+          - ~/.arduino15/packages/
+      env:
+        global:
+          # You can uncomment this to explicitly choose an (old) version of the Arduino IDE
+          - ARDUINO_IDE_VERSION=1.8.11
+          - PRETTYNAME="HexaphobUS (Arduino)"
+      before_install:
+        - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+      install:
+        # Note that every library should be installed in a separate command
+        - arduino --install-library "Adafruit SleepyDog Library"
+        - arduino --install-library "Adafruit FONA Library"
+        - arduino --install-library "Adafruit PWM Servo Driver Library"
+        - arduino --install-library "AUnit"
+      script:
+        - build_main_platforms
+      after_success:
+        - source < (curl -SLs  https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/library_check.sh)
 
-language: python
-python:
-  - 3.8
-before_install:
-  - python --version
-  - pip install -U pip
-  - pip install -U pytest
-  - pip install codecov
-script: pytest # run tests
-after_success:
-  - codecov # submit coverage
+# Operating system parameters
+os: linux
+  sudo: required
+  env: BUILDARCH=x64
+  dist: bionic
+
+# Blacklist
+branches:
+  only:
+    - code
+
+# Environment variables
+env:
+  global:
+    - GH_REPO_NAME: HexaphobUS
+    - DOXYFILE: $TRAVIS_BUILD_DIR/gabrielcabana21/HexaphobUS/docs
+    - GH_REPO_REF: github.com/gabrielcabana21/HexaphobUS.git
+
+# Install dependencies
+addons:
+  apt:
+    packages:
+      - doxygen
+      - doxygen-doc
+      - doxygen-latex
+      - doxygen-gui
+      - graphviz
+      - x11-utils
+      - libxkbcommon-x11-0
+
+# Git parameters
+git:
+  depth: false # Clones all commits
+  quiet: true  # Silence git clone log output
+
+# Custom scripts
+script:
+  - doxygen $DOXYFILE/Doxyfile
+
+# Deployment of auto-generated documentation
+deploy:
+  provider: pages
+  local_dir: $TRAVIS_BUILD_DIR/gabrielcabana21/HexaphobUS/docs/html
+  github_token: $GH_REPO_TOKEN
+  on:
+    branch: code
+
+# Notifications (sends email only when build status changes)
+notifications:
+  email:
+    on_success: change
+    on_failure: change

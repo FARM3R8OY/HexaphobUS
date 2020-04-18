@@ -9,5 +9,5 @@
         "--disable=unused-argument",
         "--max-line-length=79"
     ],
-    "git.autofetch": true
+    "git.autofetch": false
 }

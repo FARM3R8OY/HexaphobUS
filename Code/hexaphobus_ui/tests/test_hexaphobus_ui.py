@@ -1,25 +1,27 @@
-"""
-File: test_hexaphobus_ui.py
+##@file test_hexaphobus_ui.py
+#
+##@authors
+#     - Cabana,       Gabriel  | cabg2101
+#     - Lalonde,      Philippe | lalp2803
+#
+##@date
+#     - 2020-02-05 (Creation)
+#     - 2020-04-18 (Last modification)
+#
+# Tests for user interface.
+#
+# <b>S4-H20 | GRO400</b>
 
-Contributor(s):
-    Cabana,  Gabriel  | cabg2101
+#********************************************#
 
-Date(s):
-    2020-02-05 (Creation)
 
-Description:
-    Tests for user interface.
-
-S4-H20 | GRO400
-"""
-
-# --------------------------------------------
-
-import unittest
+import os
 import sys
-from hexaphobus_ui import hexaphobus_ui
+import unittest
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import hexaphobus_ui
 
-# --------------------------------------------
+#********************************************#
 
 
 class TestHexaphobusUI(unittest.TestCase):
@@ -28,38 +30,26 @@ class TestHexaphobusUI(unittest.TestCase):
     user to automate the protocol verification of the user interface
     module, 'hexaphobus_ui.py'.
     """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self._app = QApplication(sys.argv)
+        # self._window = hexaphobus_ui.MainWindow()
+        self._encoded_data = None
 
-    def test_is_vowel(self):
-        for l in ['a', 'e', 'i', 'o', 'u', 'y']:
-            self.assertTrue(wordstats.is_vowel(l),
-                            "Is not a vowel :" + l)
-            self.assertTrue(wordstats.is_vowel(l.upper()),
-                            "Is not a vowel :" + l.upper())
+    def test_encodingType(self):
+        string = "ABCDE"
+        self._encoded_data = hexaphobus_ui.stringToByte(string)
+        self.assertTrue(isinstance(self._encoded_data, bytes))
 
-        self.assertFalse(wordstats.is_vowel('F'),
-                         "Is a vowel : F")
+    def test_decodingType(self):
+        self._encoded_data = b'5550'
+        string = hexaphobus_ui.byteToString(self._encoded_data)
+        self.assertTrue(isinstance(string, str))
 
-    def test_start_w_vowel(self):
-        self.assertTrue(wordstats.starts_w_vowel("Aim"),
-                        "Does not start with a vowel: 'Aim'")
-        self.assertFalse(wordstats.starts_w_vowel("False"),
-                         "Starts with a vowel: 'False'")
-    
-    def test_ends_w_cons(self):
-        self.assertTrue(wordstats.ends_w_cons("Class"),
-                        "Doesn't end with a consonna: 'Class'")
-        self.assertFalse(wordstats.ends_w_cons("True"),
-                        "Ends with a consonna: 'True'")
-
-    def test_vowel_filter(self):
-        words = sentence.split()
-        words_vowels = wordstats.words_start_w_vowel(words)
-        self.assertEqual(words_vowels, ['yellow', 'in'])
-
-    def test_cons_filter(self):
-        words = sentence.split()
-        words_cons = wordstats.words_end_w_cons(words)
-        self.assertEqual(words_cons, ['yellow', 'in', 'backyard'])
+    def test_decodingSize(self):
+        self._encoded_data = b'5550'
+        string = hexaphobus_ui.byteToString(self._encoded_data)
+        self.assertEqual(len(string), 4)
 
 if __name__ == '__main__':
     unittest.main()
