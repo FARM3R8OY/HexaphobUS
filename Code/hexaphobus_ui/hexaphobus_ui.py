@@ -1,34 +1,67 @@
-"""
-File: hexaphobus_ui.py
+##@file hexaphobus_ui.py
+#
+##@authors
+#     - Cabana,       Gabriel  | cabg2101
+#     - Guay-Tanguay, Carolane | guac3201
+#     - Lalonde,      Philippe | lalp2803
+#     - Roy,          Olivier  | royo2206
+#
+##@date
+#     - 2020-01-29 (Creation)
+#     - 2020-04-18 (Last modification)
+#
+# User interface designed for intuitive control and monitoring of the
+# HexaphobUS robot.
+#
+# <b>S4-H20 | GRO400</b>
 
-Contributor(s):
-    Cabana,  Gabriel  | cabg2101
-    Lalonde, Philippe | lalp2803
+##@mainpage HexaphobUS
+#
+##@section redirect Links
+#          - Python page: @ref page_py "UI on Python"
+#          - Arduino page: @ref page_ino "PWM on Arduino"
+#
+#          For code documentation, have a look at the files <a
+#          href="https://raw.githack.com/gabrielcabana21/HexaphobUS/code/docs/html/files.html">here</a>.
 
-Date(s):
-    2020-01-29 (Creation)
-    2020-04-01 (Last modification)
+##@page page_py UI on Python
+#
+##@section intro_sec Introduction
+#          Python code designed for intuitive control and monitoring of the
+#          HexaphobUS robot.
+#
+#          The user interface works on a on-board computer
+#          (<a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b/">
+#          Raspberry Pi 3B</a>) to communicate, with a standard modulation rate
+#          of 9600.
+#
+##@section dependencies Dependencies
+#          This package depends on <a href="https://pypi.org/project/PyQt5/>
+#          PyQt5</a>, <a href="https://pypi.org/project/pyserial/">pyserial</a>,
+#          and other standard modules being present on your system.
+#          Please make sure you have installed the latest versions before using
+#          this interface.
+#
+##@section license License
+#          This falls under the GitHub repository license (GPLv3). See more
+#          <a href="https://github.com/gabrielcabana21/HexaphobUS/blob/master/LICENSE">
+#          here</a>.
 
-Description:
-    User interface designed for intuitive control and monitoring of the
-    HexaphobUS robot.
+#********************************************#
 
-S4-H20 | GRO400
-"""
-
-# --------------------------------------------
-
+# Computing
 import math
+
+# System
 import os
 import sys
+
+# Timing and communication
+import serial
+from threading import Timer
 import time
 
-# import struct
-# import binascii
-
-from threading import Timer
-import serial
-
+# User interface
 from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
@@ -36,52 +69,93 @@ from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget,
                              QShortcut, QFrame, QSizePolicy)
 
-# --------------------------------------------
+#********************************************#
 
+
+## Servomotor number (to define positioning and sequencing)
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
-
-SERIAL_UPDATE_RATE = 0.1
-
-ARROW_W = 60
-ARROW_H = 30
-BUTTON_W = 120
-BUTTON_H = 60
-INFO_W = 190
-INFO_H = 30
-SV_NBR = 12
-SV_W = 100
-SV_H = 30
-TRACK_W = 250
-TRACK_H = 50
-UI_X = 80
-UI_Y = 80
-UI_W = 800
-UI_H = 600
-UI_MIN_W = 480
-UI_MIN_H = 360
-
-NB_COMMAND = 0
-ENCODED_VAR = b'55'
-EDIT_PLACE = 0
+## Servomotor widgets (to display angular position)
 SERVO_TABLE = list()
 
-PORT = "/dev/ttyACM0"
-BAUD_RATE = 9600
+## Number of servomotors
+SV_NBR = len(Servos_Num)
+## Servomotor window width
+SV_W = 100
+## Servomotor window height
+SV_H = 30
+## Arrow button width
+ARROW_W = 60
+## Arrow button height
+ARROW_H = 30
+## Button width
+BUTTON_W = 120
+## Button height
+BUTTON_H = 60
+## Information window width
+INFO_W = 190
+## Information window height
+INFO_H = 30
+## Position tracking window width
+TRACK_W = 250
+## Position tracking window height
+TRACK_H = 50
+## User interface position (x)
+UI_X = 80
+## User interface position (y)
+UI_Y = 80
+## User interface width
+UI_W = 800
+## User interface height
+UI_H = 600
+## User interface width (minimum)
+UI_MIN_W = 480
+## User interface height (minimum)
+UI_MIN_H = 360
 
+## Flag (command number to define next position to reach)
+NB_COMMAND = 0
+## Movement command (in bytes)
+ENCODED_VAR = b'55'
+## Communication port directory
+PORT = "/dev/ttyACM0"
+## Modulation rate
+BAUD_RATE = 9600
+## Serial communication update rate
+SERIAL_UPDATE_RATE = 0.1
+
+## User interface window name
 WINDOW_NAME = "HexaphobUS UI"
+## Up arrow unicode string
 BUTTON_UP = "\u2191"
+## Down arrow unicode string
 BUTTON_DOWN = "\u2193"
+## Left arrow unicode string
 BUTTON_LEFT = "\u2190"
+## Right arrow unicode string
 BUTTON_RIGHT = "\u2192"
+## Movement string (forward)
+STR_F = "FORWARD"
+## Movement string (backward)
+STR_B = "BACKWARD"
+## Movement string (left)
+STR_L = "LEFT"
+## Movement string (right)
+STR_R = "RIGHT"
+## Serial communication string
 BUTTON_SERIAL = "Start Serial"
+## Initialization button string
 BUTTON_INIT = "POS INIT"
+## Program button string
 BUTTON_PRG1 = "PRG1"
+## Second level parent folder
 SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                           "..", ".."))
+## Separator (OS dependent)
 SEP = os.path.sep
+## User interface logo directory
 LOGO = 'img' + SEP + 'hexaphobus_logo.png'
 
-# --------------------------------------------
+#********************************************#
 
 
 def stringToByte(string):
@@ -90,24 +164,12 @@ def stringToByte(string):
     """
     string = string + '|'
     encoded_string = string.encode()
-    ''' Uncomment for struct encoding
-    string_size = len(string)
-    my_format = str(string_size) + "s"
-    packed_data = struct.pack(my_format, encoded_string)
-    encoded_string = binascii.hexlify(packed_data)
-    '''
     return encoded_string
 
 def byteToString(encoded_string):
     """
     Decodes byte values and returns a string.
     """
-    ''' Uncomment for struct decoding
-    packed_data = binascii.unhexlify(encoded_string)
-    string_size = len(encoded_string)/2
-    my_format = str(int(string_size))+"s"
-    string = struct.unpack(my_format, packed_data)
-    '''
     string = encoded_string.decode().strip()
     return string
 
@@ -177,30 +239,27 @@ class SerialChecker(QThread):
         """
         self.ser = serial.Serial(PORT, BAUD_RATE)
         self.ser.reset_input_buffer()
-        
-        
-        #self.rt = RepeatedTimer(SERIAL_UPDATE_RATE, self.serialReceive)
-#=----------------------------------------------------------------------------------------
+
     def serialReceive(self):
         """
         Gets the information from the serial port.
         """
+        global SERVO_TABLE
+
         if self.ser.in_waiting > 0:
-            global SERVO_TABLE
             try:
                 stringData = self.ser.read_until()
             except:
-                return 
-            #print(stringData)
+                return
+
             servoAngle = byteToString(stringData)
-            
             
             try:
                 tableData = servoAngle.split(";")
             except:
                 print("Erreur")
 
-            if len(tableData) == 12:
+            if len(tableData) == SV_NBR:
                 SERVO_TABLE = tableData  
 
     def serialQuit(self):
@@ -262,21 +321,17 @@ class RobotTracking(QWidget):
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
 
-        if direction == "FORWARD" and self._robot_y_pos > 0:
+        if direction == STR_F and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
-            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('FORWARD')
-        elif direction == "BACKWARD" and self._robot_y_pos < UI_Graph_H:
+        elif direction == STR_B and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
-            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('BACKWARD')
-        elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
+        elif direction == STR_R and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
-            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('RIGHT')
-        elif direction == "LEFT" and self._robot_x_pos > 0:
+        elif direction == STR_L and self._robot_x_pos > 0:
             self._robot_x_pos -= self._speed
-            # Send direction to call program in Arduino
             ENCODED_VAR = stringToByte('LEFT')
 
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
@@ -287,14 +342,15 @@ class RobotTracking(QWidget):
         Event that updates the target's distance and position label
         relative to the origin according to the target's movements.
         """
-        _distance_origin = round(
+        self._distance_origin = round(
             ((robotY - self._target_y_pos)**2
              + (robotX - self._target_x_pos)**2)**0.5
         )
 
-        self.label.setText("Coordinates (x; y): ({}; {})\
-                           \nDistance from origin: {}"
-                           .format(robotX, robotY, _distance_origin))
+        self.label.setText(
+            "Coordinates (x; y): ({}; {})\nDistance from origin: {}"
+            .format(robotX, robotY, self._distance_origin)
+        )
 
         self.update()
 
@@ -319,14 +375,12 @@ class RobotTracking(QWidget):
         q.setPen(QColor(0, 0, 0))
         q.drawPixmap(QPoint(self._robot_x_pos-20, self._robot_y_pos-20),
                      pix_robot)
-        #From center to robot
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
-
         moving_command = byteToString(ENCODED_VAR)
 
         #Suggest to use feedback from the angles of servomotor
-        if moving_command == "FORWARD" or moving_command == "BACKWARD":
+        if moving_command == STR_F or moving_command == STR_B:
             if NB_COMMAND % 2 == 0 and NB_COMMAND >= 0:
                 move_leg = -6
             elif NB_COMMAND % 2 == 1 and NB_COMMAND >= 0:
@@ -354,14 +408,12 @@ class RobotTracking(QWidget):
         q.drawLine(self._robot_x_pos-12, self._robot_y_pos-13,
                    self._robot_x_pos-32, self._robot_y_pos-13+move_leg)
 
-
 class MainWindow(QWidget):
     """
     The 'MainWindow' class is a QWidget subclass that allows the user
     to monitor various robot items, control the robot and track its
     position with another QWidget subclass ('RobotTracking' class).
     """
-
     def __init__(self):
         """
         The 'MainWindow' class constructor initializes the GUI interface
@@ -418,14 +470,10 @@ class MainWindow(QWidget):
         self.GraphFrame = QFrame()
         self.GraphFrame.setFrameShape(QFrame.Box)
         self.GraphFrame.setStyleSheet("background: rgb(180,180,180)")
-
         self.onlyFloat = QDoubleValidator()
-
 
         self.serialCheck = SerialChecker()
         self.serialCheck.SerialRun()
-        
-
         self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE, self.setServoValues)
 
         self.initUI()
@@ -458,9 +506,9 @@ class MainWindow(QWidget):
         self.setWindowTitle(WINDOW_NAME)
 
         self.tracking = RobotTracking()
-        self.tracking.setSizePolicy(QSizePolicy.Expanding,
-                                    QSizePolicy.Expanding)
-
+        self.tracking.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Expanding
+        )
         self.addServos()
         self.setSizeButtons()
         self.setConnections()
@@ -472,12 +520,10 @@ class MainWindow(QWidget):
 
         self.show()
 
-
     def addServos(self):
         """
         Add servomotor edits and labels used to monitor their state.
         """
-
         for index in range(SV_NBR):
             self._servo_edits.append(QLineEdit())
             self._servo_edits[index].setFixedSize(SV_W, SV_H)
@@ -510,64 +556,70 @@ class MainWindow(QWidget):
         """
         self.button_serial_start.clicked.connect(self.serialCheck.SerialRun)
         self.button_serial_start.clicked.connect(self.removeButton)
-        self.button_prog.clicked.connect(self.runProgram)
+        self.button_prog.clicked.connect(self.printVariable)
         self.button_init.clicked.connect(self.tracking.initPosition)
         self.button_up.clicked.connect(
-            lambda: self.tracking.changePosition("FORWARD")
+            lambda: self.tracking.changePosition(STR_F)
         )
         self.shortcut_up.activated.connect(
-            lambda: self.tracking.changePosition("FORWARD")
+            lambda: self.tracking.changePosition(STR_F)
         )
         self.button_up.clicked.connect(
-            lambda: self.serialCheck.serialSend("FORWARD")
+            lambda: self.serialCheck.serialSend(STR_F)
         )
         self.shortcut_up.activated.connect(
-            lambda: self.serialCheck.serialSend("FORWARD")
+            lambda: self.serialCheck.serialSend(STR_F)
         )
         self.button_down.clicked.connect(
-            lambda: self.tracking.changePosition("BACKWARD")
+            lambda: self.tracking.changePosition(STR_B)
         )
         self.shortcut_down.activated.connect(
-            lambda: self.tracking.changePosition("BACKWARD")
+            lambda: self.tracking.changePosition(STR_B)
         )
         self.button_down.clicked.connect(
-            lambda: self.serialCheck.serialSend("BACKWARD")
+            lambda: self.serialCheck.serialSend(STR_B)
         )
         self.shortcut_down.activated.connect(
-            lambda: self.serialCheck.serialSend("BACKWARD")
-        )
-        self.button_right.clicked.connect(
-            lambda: self.tracking.changePosition("RIGHT")
-        )
-        self.shortcut_right.activated.connect(
-            lambda: self.tracking.changePosition("RIGHT")
-        )
-        self.button_right.clicked.connect(
-            lambda: self.serialCheck.serialSend("RIGHT")
-        )
-        self.shortcut_right.activated.connect(
-            lambda: self.serialCheck.serialSend("RIGHT")
+            lambda: self.serialCheck.serialSend(STR_B)
         )
         self.button_left.clicked.connect(
-            lambda: self.tracking.changePosition("LEFT")
+            lambda: self.tracking.changePosition(STR_L)
         )
         self.shortcut_left.activated.connect(
-            lambda: self.tracking.changePosition("LEFT")
+            lambda: self.tracking.changePosition(STR_L)
         )
         self.button_left.clicked.connect(
-            lambda: self.serialCheck.serialSend("LEFT")
+            lambda: self.serialCheck.serialSend(STR_L)
         )
         self.shortcut_left.activated.connect(
-            lambda: self.serialCheck.serialSend("LEFT")
+            lambda: self.serialCheck.serialSend(STR_L)
+        )
+        self.button_right.clicked.connect(
+            lambda: self.tracking.changePosition(STR_R)
+        )
+        self.shortcut_right.activated.connect(
+            lambda: self.tracking.changePosition(STR_R)
+        )
+        self.button_right.clicked.connect(
+            lambda: self.serialCheck.serialSend(STR_R)
+        )
+        self.shortcut_right.activated.connect(
+            lambda: self.serialCheck.serialSend(STR_R)
         )
 
     def cleanUp(self):
-        print("quitting")
+        """
+        Ends the serial communication.
+        """
+        print("Exiting program...")
         self.serialCheck.serialQuit()
         self.repeater.stop()
-        print("end")
+        print("END")
 
     def removeButton(self):
+        """
+        Disables the serial communication button after initialization.
+        """
         self.button_serial_start.setEnabled(False)
 
     def setInfo(self):
@@ -583,24 +635,20 @@ class MainWindow(QWidget):
         self.speed_label.setText("Vitesse :")
         self.energy_label.setText("Énergie :")
 
-    def runProgram(self):
+    def printVariable(self):
+        """
+        Displays variable in the corresponding widget.
+        """
         print(ENCODED_VAR)
-        # string = byteToString(ENCODED_VAR)
-        # print('Unpacked Values:', string)
 
-        
-#--------------------------------------------------------------------------------------
     def setServoValues(self):
         """
         Set the servomotor edit text.
         """
         self.serialCheck.serialReceive()
-        #print(SERVO_TABLE)
         for (angle, servo) in zip(SERVO_TABLE, self._servo_edits):
             servo.setText(angle)
             time.sleep(0.05)
-            #print("Servo: "+ servo.text())
-
 
     def setInfoValues(self, Speed, Energy):
         """
@@ -685,13 +733,15 @@ class MainWindow(QWidget):
 
 
 if __name__ == '__main__':
-    # Create a Qt application and window to display.
+    ## Create a Qt application and window to display.
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + SEP + LOGO))
+
+    ## Create the widget window.
     window = MainWindow()
     app.aboutToQuit.connect(window.cleanUp)
 
-    # Set style
+    ## Style setup
     palette = window.palette()
     palette.setColor(QPalette.Window, QColor(53, 53, 53))
     palette.setColor(QPalette.WindowText, Qt.white)

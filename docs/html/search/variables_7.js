@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['nb_5fcommand_193',['NB_COMMAND',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a0ec0058febf4d3599b5dd4757b7de1f4',1,'hexaphobus_UI']]],
-  ['newdata_194',['newData',['../db/d30/hexaphobus__pwm_2hexaphobus__pwm_8h.html#a5d547ae6451858d6fe3118108823fbdc',1,'hexaphobus_pwm.h']]]
+  ['left_211',['LEFT',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#af1cbf341d5e7c8785ca08acb83225b8a',1,'hexaphobus_UI']]],
+  ['logo_212',['LOGO',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#acc9b8a412f97f59ac51283476bc3613d',1,'hexaphobus_ui.hexaphobus_ui.LOGO()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#afe9bbbf060d5e2874df4103b9b08379e',1,'hexaphobus_UI.LOGO()']]]
 ];

@@ -1,15 +1,16 @@
 var searchData=
 [
-  ['back_7',['BACK',['../db/d30/hexaphobus__pwm_2hexaphobus__pwm_8h.html#ab303ee384877c80cb8855bf0113faf88',1,'BACK():&#160;hexaphobus_pwm.h'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a8b8a7df898a40bdbcacd279e520d23ab',1,'hexaphobus_UI.BACK()']]],
-  ['backward_8',['BACKWARD',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a93b9f35bc33ea59fddbfa2d216edaf3a',1,'hexaphobus_UI']]],
-  ['button_5fdown_9',['BUTTON_DOWN',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a68173ca3c9792e97e0b56d3cb3337c63',1,'hexaphobus_UI']]],
-  ['button_5fh_10',['BUTTON_H',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a1e4ff4f2b9291aa97b12eb5d73c493eb',1,'hexaphobus_UI']]],
-  ['button_5finit_11',['BUTTON_INIT',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ace4c4513ce0d95432b7cedc8a93c3c0f',1,'hexaphobus_UI']]],
-  ['button_5fleft_12',['BUTTON_LEFT',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ad5723651e36362e78fdcb862b6cd7bac',1,'hexaphobus_UI']]],
-  ['button_5fprg1_13',['BUTTON_PRG1',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ad4f2e881d02dc1d4c0ed41f466911f61',1,'hexaphobus_UI']]],
-  ['button_5fright_14',['BUTTON_RIGHT',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#af24a635dc00d8951ddebc13839d71293',1,'hexaphobus_UI']]],
-  ['button_5fserial_15',['BUTTON_SERIAL',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ab3b93985d1b2787e8266bcee05467003',1,'hexaphobus_UI']]],
-  ['button_5fup_16',['BUTTON_UP',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#aa500421d4710a650fc16cd54ad31a0d3',1,'hexaphobus_UI']]],
-  ['button_5fw_17',['BUTTON_W',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a31f572acc18fe03bd1475cb51c971aa4',1,'hexaphobus_UI']]],
-  ['bytetostring_18',['byteToString',['../d7/d9a/namespacehexaphobus__ui_1_1hexaphobus__ui.html#a4455f746e897f36a8faff0a8ec2b352e',1,'hexaphobus_ui.hexaphobus_ui.byteToString()'],['../d3/daf/namespacehexaphobus__ui_1_1hexaphobus__ui__modified.html#a8859ae741dfb63939e98dec4fb451007',1,'hexaphobus_ui.hexaphobus_ui_modified.byteToString()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a8d2953b9493f87d35a33e81e319dea25',1,'hexaphobus_UI.byteToString()']]]
+  ['back_8',['BACK',['../db/d30/hexaphobus__pwm_2hexaphobus__pwm_8h.html#ab303ee384877c80cb8855bf0113faf88',1,'BACK():&#160;hexaphobus_pwm.h'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a8b8a7df898a40bdbcacd279e520d23ab',1,'hexaphobus_UI.BACK()']]],
+  ['backward_9',['BACKWARD',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a93b9f35bc33ea59fddbfa2d216edaf3a',1,'hexaphobus_UI']]],
+  ['baud_5frate_10',['BAUD_RATE',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#ad6b268ce9e4af07d6ad90167e584dda0',1,'hexaphobus_ui::hexaphobus_ui']]],
+  ['button_5fdown_11',['BUTTON_DOWN',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#ac04724eb1b17525345e58557bf56fa1a',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_DOWN()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a68173ca3c9792e97e0b56d3cb3337c63',1,'hexaphobus_UI.BUTTON_DOWN()']]],
+  ['button_5fh_12',['BUTTON_H',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#aa139ef3fa0c4660441530ce430ebd875',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_H()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a1e4ff4f2b9291aa97b12eb5d73c493eb',1,'hexaphobus_UI.BUTTON_H()']]],
+  ['button_5finit_13',['BUTTON_INIT',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#a718b6d17ee9c32d8d3b2b915c40269ed',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_INIT()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ace4c4513ce0d95432b7cedc8a93c3c0f',1,'hexaphobus_UI.BUTTON_INIT()']]],
+  ['button_5fleft_14',['BUTTON_LEFT',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#a9d73c66b1af9a3f05011937aecd7a08d',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_LEFT()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ad5723651e36362e78fdcb862b6cd7bac',1,'hexaphobus_UI.BUTTON_LEFT()']]],
+  ['button_5fprg1_15',['BUTTON_PRG1',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#a6048316930e066f42c44327e61f1cb6c',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_PRG1()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ad4f2e881d02dc1d4c0ed41f466911f61',1,'hexaphobus_UI.BUTTON_PRG1()']]],
+  ['button_5fright_16',['BUTTON_RIGHT',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#a9f4264fdc8e5f36235ec2f36a0c57cf0',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_RIGHT()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#af24a635dc00d8951ddebc13839d71293',1,'hexaphobus_UI.BUTTON_RIGHT()']]],
+  ['button_5fserial_17',['BUTTON_SERIAL',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#a61e9e193ee8f7dd3bf33c8585997b343',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_SERIAL()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#ab3b93985d1b2787e8266bcee05467003',1,'hexaphobus_UI.BUTTON_SERIAL()']]],
+  ['button_5fup_18',['BUTTON_UP',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#aa3c5bba20a2911608980335d706e96d1',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_UP()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#aa500421d4710a650fc16cd54ad31a0d3',1,'hexaphobus_UI.BUTTON_UP()']]],
+  ['button_5fw_19',['BUTTON_W',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#a76cdaafd9060ccafce89a01c587a8abb',1,'hexaphobus_ui.hexaphobus_ui.BUTTON_W()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a31f572acc18fe03bd1475cb51c971aa4',1,'hexaphobus_UI.BUTTON_W()']]],
+  ['bytetostring_20',['byteToString',['../da/d1d/hexaphobus__ui_2hexaphobus__ui_8py.html#a4455f746e897f36a8faff0a8ec2b352e',1,'hexaphobus_ui.hexaphobus_ui.byteToString()'],['../de/d99/_new_u_i_2hexaphobus__ui_8py.html#a8d2953b9493f87d35a33e81e319dea25',1,'hexaphobus_UI.byteToString()']]]
 ];

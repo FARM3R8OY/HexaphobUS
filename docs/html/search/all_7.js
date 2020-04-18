@@ -1,9 +1,5 @@
 var searchData=
 [
-  ['hexaphobus_5fpwm_2eh_29',['hexaphobus_pwm.h',['../db/d30/hexaphobus__pwm_2hexaphobus__pwm_8h.html',1,'(Global Namespace)'],['../d4/d78/_new_u_i_2hexaphobus__pwm_2hexaphobus__pwm_8h.html',1,'(Global Namespace)']]],
-  ['hexaphobus_5fpwm_2eino_30',['hexaphobus_pwm.ino',['../df/d4f/hexaphobus__pwm_2hexaphobus__pwm_8ino.html',1,'(Global Namespace)'],['../d0/d2a/_new_u_i_2hexaphobus__pwm_2hexaphobus__pwm_8ino.html',1,'(Global Namespace)']]],
-  ['hexaphobus_5fui_31',['hexaphobus_ui',['../d7/d9a/namespacehexaphobus__ui_1_1hexaphobus__ui.html',1,'hexaphobus_ui']]],
-  ['hexaphobus_5fui_2epy_32',['hexaphobus_UI.py',['../de/d99/_new_u_i_2hexaphobus__ui_8py.html',1,'']]],
-  ['hexaphobus_5fui_5fmodified_33',['hexaphobus_ui_modified',['../d3/daf/namespacehexaphobus__ui_1_1hexaphobus__ui__modified.html',1,'hexaphobus_ui']]],
-  ['test_5fhexaphobus_5fui_34',['test_hexaphobus_ui',['../d5/d21/namespacehexaphobus__ui_1_1tests_1_1test__hexaphobus__ui.html',1,'hexaphobus_ui::tests']]]
+  ['getservoedits_32',['getServoEdits',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a496742550cfd65739dab309bb1c18b4b',1,'hexaphobus_ui.hexaphobus_ui.MainWindow.getServoEdits()'],['../dc/de8/classhexaphobus___u_i_1_1_main_window.html#a84ce3c9f2bb3c967c75ea35ac05e8b50',1,'hexaphobus_UI.MainWindow.getServoEdits()']]],
+  ['getservolabels_33',['getServoLabels',['../d9/d57/classhexaphobus__ui_1_1hexaphobus__ui_1_1_main_window.html#a215d53c8e9d0f38bd9dc814039e2aea9',1,'hexaphobus_ui.hexaphobus_ui.MainWindow.getServoLabels()'],['../dc/de8/classhexaphobus___u_i_1_1_main_window.html#a9703f0b2ee3082d2ec07ba155a887356',1,'hexaphobus_UI.MainWindow.getServoLabels()']]]
 ];
