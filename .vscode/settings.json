@@ -1,5 +1,4 @@
 {
-    "python.pythonPath": "C:\\Program Files\\Python38\\python.exe",
     "editor.rulers": [72, 79],
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
