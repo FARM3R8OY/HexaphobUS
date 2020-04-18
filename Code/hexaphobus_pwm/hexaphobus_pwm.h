@@ -10,7 +10,7 @@
  * 
  * @date
  *       - 2020-02-25 (Creation)
- *       - 2020-03-27 (Last modification)
+ *       - 2020-04-18 (Last modification)
  * 
  * Motion control, communication, and sequencing (header).
  * 

@@ -82,7 +82,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4fc01d736fe50cf5b977f755b675f11d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d44/hexaphobus__pwm_8ino.html#a4fc01d736fe50cf5b977f755b675f11d">setup</a> ()</td></tr>
-<tr class="memdesc:a4fc01d736fe50cf5b977f755b675f11d"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the robot.  <a href="../../df/d44/hexaphobus__pwm_8ino.html#a4fc01d736fe50cf5b977f755b675f11d">More...</a><br /></td></tr>
+<tr class="memdesc:a4fc01d736fe50cf5b977f755b675f11d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the Arduino Mega 2560 R3.  <a href="../../df/d44/hexaphobus__pwm_8ino.html#a4fc01d736fe50cf5b977f755b675f11d">More...</a><br /></td></tr>
 <tr class="separator:a4fc01d736fe50cf5b977f755b675f11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe461d27b9c48d5921c00d521181f12f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d44/hexaphobus__pwm_8ino.html#afe461d27b9c48d5921c00d521181f12f">loop</a> ()</td></tr>
 <tr class="memdesc:afe461d27b9c48d5921c00d521181f12f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs the Arduino Mega 2560 R3.  <a href="../../df/d44/hexaphobus__pwm_8ino.html#afe461d27b9c48d5921c00d521181f12f">More...</a><br /></td></tr>
@@ -90,12 +90,12 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a3d7b96fd7ed48f21e600920846b435f2"><td class="memItemLeft" align="right" valign="top"><a id="a3d7b96fd7ed48f21e600920846b435f2"></a>
-uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d44/hexaphobus__pwm_8ino.html#a3d7b96fd7ed48f21e600920846b435f2">servonum</a> = 0</td></tr>
-<tr class="memdesc:a3d7b96fd7ed48f21e600920846b435f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Servomotor counter. <br /></td></tr>
+<tr class="memitem:a3d7b96fd7ed48f21e600920846b435f2"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d44/hexaphobus__pwm_8ino.html#a3d7b96fd7ed48f21e600920846b435f2">servonum</a> = 0</td></tr>
+<tr class="memdesc:a3d7b96fd7ed48f21e600920846b435f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">&lt; Header of custom functions.  <a href="../../df/d44/hexaphobus__pwm_8ino.html#a3d7b96fd7ed48f21e600920846b435f2">More...</a><br /></td></tr>
 <tr class="separator:a3d7b96fd7ed48f21e600920846b435f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18de412e641d6e3d45d7a829923a29c3"><td class="memItemLeft" align="right" valign="top"><a id="a18de412e641d6e3d45d7a829923a29c3"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>State</b> = 0</td></tr>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d44/hexaphobus__pwm_8ino.html#a18de412e641d6e3d45d7a829923a29c3">State</a> = 0</td></tr>
+<tr class="memdesc:a18de412e641d6e3d45d7a829923a29c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">State of the robot. <br /></td></tr>
 <tr class="separator:a18de412e641d6e3d45d7a829923a29c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -108,7 +108,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>State</b> = 0</td></tr
 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd><ul>
 <li>2020-01-29 (Creation)</li>
-<li>2020-03-27 (Last modification)</li>
+<li>2020-04-18 (Last modification)</li>
 </ul>
 </dd></dl>
 <p>Motion control, communication, and sequencing (main).</p>
@@ -150,11 +150,29 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>State</b> = 0</td></tr
       </table>
 </div><div class="memdoc">
 
-<p>State of the robot. </p>
-<p>Sets up the Arduino Mega 2560 R3. </p><pre class="fragment">   This function sets the serial data transmission, the I2C
+<p>Sets up the Arduino Mega 2560 R3. </p>
+<pre class="fragment">   This function sets the serial data transmission, the I2C
    communication with the PWM servo driver, and the update
    frequency.
 </pre> 
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a3d7b96fd7ed48f21e600920846b435f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d7b96fd7ed48f21e600920846b435f2">&#9670;&nbsp;</a></span>servonum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t servonum = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>&lt; Header of custom functions. </p>
+<p>Servomotor counter. </p>
+
 </div>
 </div>
 </div><!-- contents -->

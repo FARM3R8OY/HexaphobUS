@@ -140,11 +140,11 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab063de7219a8e41b3e6ae8289f269587"><td class="memItemLeft" align="right" valign="top"><a id="ab063de7219a8e41b3e6ae8289f269587"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>writeCommand</b> (String string_to_write)</td></tr>
-<tr class="separator:ab063de7219a8e41b3e6ae8289f269587"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a5de38cba2da6e86991eb1a2a7f66a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#a3a5de38cba2da6e86991eb1a2a7f66a9">writeCommand</a> (String string_to_write)</td></tr>
+<tr class="memdesc:a3a5de38cba2da6e86991eb1a2a7f66a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes command to the communication port.  <a href="../../da/d39/hexaphobus__pwm_8h.html#a3a5de38cba2da6e86991eb1a2a7f66a9">More...</a><br /></td></tr>
+<tr class="separator:a3a5de38cba2da6e86991eb1a2a7f66a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf4a3ef2e90be64cf833796362c72df8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#acf4a3ef2e90be64cf833796362c72df8">UpdateCommand</a> ()</td></tr>
-<tr class="memdesc:acf4a3ef2e90be64cf833796362c72df8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Every time a command arrive in the serial buffer this function is called.  <a href="../../da/d39/hexaphobus__pwm_8h.html#acf4a3ef2e90be64cf833796362c72df8">More...</a><br /></td></tr>
+<tr class="memdesc:acf4a3ef2e90be64cf833796362c72df8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates command to be written to the communication port.  <a href="../../da/d39/hexaphobus__pwm_8h.html#acf4a3ef2e90be64cf833796362c72df8">More...</a><br /></td></tr>
 <tr class="separator:acf4a3ef2e90be64cf833796362c72df8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e1d75211d395a619d831f48924887ae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#a3e1d75211d395a619d831f48924887ae">AngleToHMI</a> ()</td></tr>
 <tr class="memdesc:a3e1d75211d395a619d831f48924887ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends servomotor angles to the HMI.  <a href="../../da/d39/hexaphobus__pwm_8h.html#a3e1d75211d395a619d831f48924887ae">More...</a><br /></td></tr>
@@ -173,28 +173,21 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>writeCommand</b> (Stri
 <tr class="memitem:a9139c39904fc5b707f5f0348136d1979"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#a9139c39904fc5b707f5f0348136d1979">MovingLeft</a> ()</td></tr>
 <tr class="memdesc:a9139c39904fc5b707f5f0348136d1979"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rotates the robot to the left (anticlockwise).  <a href="../../da/d39/hexaphobus__pwm_8h.html#a9139c39904fc5b707f5f0348136d1979">More...</a><br /></td></tr>
 <tr class="separator:a9139c39904fc5b707f5f0348136d1979"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af64efae30d7e70aaeaa58837f1464f3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#af64efae30d7e70aaeaa58837f1464f3a">showNewData</a> ()</td></tr>
-<tr class="memdesc:af64efae30d7e70aaeaa58837f1464f3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shows a new instruction from the HMI.  <a href="../../da/d39/hexaphobus__pwm_8h.html#af64efae30d7e70aaeaa58837f1464f3a">More...</a><br /></td></tr>
-<tr class="separator:af64efae30d7e70aaeaa58837f1464f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a5d547ae6451858d6fe3118108823fbdc"><td class="memItemLeft" align="right" valign="top"><a id="a5d547ae6451858d6fe3118108823fbdc"></a>
 boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#a5d547ae6451858d6fe3118108823fbdc">newData</a> = false</td></tr>
-<tr class="memdesc:a5d547ae6451858d6fe3118108823fbdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable for commucation. <br /></td></tr>
+<tr class="memdesc:a5d547ae6451858d6fe3118108823fbdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag for reading new data. <br /></td></tr>
 <tr class="separator:a5d547ae6451858d6fe3118108823fbdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c0b673debfb72455d5825559671aca9"><td class="memItemLeft" align="right" valign="top"><a id="a6c0b673debfb72455d5825559671aca9"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>serialReady</b> = true</td></tr>
-<tr class="separator:a6c0b673debfb72455d5825559671aca9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab46c49fb62e0ee61b3865f1e9153fdaa"><td class="memItemLeft" align="right" valign="top"><a id="ab46c49fb62e0ee61b3865f1e9153fdaa"></a>
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>flag</b> = false</td></tr>
-<tr class="separator:ab46c49fb62e0ee61b3865f1e9153fdaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4bacde9270b9a6dfaa0f74b0df9b69e"><td class="memItemLeft" align="right" valign="top"><a id="af4bacde9270b9a6dfaa0f74b0df9b69e"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>input_string</b></td></tr>
+String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#af4bacde9270b9a6dfaa0f74b0df9b69e">input_string</a></td></tr>
+<tr class="memdesc:af4bacde9270b9a6dfaa0f74b0df9b69e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bytes transferred via serial communication. <br /></td></tr>
 <tr class="separator:af4bacde9270b9a6dfaa0f74b0df9b69e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2576a789ed1a55f09fb7813dde1ec87f"><td class="memItemLeft" align="right" valign="top"><a id="a2576a789ed1a55f09fb7813dde1ec87f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>returnstate</b> = 0</td></tr>
-<tr class="separator:a2576a789ed1a55f09fb7813dde1ec87f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0c686ebca19ea2cfc7fcddf337b6c47"><td class="memItemLeft" align="right" valign="top"><a id="aa0c686ebca19ea2cfc7fcddf337b6c47"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#aa0c686ebca19ea2cfc7fcddf337b6c47">return_state</a> = 0</td></tr>
+<tr class="memdesc:aa0c686ebca19ea2cfc7fcddf337b6c47"><td class="mdescLeft">&#160;</td><td class="mdescRight">State to be executed according to movement command. <br /></td></tr>
+<tr class="separator:aa0c686ebca19ea2cfc7fcddf337b6c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f7a789d874e9d44826ab34eb139b7f2"><td class="memItemLeft" align="right" valign="top"><a id="a6f7a789d874e9d44826ab34eb139b7f2"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d39/hexaphobus__pwm_8h.html#a6f7a789d874e9d44826ab34eb139b7f2">SHIFT</a> [13] = {-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68}</td></tr>
 <tr class="memdesc:a6f7a789d874e9d44826ab34eb139b7f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjustments for each servomotor angle. <br /></td></tr>
@@ -219,7 +212,7 @@ Adafruit_PWMServoDriver&#160;</td><td class="memItemRight" valign="bottom"><a cl
 </dd></dl>
 <dl class="section date"><dt>Date</dt><dd><ul>
 <li>2020-02-25 (Creation)</li>
-<li>2020-03-27 (Last modification)</li>
+<li>2020-04-18 (Last modification)</li>
 </ul>
 </dd></dl>
 <p>Motion control, communication, and sequencing (header).</p>
@@ -547,27 +540,6 @@ Adafruit_PWMServoDriver&#160;</td><td class="memItemRight" valign="bottom"><a cl
 
 </div>
 </div>
-<a id="af64efae30d7e70aaeaa58837f1464f3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af64efae30d7e70aaeaa58837f1464f3a">&#9670;&nbsp;</a></span>showNewData()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void showNewData </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Shows a new instruction from the HMI. </p>
-<pre class="fragment">   TBD
-</pre><dl class="section return"><dt>Returns</dt><dd>0 after communication with the HMI. </dd></dl>
-
-</div>
-</div>
 <a id="adbadcc07a7512c34e3dfffb0f835ab28"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adbadcc07a7512c34e3dfffb0f835ab28">&#9670;&nbsp;</a></span>UpAndDown()</h2>
 
@@ -675,11 +647,40 @@ Adafruit_PWMServoDriver&#160;</td><td class="memItemRight" valign="bottom"><a cl
       </table>
 </div><div class="memdoc">
 
-<p>Every time a command arrive in the serial buffer this function is called. </p>
-<pre class="fragment">   TBD
-</pre><dl class="section return"><dt>Returns</dt><dd>0 after communication with the HMI.</dd></dl>
-<p>Verify a new instruction from the HMI. </p><pre class="fragment">   TBD
-</pre><dl class="section return"><dt>Returns</dt><dd>The state that the robot should be in: FORWARD = 1 BACKWARD = 2 LEFT = 3 RIGHT = 4. </dd></dl>
+<p>Updates command to be written to the communication port. </p>
+<pre class="fragment">   The updated command should be 1 for a forward movement, 2 for
+   a backward movement, 3 for a left turn, and 4 for a right turn.
+</pre><dl class="section return"><dt>Returns</dt><dd>The command state for the next movement (integer). </dd></dl>
+
+</div>
+</div>
+<a id="a3a5de38cba2da6e86991eb1a2a7f66a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a5de38cba2da6e86991eb1a2a7f66a9">&#9670;&nbsp;</a></span>writeCommand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void writeCommand </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>string_to_write</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes command to the communication port. </p>
+<pre class="fragment">   The command written to the port should be 1 for a forward
+   movement, 2 for a backward movement, 3 for a left turn, and 4
+   for a right turn.
+</pre><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string_to_write</td><td><pre class="fragment">   Movement state of the robot.
+</pre> </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
