@@ -65,10 +65,10 @@ All the code documentation can be found [here](https://raw.githack.com/gabrielca
     <img src="./img/ui_demo.png" alt="HexaphobUS UI" width="720"/>
 </div>
 
-- &#8593: forward motion;
-- &#8595: backward motion;
-- &#8592: left turn;
-- &#8594: right turn;
+- &#8593;: forward motion;
+- &#8595;: backward motion;
+- &#8592;: left turn;
+- &#8594;: right turn;
 - <kbd>POS INIT</kbd>: resets the robot origin;
 - <kbd>PRG1</kbd>: pre-programmed motion sequence (currently unused);
 - <kbd>Start Serial</kbd>: initializes serial communication with the robot;
