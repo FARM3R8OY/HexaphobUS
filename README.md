@@ -75,7 +75,6 @@ All the code documentation can be found [here](https://raw.githack.com/gabrielca
 - <kbd>POS INIT</kbd>: resets the robot origin;
 - <kbd>PRG1</kbd>: pre-programmed motion sequence (currently unused);
 - <kbd>Start Serial</kbd>: initializes serial communication with the robot;
-- <kbd>STOP</kbd>: terminates the serial communication, and the user interface.
 - Servo ##: displays the servomotor angle (position of servos on the interface mimicks the robot seen from above);
 - Vitesse / Énergie: robot speed and energy consumption (currently unused).
 
