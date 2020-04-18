@@ -1,5 +1,4 @@
 <div id="hexaphobus-logo" align="center">
-    <br />
     <img src="./img/hexaphobus_logo.png" alt="HexaphobUS Logo" width="256"/>
     <h1>HexaphobUS</h1>
     <h3>Hexapod robot | UdeS-GRO</h3>
@@ -18,6 +17,10 @@
 [//]: # (------------------------------------------------)
 
 **This is an academic project from robotic engineering undergraduates at Université de Sherbrooke. We are building a 6-axis robot from scratch with motion control, sequencing, and an intuitive user interface.**
+
+<div id="robot" align="center">
+    <img src="./img/robot.jpg" alt="Robot" width="512"/>
+</div>
 
 ## Table of Contents
 - [Setup](#Setup)
