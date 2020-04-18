@@ -87,8 +87,6 @@ void setup() {
  *        to move according to user input.
  */
 void loop() { 
-   
-  //showNewData();
   
   State = UpdateCommand();
 

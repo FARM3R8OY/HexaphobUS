@@ -114,54 +114,37 @@ int writeCommand(String string_to_write )
  */
 int UpdateCommand()
 {
+  while (newData == false)
+  {
+    input_string = "";
+    input_string = Serial.readStringUntil('|');
+    input_string = String(input_string);
+    
+    if (sizeof(input_string) > 0) {
+      newData = true;
+    } 
+  }
+
+  if (newData == true)
+  {
+    if (input_string == "FORWARD")
+    { returnstate = 1;}
+    else if (input_string == "BACKWARD")
+    { returnstate = 2;}
+    else if (input_string == "LEFT")
+    { returnstate = 3;}
+    else if (input_string == "RIGHT")
+    { returnstate = 4;}
+    else
+    { newData = false;
+      return -1;}
+    newData = false;
+    return returnstate;
+  }
   
-  //if (serialReady == true)
-  //{
-   // if (flag == true)
-    //{
-      while (/*Serial.available() &&*/ newData == false)
-      {
-        input_string = "";
-        input_string = Serial.readStringUntil('|');
-        input_string = String(input_string);
-        
-        if (sizeof(input_string) > 0) {
-          newData = true;
-        } 
-      }
-    
-     /* while(Serial.available())
-      {
-        char nimportequoi = Serial.read(); 
-      }*/
-    
-      //if new command
-      if (newData == true)
-      {
-        //writeCommand(input_string);
-        if (input_string == "FORWARD")
-        { returnstate = 1;}
-        else if (input_string == "BACKWARD")
-        { returnstate = 2;}
-        else if (input_string == "LEFT")
-        { returnstate = 3;}
-        else if (input_string == "RIGHT")
-        { returnstate = 4;}
-        else
-        {//writeCommand("invalid information");
-          //flag = false;
-          newData = false;
-          return -1;}
-        newData = false;
-        return returnstate;
-      }
-      
-      // else idle
-      else
-      {returnstate = 0;}
-      //flag = false;
-    //}
- // }
+  else
+  {returnstate = 0;}
+  
   return 0;
 }
 
@@ -184,7 +167,6 @@ int AngleToHMI() {
   if (sizeof(string_to_send) < 6) {
     return -1;
   }
-  
   writeCommand(string_to_send);
   return 0;
 }
@@ -287,7 +269,6 @@ int UpAndDown(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i] + 6] = 180 - angle[i];
-        //AngleToHMI();
       }
       else if (Legs[i] == 0)
       {}
@@ -295,7 +276,6 @@ int UpAndDown(int Leg1,
       {
         pwm.setPWM(Legs[i] + 6, 0, pulseWidth(angle[i]));
         ANGLE[Legs[i] + 6] = angle[i];
-        //AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {
@@ -392,14 +372,12 @@ int ForwardAndBackward(int Leg1,
       if (Legs[i] % 2 == 0) {
         pwm.setPWM(Legs[i], 0, pulseWidth(180 - angle[i]));
         ANGLE[Legs[i]] = 180 - angle[i];
-        //AngleToHMI();
       }
       else if (Legs[i] == 0) {
       }
       else {
         pwm.setPWM(Legs[i], 0, pulseWidth(angle[i]));
         ANGLE[Legs[i]] = angle[i];
-       // AngleToHMI();
       }
     }
     else if (Legs[i] == 0) {
@@ -613,19 +591,3 @@ int MovingLeft()
   return 0;
 }
 
-
-/*!
- * @brief Shows a new instruction from the HMI.
- *
- *        TBD
- * 
- * @return 0 after communication with the HMI.
- */
-void showNewData() {
-  if (newData == true) {
-    Serial.flush();
-    delay(100);
-    Serial.println(input_string);
-    newData = false;
-  }
-}
