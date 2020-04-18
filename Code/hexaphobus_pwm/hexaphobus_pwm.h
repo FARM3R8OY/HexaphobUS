@@ -52,14 +52,12 @@
 /// Angle value in degrees (center).
 #  define CENTER 43
 
-/// Variable for commucation
+/// Flag for reading new data.
 boolean newData = false;
-boolean serialReady = true;
-boolean flag = false;
+/// Bytes transferred via serial communication.
 String input_string;
-int returnstate = 0;
-
-
+/// State to be executed according to movement command.
+int return_state = 0;
 
 /// Adjustments for each servomotor angle.
 int SHIFT[13] = {-1, -10, -5, 0, 0, -5, 5, 56, 68, 58, 56, 56, 68};
@@ -71,51 +69,32 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 /********************************************/
 
-/*******************************************************to modify****************
 /*!
- * @brief Verify a new instruction from the HMI.
- *        
- *        TBD
+ * @brief Writes command to the communication port.
  * 
- * @return The state that the robot should be in:
- *  FORWARD = 1
- *  BACKWARD = 2
- *  LEFT = 3
- *  RIGHT = 4.
+ *        The command written to the port should be 1 for a forward
+ *        movement, 2 for a backward movement, 3 for a left turn, and 4
+ *        for a right turn.
+ * 
+ * @param string_to_write
+ * 
+ *        Movement state of the robot.
  */
-int writeCommand(String string_to_write )
-{  
+void writeCommand(String string_to_write) {  
   Serial.println(string_to_write);
- 
 }
 
 /*!
- * @brief Every time a command arrive in the serial buffer this function is called.
- *
- *        TBD
- * 
- * @return 0 after communication with the HMI.
- */
-/*void serialEvent() 
-{
-  flag = true;
-}*/
-
-/*!
- * @brief Verify a new instruction from the HMI.
+ * @brief Updates command to be written to the communication port.
  *        
- *        TBD
+ *        The updated command should be 1 for a forward movement, 2 for
+ *        a backward movement, 3 for a left turn, and 4 for a right turn.
  * 
- * @return The state that the robot should be in:
- *  FORWARD = 1
- *  BACKWARD = 2
- *  LEFT = 3
- *  RIGHT = 4.
+ * @return The command state for the next movement (integer).
  */
 int UpdateCommand()
 {
-  while (newData == false)
-  {
+  while (newData == false) {
     input_string = "";
     input_string = Serial.readStringUntil('|');
     input_string = String(input_string);
@@ -125,25 +104,31 @@ int UpdateCommand()
     } 
   }
 
-  if (newData == true)
-  {
-    if (input_string == "FORWARD")
-    { returnstate = 1;}
-    else if (input_string == "BACKWARD")
-    { returnstate = 2;}
-    else if (input_string == "LEFT")
-    { returnstate = 3;}
-    else if (input_string == "RIGHT")
-    { returnstate = 4;}
-    else
-    { newData = false;
-      return -1;}
+  if newData {
+    if (input_string == "FORWARD") {
+      return_state = 1;
+    }
+    else if (input_string == "BACKWARD") {
+      return_state = 2;
+    }
+    else if (input_string == "LEFT") {
+      return_state = 3;
+    }
+    else if (input_string == "RIGHT") {
+      return_state = 4;
+    }
+    else {
+      newData = false;
+      return -1;
+    }
+
     newData = false;
-    return returnstate;
+    return return_state;
   }
   
-  else
-  {returnstate = 0;}
+  else {
+    return_state = 0;
+  }
   
   return 0;
 }
@@ -186,8 +171,9 @@ int AngleToHMI() {
  * @return analog_value, which is the servomotor encoder value.
  */
 int pulseWidth(int angle) {
-  if(angle>180)
-  {return -1;}
+  if(angle > 180) {
+    return -1;
+  }
   
   int pulse_wide, analog_value;
   pulse_wide   = map(angle, 0, 180, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
@@ -252,7 +238,6 @@ int UpAndDown(int Leg1,
               int pos3,
               int Time) {
   
-  serialReady = false;
   int Legs[3]  = {Leg1, Leg2, Leg3};
   int pos[3]   = {pos1, pos2, pos3};
   int angle[3] = {0, 0, 0};
@@ -281,13 +266,11 @@ int UpAndDown(int Leg1,
     else if (Legs[i] == 0) {
     }
     else {
-      serialReady = true;
       return -1;
     }
   }
 
   delay(Time);
-  serialReady = true;
   return 0;
 }
 
@@ -348,7 +331,7 @@ int ForwardAndBackward(int Leg1,
                        int pos2,
                        int pos3,
                        int Time) {
-  serialReady = false;
+
   if (Time < 0) {
     return -1;
   }
@@ -383,13 +366,11 @@ int ForwardAndBackward(int Leg1,
     else if (Legs[i] == 0) {
     }
     else {
-      serialReady = true;
       return -1;
     }
   }
 
   delay(Time);
-  serialReady = true;
   return 0;
 } 
 
@@ -489,32 +470,30 @@ int init_move() {
  * 
  * @return -1 for handling errors, 0 if execution was correct.
  */
-int Moving(int dir) 
-{
-  int inv_dir=0;
+int Moving(int dir) {
   
-  if (dir == POS_FRONT) 
-  {
+  int inv_dir = 0;
+  
+  if (dir == POS_FRONT) {
     inv_dir = POS_BACK;
   }
-  else if (dir == POS_BACK)
-  {
+  else if (dir == POS_BACK) {
     inv_dir=POS_FRONT;
   }
 
-    MoveOneLeg(2, dir, 100);
-    MoveOneLeg(3, dir, 100);
-    MoveOneLeg(6, dir, 100);
-    ForwardAndBackward(1, 4, 5, inv_dir, inv_dir, inv_dir, 0);
-    ForwardAndBackward(2, 3, 6, POS_CENTER, POS_CENTER, POS_CENTER, 0);
-    delay(200);
-    
-    MoveOneLeg(1, dir, 100);
-    MoveOneLeg(4, dir, 100);
-    MoveOneLeg(5, dir, 100);
-    ForwardAndBackward(2, 3, 6, inv_dir, inv_dir, inv_dir, 0);
-    ForwardAndBackward(1, 4, 5, POS_CENTER, POS_CENTER, POS_CENTER, 0);   
-    delay(200);
+  MoveOneLeg(2, dir, 100);
+  MoveOneLeg(3, dir, 100);
+  MoveOneLeg(6, dir, 100);
+  ForwardAndBackward(1, 4, 5, inv_dir, inv_dir, inv_dir, 0);
+  ForwardAndBackward(2, 3, 6, POS_CENTER, POS_CENTER, POS_CENTER, 0);
+  delay(200);
+  
+  MoveOneLeg(1, dir, 100);
+  MoveOneLeg(4, dir, 100);
+  MoveOneLeg(5, dir, 100);
+  ForwardAndBackward(2, 3, 6, inv_dir, inv_dir, inv_dir, 0);
+  ForwardAndBackward(1, 4, 5, POS_CENTER, POS_CENTER, POS_CENTER, 0);   
+  delay(200);
 
   return 0;
 }
@@ -535,8 +514,7 @@ int Moving(int dir)
  * 
  * @return -1 for handling errors, 0 if execution was correct.
  */
-int MovingRight() 
-{
+int MovingRight() {
 
   MoveOneLeg(2, POS_FRONT, 100);
   MoveOneLeg(3, POS_BACK, 100);
@@ -571,8 +549,7 @@ int MovingRight()
  * 
  * @return -1 for handling errors, 0 if execution was correct.
  */
-int MovingLeft() 
-{
+int MovingLeft() {
 
   MoveOneLeg(1, POS_FRONT, 100);
   MoveOneLeg(4, POS_BACK, 100);
@@ -590,4 +567,3 @@ int MovingLeft()
   
   return 0;
 }
-

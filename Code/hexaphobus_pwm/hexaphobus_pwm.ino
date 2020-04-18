@@ -46,20 +46,15 @@
 #  include <Wire.h>
 #  include <Adafruit_PWMServoDriver.h>
 #  include <Arduino.h>
-
-#  include "hexaphobus_pwm.h" ///< Header of custom functions.
+///< Header of custom functions.
+#  include "hexaphobus_pwm.h" 
 
 /********************************************/
 
-uint8_t servonum = 0; ///< Servomotor counter.
-int State = 0; ///State of the robot
-/*
-IDLE = 0
-FORWARD = 1
-BACKWARD = 2
-LEFT = 3
-RIGHT = 4
-*/
+/// Servomotor counter.
+uint8_t servonum = 0;
+/// State of the robot. 
+int State = 0;
 
 /********************************************/
 
@@ -71,13 +66,12 @@ RIGHT = 4
  *        frequency.
  */
 void setup() {
+
   Serial.begin(9600);
   pwm.begin();
   pwm.setPWMFreq(FREQUENCY);
   delay(1000);
-  //AngleToHMI();
   init_move();
-  //AngleToHMI();
 }
 
 /*!
@@ -90,26 +84,17 @@ void loop() {
   
   State = UpdateCommand();
 
-  if (State != 0 && State != -1)
-  {
-    if (State == 1)
-    {
-      //Move forward
+  if (State != 0 && State != -1) {
+    if (State == 1) {
       Moving(POS_FRONT);
     }
-    else if (State == 2)
-    {
-      //Move Backward
+    else if (State == 2) {
       Moving(POS_BACK);
     }
-    else if (State == 3)
-    {
-      //Move Left
+    else if (State == 3) {
       MovingLeft();
     }
-    else if (State == 4)
-    {
-      //Move Right
+    else if (State == 4) {
       MovingRight();
     }
     AngleToHMI();
