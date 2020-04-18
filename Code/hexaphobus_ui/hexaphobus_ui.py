@@ -1,84 +1,293 @@
-"""
-File: hexaphobus_ui.py
+##@file hexaphobus_ui.py
+#
+##@authors
+#     - Cabana,       Gabriel  | cabg2101
+#     - Guay-Tanguay, Carolane | guac3201
+#     - Lalonde,      Philippe | lalp2803
+#     - Roy,          Olivier  | royo2206
+#
+##@date
+#     - 2020-01-29 (Creation)
+#     - 2020-04-18 (Last modification)
+#
+# User interface designed for intuitive control and monitoring of the
+# HexaphobUS robot.
+#
+# <b>S4-H20 | GRO400</b>
 
-Contributor(s):
-    Cabana,  Gabriel  | cabg2101
-    Lalonde, Philippe | lalp2803
+##@mainpage HexaphobUS
+#
+##@section redirect Links
+#          - Python page: @ref page_py "UI on Python"
+#          - Arduino page: @ref page_ino "PWM on Arduino"
+#
+#          For code documentation, have a look at the files <a
+#          href="https://raw.githack.com/gabrielcabana21/HexaphobUS/code/docs/html/files.html">here</a>.
 
-Date(s):
-    2020-01-29 (Creation)
-    2020-02-05 (Last modification)
+##@page page_py UI on Python
+#
+##@section intro_sec Introduction
+#          Python code designed for intuitive control and monitoring of the
+#          HexaphobUS robot.
+#
+#          The user interface works on a on-board computer
+#          (<a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b/">
+#          Raspberry Pi 3B</a>) to communicate, with a standard modulation rate
+#          of 9600.
+#
+##@section dependencies Dependencies
+#          This package depends on <a href="https://pypi.org/project/PyQt5/>
+#          PyQt5</a>, <a href="https://pypi.org/project/pyserial/">pyserial</a>,
+#          and other standard modules being present on your system.
+#          Please make sure you have installed the latest versions before using
+#          this interface.
+#
+##@section license License
+#          This falls under the GitHub repository license (GPLv3). See more
+#          <a href="https://github.com/gabrielcabana21/HexaphobUS/blob/master/LICENSE">
+#          here</a>.
 
-Description:
-    User interface designed for intuitive control and monitoring of the
-    HexaphobUS robot.
+#********************************************#
 
-S4-H20 | GRO400
-"""
-
-# --------------------------------------------
-
+# Computing
 import math
+
+# System
 import os
 import sys
 
-from struct import *
-import binascii
+# Timing and communication
+import serial
+from threading import Timer
+import time
 
-from PyQt5.QtCore import Qt, QTimer, QPoint
+# User interface
+from PyQt5.QtCore import Qt, QTimer, QPoint, QThread
 from PyQt5.QtGui import (QColor, QIcon, QPainter, QPalette, QKeySequence,
                          QDoubleValidator, QPixmap)
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QHBoxLayout, QLabel,
                              QLineEdit, QPushButton, QVBoxLayout, QWidget,
                              QShortcut, QFrame, QSizePolicy)
 
-# --------------------------------------------
+#********************************************#
 
-Tests_angles = ["1.12", "12.3", "-113.0", "133.1", "24.3", "24.4",
-                "234.5", "467.3", "353.3", "244.2", "2442", "244.5"]
+
+## Servomotor number (to define positioning and sequencing)
 Servos_Num = [7, 9, 11, 1, 3, 5, 2, 4, 6, 8, 10, 12]
+## Servomotor widgets (to display angular position)
+SERVO_TABLE = list()
 
-ARROW_W = 60
-ARROW_H = 30
-BUTTON_W = 120
-BUTTON_H = 60
-INFO_W = 190
-INFO_H = 30
-SV_NBR = 12
+## Number of servomotors
+SV_NBR = len(Servos_Num)
+## Servomotor window width
 SV_W = 100
+## Servomotor window height
 SV_H = 30
+## Arrow button width
+ARROW_W = 60
+## Arrow button height
+ARROW_H = 30
+## Button width
+BUTTON_W = 120
+## Button height
+BUTTON_H = 60
+## Information window width
+INFO_W = 190
+## Information window height
+INFO_H = 30
+## Position tracking window width
 TRACK_W = 250
+## Position tracking window height
 TRACK_H = 50
+## User interface position (x)
 UI_X = 80
+## User interface position (y)
 UI_Y = 80
+## User interface width
 UI_W = 800
+## User interface height
 UI_H = 600
+## User interface width (minimum)
 UI_MIN_W = 480
+## User interface height (minimum)
 UI_MIN_H = 360
 
+## Flag (command number to define next position to reach)
+NB_COMMAND = 0
+## Movement command (in bytes)
+ENCODED_VAR = b'55'
+## Communication port directory
+PORT = "/dev/ttyACM0"
+## Modulation rate
+BAUD_RATE = 9600
+## Serial communication update rate
+SERIAL_UPDATE_RATE = 0.1
+
+## User interface window name
 WINDOW_NAME = "HexaphobUS UI"
+## Up arrow unicode string
 BUTTON_UP = "\u2191"
+## Down arrow unicode string
 BUTTON_DOWN = "\u2193"
+## Left arrow unicode string
 BUTTON_LEFT = "\u2190"
+## Right arrow unicode string
 BUTTON_RIGHT = "\u2192"
-BUTTON_STOP = "STOP"
+## Movement string (forward)
+STR_F = "FORWARD"
+## Movement string (backward)
+STR_B = "BACKWARD"
+## Movement string (left)
+STR_L = "LEFT"
+## Movement string (right)
+STR_R = "RIGHT"
+## Serial communication string
+BUTTON_SERIAL = "Start Serial"
+## Initialization button string
 BUTTON_INIT = "POS INIT"
+## Program button string
 BUTTON_PRG1 = "PRG1"
+## Second level parent folder
 SCRIPT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                           "..", ".."))
+## Separator (OS dependent)
 SEP = os.path.sep
+## User interface logo directory
 LOGO = 'img' + SEP + 'hexaphobus_logo.png'
+
+#********************************************#
+
+
+def stringToByte(string):
+    """
+    Encodes string and returns byte values.
+    """
+    string = string + '|'
+    encoded_string = string.encode()
+    return encoded_string
+
+def byteToString(encoded_string):
+    """
+    Decodes byte values and returns a string.
+    """
+    string = encoded_string.decode().strip()
+    return string
 
 # --------------------------------------------
 
+
+class RepeatedTimer(object):
+    """
+    The 'RepeatedTimer' class allows the user to time some operations
+    at a specified frequency.
+    """
+    def __init__(self, interval, function, *args, **kwargs):
+        """
+        The 'RepeatedTimer' class constructor initializes the flagging
+        interval, the operation to launch, the state, and other
+        arguments.
+        """
+        self._timer = None
+        self.interval = interval
+        self.function = function
+        self.args = args
+        self.kwargs = kwargs
+        self.is_running = False
+        self.start()
+
+    def _run(self):
+        """
+        Runs the timer and its operation.
+        """
+        self.is_running = False
+        self.start()
+        self.function(*self.args, **self.kwargs)
+
+    def start(self):
+        """
+        Starts the timer.
+        """
+        if not self.is_running:
+            self._timer = Timer(self.interval, self._run)
+            self._timer.start()
+            self.is_running = True
+
+    def stop(self):
+        """
+        Stops the timer.
+        """
+        self._timer.cancel()
+        self.is_running = False
+
+class SerialChecker(QThread):
+    """
+    The 'SerialChecker' class is a QThread subclass that allows the user
+     to initiate a serial communication with a specified port.
+    """
+    def __init__(self):
+        """
+        The 'SerialChecker' class constructor initializes the serial
+        port, and the timer.
+        """
+        super().__init__()
+        self.ser = None
+        self.rt = None
+
+    def SerialRun(self):
+        """
+        Initiates the serial communication.
+        """
+        self.ser = serial.Serial(PORT, BAUD_RATE)
+        self.ser.reset_input_buffer()
+
+    def serialReceive(self):
+        """
+        Gets the information from the serial port.
+        """
+        global SERVO_TABLE
+
+        if self.ser.in_waiting > 0:
+            try:
+                stringData = self.ser.read_until()
+            except:
+                return
+
+            servoAngle = byteToString(stringData)
+            
+            try:
+                tableData = servoAngle.split(";")
+            except:
+                print("Erreur")
+
+            if len(tableData) == SV_NBR:
+                SERVO_TABLE = tableData  
+
+    def serialQuit(self):
+        """
+        Ends the serial communication.
+        """
+        self.rt.stop()
+
+    def serialSend(self, command):
+        """
+        Sends the information to the serial port.
+        """
+        bytesData = stringToByte(command)
+        print(command)
+        self.ser.write(bytesData)
 
 class RobotTracking(QWidget):
     """
     The 'RobotTracking' class is a QWidget subclass that allows the user
-    to follow the robot position from an initialized origin point.
+     to follow the robot position from an initialized origin point.
     """
 
     def __init__(self):
+        """
+        The 'RobotTracking' class constructor initializes, notably, the
+        widget to follow the robot's position. It builds upon the
+        constructor of its parent class, 'QWidget'.
+        """
         super().__init__()
         self.setStyleSheet("border:1px solid rgb(0, 0, 0)")
         self._distance_origin = 0
@@ -89,15 +298,15 @@ class RobotTracking(QWidget):
         self._vel = 60  # pixels per second
         self._speed = 10
 
-        #self.setMouseTracking(True)
         self.timer = QTimer(self)
-        #self.timer.timeout.connect(self.changePosition)
         self.timer.start(round(1000 / self._vel))
         self.initTracking()
 
     def initTracking(self):
-        # Initialize the Qt robot tracking widget.
-
+        """
+        Sets the size of the widget and its label (tracking distance and
+        position).
+        """
         self.setMinimumSize(UI_MIN_W, UI_MIN_H)
         self.label = QLabel(self)
         self.label.resize(TRACK_W, TRACK_H)
@@ -105,68 +314,100 @@ class RobotTracking(QWidget):
         self.show()
 
     def changePosition(self, direction):
-        # Update the target positions according to geometry.
-
+        """
+        Updates the target's distance and position according to
+        geometry.
+        """
         UI_Graph_W = self.geometry().width()
         UI_Graph_H = self.geometry().height()
 
-        if direction == "UP" and self._robot_y_pos > 0:
+        if direction == STR_F and self._robot_y_pos > 0:
             self._robot_y_pos -= self._speed
-        elif direction == "DOWN" and self._robot_y_pos < UI_Graph_H:
+            ENCODED_VAR = stringToByte('FORWARD')
+        elif direction == STR_B and self._robot_y_pos < UI_Graph_H:
             self._robot_y_pos += self._speed
-        elif direction == "RIGHT" and self._robot_x_pos < UI_Graph_W:
+            ENCODED_VAR = stringToByte('BACKWARD')
+        elif direction == STR_R and self._robot_x_pos < UI_Graph_W:
             self._robot_x_pos += self._speed
-        elif direction == "LEFT" and self._robot_x_pos > 0:
+            ENCODED_VAR = stringToByte('RIGHT')
+        elif direction == STR_L and self._robot_x_pos > 0:
             self._robot_x_pos -= self._speed
+            ENCODED_VAR = stringToByte('LEFT')
 
         self.moveRobot(self._robot_x_pos, self._robot_y_pos)
         self.update()
 
     def moveRobot(self, robotX, robotY):
-        # Event that updates the mouse position relative to the origin
-        # according to mouse motion.
-
-        _distance_origin = round(
+        """
+        Event that updates the target's distance and position label
+        relative to the origin according to the target's movements.
+        """
+        self._distance_origin = round(
             ((robotY - self._target_y_pos)**2
              + (robotX - self._target_x_pos)**2)**0.5
         )
 
-        self.label.setText("Coordinates (x; y): ({}; {})\
-                           \nDistance from origin: {}"
-                           .format(robotX, robotY, _distance_origin))
+        self.label.setText(
+            "Coordinates (x; y): ({}; {})\nDistance from origin: {}"
+            .format(robotX, robotY, self._distance_origin)
+        )
 
         self.update()
 
     def initPosition(self):
-        # Event that updates the origin point according to mouse press.
-
+        """
+        Event that updates the origin point according to reset command.
+        """
         self._target_x_pos = self._robot_x_pos
         self._target_y_pos = self._robot_y_pos
         self.update()
-        '''#to pack string
-        string = 'allo'
-        s = bytes(string, 'utf-8')
-        global format
-        format = "4s"
-        packed_data = pack(format, s)
-        global t
-        t = binascii.hexlify(packed_data)
-        '''
 
     def paintEvent(self, event):
-        # Event that draws a line between the object position and its
-        # origin.
+        """
+        Event that draws a line between the target's position and its
+        origin.
+        """
         robot = QPixmap(SCRIPT_DIR + SEP + LOGO)
-        Pix_robot = robot.scaledToHeight(40)
+        pix_robot = robot.scaledToHeight(40)
 
         q = QPainter()
         q.begin(self)
         q.setPen(QColor(0, 0, 0))
         q.drawPixmap(QPoint(self._robot_x_pos-20, self._robot_y_pos-20),
-                     Pix_robot)
+                     pix_robot)
         q.drawLine(self._robot_x_pos, self._robot_y_pos,
                    self._target_x_pos, self._target_y_pos)
+        moving_command = byteToString(ENCODED_VAR)
+        
+        '''
+        if moving_command == STR_F or moving_command == STR_B:
+            if NB_COMMAND % 2 == 0 and NB_COMMAND >= 0:
+                move_leg = -6
+            elif NB_COMMAND % 2 == 1 and NB_COMMAND >= 0:
+                move_leg = 6
+            NB_COMMAND += 1
+        else:
+            move_leg = 0
 
+        #Leg 1
+        q.drawLine(self._robot_x_pos+20, self._robot_y_pos,
+                   self._robot_x_pos+40, self._robot_y_pos+move_leg)
+        #Leg 2
+        q.drawLine(self._robot_x_pos+12, self._robot_y_pos+13,
+                   self._robot_x_pos+32, self._robot_y_pos+13-move_leg)
+        #Leg 3
+        q.drawLine(self._robot_x_pos+12, self._robot_y_pos-13,
+                   self._robot_x_pos+32, self._robot_y_pos-13-move_leg)
+        #Leg 4
+        q.drawLine(self._robot_x_pos-20, self._robot_y_pos,
+                   self._robot_x_pos-40, self._robot_y_pos-move_leg)
+        #Leg 5
+        q.drawLine(self._robot_x_pos-12, self._robot_y_pos+13,
+                   self._robot_x_pos-32, self._robot_y_pos+13+move_leg)
+        #Leg 6
+        q.drawLine(self._robot_x_pos-12, self._robot_y_pos-13,
+                   self._robot_x_pos-32, self._robot_y_pos-13+move_leg)
+        '''
 
 class MainWindow(QWidget):
     """
@@ -174,13 +415,19 @@ class MainWindow(QWidget):
     to monitor various robot items, control the robot and track its
     position with another QWidget subclass ('RobotTracking' class).
     """
-
     def __init__(self):
+        """
+        The 'MainWindow' class constructor initializes the GUI interface
+        and all its components (layout boxes, push buttons, shortcuts,
+        lines, edits, frames, validators). It builds upon the
+        constructor of its parent class, 'QWidget'.
+        """
         super().__init__()
 
         # Servos
         self._servo_edits = list()
         self._servo_labels = list()
+        global SERVO_TABLE
 
         # Layouts
         self.global_layout = QVBoxLayout()
@@ -205,7 +452,7 @@ class MainWindow(QWidget):
         self.button_left = QPushButton(BUTTON_LEFT)
         self.button_right = QPushButton(BUTTON_RIGHT)
 
-        self.button_stop = QPushButton(BUTTON_STOP)
+        self.button_serial_start = QPushButton(BUTTON_SERIAL)
         self.button_init = QPushButton(BUTTON_INIT)
         self.button_prog = QPushButton(BUTTON_PRG1)
 
@@ -224,41 +471,60 @@ class MainWindow(QWidget):
         self.GraphFrame = QFrame()
         self.GraphFrame.setFrameShape(QFrame.Box)
         self.GraphFrame.setStyleSheet("background: rgb(180,180,180)")
-
         self.onlyFloat = QDoubleValidator()
+
+        self.serialCheck = SerialChecker()
+        self.serialCheck.SerialRun()
+        self.repeater = RepeatedTimer(SERIAL_UPDATE_RATE, self.setServoValues)
 
         self.initUI()
 
     def getServoEdits(self):
+        """
+        Return the servomotor commands.
+        """
         return self._servo_edits
 
     def getServoLabels(self):
+        """
+        Return the servomotor labels.
+        """
         return self._servo_labels
 
     def initUI(self):
-        # Initialize the Qt user interface.
-
+        """
+        Initializes the user interface. It sets:
+            -the geometry;
+            -the window behavior;
+            -the 'RobotTracking' widget;
+            -the buttons;
+            -the connections;
+            -the robot information;
+            -the dependencies (nested layouts);
+            -the widgets.
+        """
         self.setGeometry(UI_X, UI_Y, UI_W, UI_H)
         self.setWindowTitle(WINDOW_NAME)
 
         self.tracking = RobotTracking()
-        self.tracking.setSizePolicy(QSizePolicy.Expanding,
-                                    QSizePolicy.Expanding)
-
+        self.tracking.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Expanding
+        )
         self.addServos()
         self.setSizeButtons()
-        self.setConnexions()
+        self.setConnections()
         self.setInfo()
         self.setLayoutDependencies()
         self.addWidgets()
         self.setLayout(self.global_layout)
-        self.setServoValues(Tests_angles)
         self.setInfoValues("100", "200")
+
         self.show()
 
     def addServos(self):
-        # Add servomotor edits and labels used to monitor their state.
-
+        """
+        Add servomotor edits and labels used to monitor their state.
+        """
         for index in range(SV_NBR):
             self._servo_edits.append(QLineEdit())
             self._servo_edits[index].setFixedSize(SV_W, SV_H)
@@ -272,33 +538,95 @@ class MainWindow(QWidget):
                                               .format(Servos_Num[index]))
 
     def setSizeButtons(self):
-        # Fix button size according to type.
-
+        """
+        Fix button size according to type.
+        """
         self.button_up.setFixedSize(ARROW_W, ARROW_H)
         self.button_down.setFixedSize(ARROW_W, ARROW_H)
         self.button_left.setFixedSize(ARROW_W, ARROW_H)
         self.button_right.setFixedSize(ARROW_W, ARROW_H)
 
-        self.button_stop.setFixedSize(BUTTON_W, BUTTON_H)
+        self.button_serial_start.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_init.setFixedSize(BUTTON_W, BUTTON_H)
         self.button_prog.setFixedSize(BUTTON_W, BUTTON_H)
 
-    def setConnexions(self):
-        #Connect the buttons and the shortcut to the function corresponding
-        self.button_prog.clicked.connect(self.runProgram)
+    def setConnections(self):
+        """
+        Connect the buttons and shortcuts to the corresponding
+        functions.
+        """
+        self.button_serial_start.clicked.connect(self.serialCheck.SerialRun)
+        self.button_serial_start.clicked.connect(self.removeButton)
+        self.button_prog.clicked.connect(self.printVariable)
         self.button_init.clicked.connect(self.tracking.initPosition)
-        self.button_up.clicked.connect(lambda:self.tracking.changePosition("UP"))
-        self.shortcut_up.activated.connect(lambda:self.tracking.changePosition("UP"))
-        self.button_down.clicked.connect(lambda:self.tracking.changePosition("DOWN"))
-        self.shortcut_down.activated.connect(lambda:self.tracking.changePosition("DOWN"))
-        self.button_right.clicked.connect(lambda:self.tracking.changePosition("RIGHT"))
-        self.shortcut_right.activated.connect(lambda:self.tracking.changePosition("RIGHT"))
-        self.button_left.clicked.connect(lambda:self.tracking.changePosition("LEFT"))
-        self.shortcut_left.activated.connect(lambda:self.tracking.changePosition("LEFT"))
+        self.button_up.clicked.connect(
+            lambda: self.tracking.changePosition(STR_F)
+        )
+        self.shortcut_up.activated.connect(
+            lambda: self.tracking.changePosition(STR_F)
+        )
+        self.button_up.clicked.connect(
+            lambda: self.serialCheck.serialSend(STR_F)
+        )
+        self.shortcut_up.activated.connect(
+            lambda: self.serialCheck.serialSend(STR_F)
+        )
+        self.button_down.clicked.connect(
+            lambda: self.tracking.changePosition(STR_B)
+        )
+        self.shortcut_down.activated.connect(
+            lambda: self.tracking.changePosition(STR_B)
+        )
+        self.button_down.clicked.connect(
+            lambda: self.serialCheck.serialSend(STR_B)
+        )
+        self.shortcut_down.activated.connect(
+            lambda: self.serialCheck.serialSend(STR_B)
+        )
+        self.button_left.clicked.connect(
+            lambda: self.tracking.changePosition(STR_L)
+        )
+        self.shortcut_left.activated.connect(
+            lambda: self.tracking.changePosition(STR_L)
+        )
+        self.button_left.clicked.connect(
+            lambda: self.serialCheck.serialSend(STR_L)
+        )
+        self.shortcut_left.activated.connect(
+            lambda: self.serialCheck.serialSend(STR_L)
+        )
+        self.button_right.clicked.connect(
+            lambda: self.tracking.changePosition(STR_R)
+        )
+        self.shortcut_right.activated.connect(
+            lambda: self.tracking.changePosition(STR_R)
+        )
+        self.button_right.clicked.connect(
+            lambda: self.serialCheck.serialSend(STR_R)
+        )
+        self.shortcut_right.activated.connect(
+            lambda: self.serialCheck.serialSend(STR_R)
+        )
+
+    def cleanUp(self):
+        """
+        Ends the serial communication.
+        """
+        print("Exiting program...")
+        self.serialCheck.serialQuit()
+        self.repeater.stop()
+        print("END")
+
+    def removeButton(self):
+        """
+        Disables the serial communication button after initialization.
+        """
+        self.button_serial_start.setEnabled(False)
 
     def setInfo(self):
-        # Set information size and text display.
-
+        """
+        Set information size and text display.
+        """
         self.speed_edit.setFixedSize(INFO_W, INFO_H)
         self.speed_edit.setStyleSheet("color : rgb(0,0,0)")
         self.speed_edit.setReadOnly(True)
@@ -308,29 +636,34 @@ class MainWindow(QWidget):
         self.speed_label.setText("Vitesse :")
         self.energy_label.setText("Énergie :")
 
-    def runProgram(self):
-        '''#to unpack string
-        packed_data = binascii.unhexlify(t)
-        unpacked_data = unpack(format, packed_data)
-        print('Unpacked Values:', unpacked_data)
-        '''
+    def printVariable(self):
+        """
+        Displays variable in the corresponding widget.
+        """
+        print(ENCODED_VAR)
 
-    def setServoValues(self, angles_list):
-        # Set the servo windows text.
-
-        for (angle, servo) in zip(angles_list, self._servo_edits):
+    def setServoValues(self):
+        """
+        Set the servomotor edit text.
+        """
+        self.serialCheck.serialReceive()
+        for (angle, servo) in zip(SERVO_TABLE, self._servo_edits):
             servo.setText(angle)
+            time.sleep(0.05)
 
     def setInfoValues(self, Speed, Energy):
-        # Set additional information values.
-
+        """
+        Set additional information values.
+        """
+        #Read values from Arduino (Speed? et energy battery )
         self.speed_edit.setText(Speed)
         self.energy_edit.setText(Energy)
 
     def setLayoutDependencies(self):
-        # Add inner layouts to outer layouts (creates a parent-child
-        # structure).
-
+        """
+        Add inner layouts to outer layouts (creates a parent-child
+        structure with nested layouts).
+        """
         self.global_layout.addLayout(self.top_layout)
         self.global_layout.addLayout(self.bottom_layout)
 
@@ -343,20 +676,22 @@ class MainWindow(QWidget):
         self.bottom_layout.addLayout(self.info_layout)
         self.bottom_layout.addLayout(self.prog_layout)
         self.bottom_layout.addLayout(self.move_layout)
-        self.bottom_layout.addWidget(self.button_stop)
+        self.bottom_layout.addWidget(self.button_serial_start)
 
     def strechServoLayouts(self):
-        # Add padding between widgets and/or layout walls in the
-        # servomotor layouts.
-
+        """
+        Add padding between widgets and/or layout walls in the
+        servomotor layouts.
+        """
         self.servo_layout_1.addStretch(1)
         self.servo_layout_2.addStretch(1)
         self.servo_layout_3.addStretch(1)
         self.servo_layout_4.addStretch(1)
 
     def addWidgets(self):
-        # Add widgets to various layouts.
-
+        """
+        Add widgets to various layouts.
+        """
         self.strechServoLayouts()
 
         for counter, (edit, label) in \
@@ -399,12 +734,15 @@ class MainWindow(QWidget):
 
 
 if __name__ == '__main__':
-    # Create a Qt application and window to display.
+    ## Create a Qt application and window to display.
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon(SCRIPT_DIR + SEP + LOGO))
-    window = MainWindow()
 
-    # Set style
+    ## Create the widget window.
+    window = MainWindow()
+    app.aboutToQuit.connect(window.cleanUp)
+
+    ## Style setup
     palette = window.palette()
     palette.setColor(QPalette.Window, QColor(53, 53, 53))
     palette.setColor(QPalette.WindowText, Qt.white)

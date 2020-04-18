@@ -1,1 +1,1 @@
-This folder contains the code for the robot movement control and the user interface.
+This folder contains the code for the robot movement control and the user interface. It also contains a [code setup file](https://github.com/gabrielcabana21/HexaphobUS/blob/code/Code/setup.md) for contributors.

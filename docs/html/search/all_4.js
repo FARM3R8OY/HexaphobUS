@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['testhexaphobusui_6',['TestHexaphobusUI',['../d0/d93/classhexaphobus__ui_1_1tests_1_1test__hexaphobus__ui_1_1_test_hexaphobus_u_i.html',1,'hexaphobus_ui::tests::test_hexaphobus_ui']]]
+  ['default_5fpulse_5fwidth_23',['DEFAULT_PULSE_WIDTH',['../da/d39/hexaphobus__pwm_8h.html#a7eada57cb49e7b1766a813e4635d79bd',1,'hexaphobus_pwm.h']]],
+  ['down_24',['DOWN',['../da/d39/hexaphobus__pwm_8h.html#a4193cd1c8c2e6ebd0e056fa2364a663f',1,'hexaphobus_pwm.h']]]
 ];
