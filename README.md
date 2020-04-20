@@ -19,7 +19,7 @@
 **This is an academic project from robotic engineering undergraduates at Université de Sherbrooke. We are building a 6-axis robot from scratch with motion control, sequencing, and an intuitive user interface.**
 
 <div id="robot" align="center">
-    <img src="./img/robot.jpg" alt="Robot" width="512"/>
+    <img src="./img/robot_v1.png" alt="Robot" width="512"/>
 </div>
 
 ## Table of Contents
