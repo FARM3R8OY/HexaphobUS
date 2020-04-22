@@ -1,4 +1,5 @@
 <div id="hexaphobus-logo" align="center">
+    <br />
     <img src="./img/hexaphobus_logo_(isometric).svg" alt="HexaphobUS Logo" width="256"/>
     <h1>HexaphobUS</h1>
     <h3>Hexapod robot | UdeS-GRO</h3>
