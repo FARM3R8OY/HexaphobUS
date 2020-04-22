@@ -1,4 +1,8 @@
 ## Parts and Assemblies
+- Assemblies:
+  - [V1](./V1)
+  - [V2](./V2)
+  - [V3](./V3)
 - Internal resources (homemade components):
   - [V1](./V1/Internal)
   - [V2](./V2/Internal)
